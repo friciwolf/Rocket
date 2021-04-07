@@ -20,17 +20,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QWidget * centralwidget = this->findChild<QWidget*>("centralWidget");
+    pager = new Pager(centralWidget());
 
-    pager = new Pager(centralwidget);
-
-    indicator = new PagerCircularIndicator(centralwidget,pager);
+    indicator = new PagerCircularIndicator(centralWidget(),pager);
     indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
 
-    active_indicator = new PagerCircularActiveIndicator(centralwidget,indicator);
+    active_indicator = new PagerCircularActiveIndicator(centralWidget(),indicator);
     active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
 
-    searchfield = new SearchField(centralwidget,search_width,search_height);
+    searchfield = new SearchField(centralWidget(),search_width,search_height);
     connect(searchfield,&QLineEdit::textEdited,pager,&Pager::activateSearch);
     connect(pager,&Pager::updated,indicator,&PagerCircularIndicator::setHidden);
     connect(pager,&Pager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
@@ -45,7 +43,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
     searchfield->move((width()-search_width)/2,search_height*1.5);
 }
-
 
 
 void MainWindow::navigation(int key)
@@ -110,6 +107,19 @@ void MainWindow::executeSelected()
             qApp->exit();
         }
     }
+}
+
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    if (event->angleDelta().y()>0)
+    {
+        pager->goToPage(1);
+    }
+    else
+    {
+        pager->goToPage(-1);
+    }
+    pager->pages[pager->current_element]->getIconGrid()->resetHighlightAndActiveElement();
 }
 
 

@@ -15,6 +15,5 @@ int main(int argc, char *argv[])
     animation->setDuration(100);
     //animation->setEasingCurve(QEasingCurve::OutQuad);
     animation->start();
-
     return a.exec();
 }

@@ -44,7 +44,7 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(
 
     //QPalette p2;
     //name_label->setAutoFillBackground(true);
-    //p2.setColor(QPalette::ColorRole::Background,Qt::white);
+    //p2.setColor(QPalette::ColorRole::Background,Qt::green);
     //name_label->setPalette(p2);
 
     m_layout->addWidget(canvas,0,0);
@@ -59,7 +59,7 @@ void IconGridItem::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setBrush(QBrush(RocketStyle::WhiteColour,Qt::BrushStyle::SolidPattern));
     painter.setPen(Qt::white);
-    painter.drawRoundedRect(0,0,width(),height(),15,15);
+    painter.drawRoundedRect(0,0,width(),height()*0.99,15,15);
 }
 
 void IconGridItem::mouseMoveEvent(QMouseEvent *event)

@@ -9,6 +9,7 @@ public:
     WhiteBck(QColor colour);
 };
 
+
 namespace RocketStyle {
     /*
      * Reasonable Defaults for a resolution 1366x768

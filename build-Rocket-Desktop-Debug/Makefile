@@ -566,6 +566,9 @@ compiler_moc_header_clean:
 moc_mainwindow.cpp: ../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pagercircularactiveindicator.h \
@@ -577,6 +580,9 @@ moc_mainwindow.cpp: ../Rocket/pager/pager.h \
 
 moc_pager.cpp: ../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pager.h \
 		moc_predefs.h \
@@ -584,6 +590,9 @@ moc_pager.cpp: ../Rocket/pager/pageritem.h \
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pager.h -o moc_pager.cpp
 
 moc_pageritem.cpp: ../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/pager/pageritem.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -592,6 +601,9 @@ moc_pageritem.cpp: ../Rocket/icongrid/kapplication.h \
 moc_pagercircularindicator.cpp: ../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularindicator.h \
 		moc_predefs.h \
@@ -602,6 +614,9 @@ moc_pagercircularactiveindicator.cpp: ../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularactiveindicator.h \
 		moc_predefs.h \
@@ -617,6 +632,7 @@ moc_icongrid.cpp: ../Rocket/icongrid/icongriditem.h \
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/icongrid/icongrid.h -o moc_icongrid.cpp
 
 moc_icongriditem.cpp: ../Rocket/icongrid/kapplication.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/icongriditem.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -631,6 +647,9 @@ moc_icongriditemcanvas.cpp: ../Rocket/icongrid/kapplication.h \
 moc_searchfield.cpp: ../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/searchfield/searchfield.h \
 		moc_predefs.h \
@@ -662,6 +681,9 @@ main.o: ../Rocket/main.cpp ../Rocket/mainwindow.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pagercircularactiveindicator.h \
@@ -672,21 +694,23 @@ mainwindow.o: ../Rocket/mainwindow.cpp ../Rocket/mainwindow.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pagercircularactiveindicator.h \
 		../Rocket/searchfield/searchfield.h \
-		ui_mainwindow.h \
-		../Rocket/stylingparams.h
+		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../Rocket/mainwindow.cpp
 
 pager.o: ../Rocket/pager/pager.cpp ../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
-		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/icongrid/icongrid.h \
 		../Rocket/icongrid/icongriditem.h \
 		../Rocket/stylingparams.h \
+		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/tools/searchingapps.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pager.o ../Rocket/pager/pager.cpp
 
@@ -697,12 +721,17 @@ pageritem.o: ../Rocket/pager/pageritem.cpp ../Rocket/pager/pageritem.h \
 		../Rocket/stylingparams.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pageritem.o ../Rocket/pager/pageritem.cpp
 
-pagercircularindicator.o: ../Rocket/pager/pagercircularindicator.cpp ../Rocket/pager/pagercircularindicator.h \
+pagercircularindicator.o: ../Rocket/pager/pagercircularindicator.cpp ../Rocket/mainwindow.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h \
-		../Rocket/stylingparams.h
+		../Rocket/pager/pagercircularindicator.h \
+		../Rocket/pager/pagercircularactiveindicator.h \
+		../Rocket/searchfield/searchfield.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pagercircularindicator.o ../Rocket/pager/pagercircularindicator.cpp
 
 pagercircularactiveindicator.o: ../Rocket/pager/pagercircularactiveindicator.cpp ../Rocket/pager/pagercircularactiveindicator.h \
@@ -710,6 +739,9 @@ pagercircularactiveindicator.o: ../Rocket/pager/pagercircularactiveindicator.cpp
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/kmenuitems.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pagercircularactiveindicator.o ../Rocket/pager/pagercircularactiveindicator.cpp
 
@@ -721,11 +753,13 @@ icongrid.o: ../Rocket/icongrid/icongrid.cpp ../Rocket/icongrid/icongrid.h \
 
 icongriditem.o: ../Rocket/icongrid/icongriditem.cpp ../Rocket/icongrid/icongriditem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/icongriditemcanvas.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o icongriditem.o ../Rocket/icongrid/icongriditem.cpp
 
 icongriditemcanvas.o: ../Rocket/icongrid/icongriditemcanvas.cpp ../Rocket/icongrid/icongriditemcanvas.h \
-		../Rocket/icongrid/kapplication.h
+		../Rocket/icongrid/kapplication.h \
+		../Rocket/stylingparams.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o icongriditemcanvas.o ../Rocket/icongrid/icongriditemcanvas.cpp
 
 kmenuitems.o: ../Rocket/icongrid/kmenuitems.cpp ../Rocket/icongrid/kmenuitems.h \
@@ -745,8 +779,10 @@ searchfield.o: ../Rocket/searchfield/searchfield.cpp ../Rocket/searchfield/searc
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
-		../Rocket/icongrid/kmenuitems.h \
-		../Rocket/stylingparams.h
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
+		../Rocket/icongrid/kmenuitems.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o searchfield.o ../Rocket/searchfield/searchfield.cpp
 
 searchingapps.o: ../Rocket/tools/searchingapps.cpp ../Rocket/icongrid/kapplication.h

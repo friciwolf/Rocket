@@ -8,7 +8,7 @@ SearchField::SearchField(QWidget *parent, int search_width, int search_height) :
 {
     setAutoFillBackground(true);
     setMinimumSize(search_width,search_height);
-    setMaximumSize(search_width,search_height);
+    //setMaximumSize(search_width,search_height);
     setPlaceholderText("search");
     addAction(QIcon::fromTheme("search"),QLineEdit::LeadingPosition);
 

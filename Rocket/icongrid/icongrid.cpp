@@ -71,6 +71,7 @@ void IconGrid::resetHighlightAndActiveElement()
 
 void IconGrid::paintEvent(QPaintEvent *event)
 {
+    if (getItems().size()==0) return; // search yielded no results -> no drawing
     QPainter painter(this);
     painter.setBrush(QBrush(RocketStyle::WhiteColour,Qt::BrushStyle::SolidPattern));
     painter.setPen(RocketStyle::WhiteColour);

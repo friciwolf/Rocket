@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QCursor>
 #include <QDebug>
+#include <QDir>
 
 Pager::Pager(QWidget *parent) : QWidget(parent)
 {
@@ -59,6 +60,10 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
     PagerItem * page = new PagerItem(this,applications);
     connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
     addItem(page);
+    if (kapplications.size()==1) // only 1 item found after searching
+    {
+        page->getIconGrid()->highlight(0);
+    }
 }
 
 void Pager::updatePager(std::vector<KApplication> kapplications)
@@ -141,7 +146,7 @@ void Pager::resizeEvent(QResizeEvent *event)
     {
         pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+RocketStyle::indicator_height*2));
     }
-    QPixmap bkgnd("grid.jpeg");
+    QPixmap bkgnd(QDir::homePath()+"/.config/rocket/wallpaper.jpeg");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);
