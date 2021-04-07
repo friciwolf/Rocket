@@ -1,5 +1,6 @@
 #include "icongriditem.h"
 #include "icongriditemcanvas.h"
+#include "stylingparams.h"
 #include <QWidget>
 #include <QPainter>
 #include <QLabel>
@@ -8,17 +9,22 @@
 #include <QScrollBar>
 #include <QPropertyAnimation>
 #include <QDebug>
+#include <QMouseEvent>
 
 IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(parent)
 {
+    m_application = application;
     m_icon = application.icon();
     m_label = application.name();
     this->setMinimumSize(m_item_size,m_item_size);
+    setMouseTracking(true);
 
-    //QPalette p;
-    //this->setAutoFillBackground(true);
-    //p.setColor(QPalette::ColorRole::Background,Qt::gray);
-    //this->setPalette(p);
+
+    QPalette p;
+    setAutoFillBackground(true);
+    p.setColor(QPalette::ColorRole::Background,Qt::transparent);
+    setPalette(p);
+
 
     this->setLayout(m_layout);
 
@@ -36,7 +42,7 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(
     name_label->setWordWrap(true);
     name_label->setAlignment(Qt::AlignCenter);
 
-    QPalette p2;
+    //QPalette p2;
     //name_label->setAutoFillBackground(true);
     //p2.setColor(QPalette::ColorRole::Background,Qt::white);
     //name_label->setPalette(p2);
@@ -45,6 +51,20 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(
     m_layout->addWidget(name_label,1,0);
     m_layout->setRowStretch(0,ratio_rows[0]);
     m_layout->setRowStretch(1,ratio_rows[1]);
+}
+
+void IconGridItem::paintEvent(QPaintEvent *event)
+{
+    if (!m_highlighted) return;
+    QPainter painter(this);
+    painter.setBrush(QBrush(RocketStyle::WhiteColour,Qt::BrushStyle::SolidPattern));
+    painter.setPen(Qt::white);
+    painter.drawRoundedRect(0,0,width(),height(),15,15);
+}
+
+void IconGridItem::mouseMoveEvent(QMouseEvent *event)
+{
+    event->ignore();
 }
 
 IconGridItem::~IconGridItem()

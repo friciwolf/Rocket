@@ -15,17 +15,29 @@ public:
     explicit IconGrid(QWidget * parent);
     //explicit IconGrid(QWidget * parent, int rows, int columns);
     ~IconGrid();
+    void paintEvent(QPaintEvent *event);
 
     int getMaxNumberOfRows() {return m_rows;}
     int getMaxNumberOfColumns() {return m_cols;}
-    int getCurrentNumberOfItems() {return m_items.size();}
-    int getCurrentNumberOfRows() {return (int)(getCurrentNumberOfItems()/getMaxNumberOfColumns());}
+    int getNumberOfItems() {return m_items.size();}
+    int getCurrentNumberOfRows() {return (int)(getNumberOfItems()/getMaxNumberOfColumns());}
     int getCurrentNumberOfColumns() {
-        return getCurrentNumberOfItems()>=getMaxNumberOfColumns() ? getMaxNumberOfColumns() : getCurrentNumberOfItems();}
+        return getNumberOfItems()>=getMaxNumberOfColumns() ? getMaxNumberOfColumns() : getNumberOfItems();}
     void setMaxNumberOfRows(int row) {m_rows = row;}
     void setMaxNumberOfColumns(int cols) {m_cols = cols;}
     void addItem(IconGridItem * item);
     void addItems(std::vector<IconGridItem*> items);
+
+    int getActiveElement(){return m_active_element;}
+    void setActiveElement(int element);
+    void unhighlightAll();
+    void highlight(int element);
+    void resetHighlightAndActiveElement();
+
+    std::vector<IconGridItem*> getItems(){return m_items;}
+
+signals:
+    void goToPage(int deltaPage);
 
 private:
     // Vector of all items
@@ -34,6 +46,7 @@ private:
     // Maximum Number of Rows and Columns
     int m_rows = RocketStyle::m_rows;
     int m_cols = RocketStyle::m_cols;
+    int m_active_element = -1;
 
     QGridLayout * m_layout;
 };

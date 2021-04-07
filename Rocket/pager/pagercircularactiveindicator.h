@@ -13,9 +13,6 @@ public:
     explicit PagerCircularActiveIndicator(QWidget *parent, PagerCircularIndicator * indicator);
     void paintEvent(QPaintEvent *event);
 
-public slots:
-    void toggleVisibility(const QString & text);
-
 private:
     QPixmap pixmap;
     int radius;

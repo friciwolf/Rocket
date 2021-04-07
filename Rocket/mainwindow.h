@@ -7,6 +7,7 @@
 #include "pager/pagercircularindicator.h"
 #include "pager/pagercircularactiveindicator.h"
 #include "searchfield/searchfield.h"
+#include "stylingparams.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,14 +23,19 @@ public:
     PagerCircularActiveIndicator * active_indicator;
     SearchField * searchfield;
 
-    int search_width = 300;
-    int search_height = 30;
+    int search_width = RocketStyle::searchfield_width;
+    int search_height = RocketStyle::searchfield_height;
 
     explicit MainWindow(QWidget *parent = nullptr);
 
     void resizeEvent(QResizeEvent *event);
 
+
     ~MainWindow();
+
+public slots:
+    void navigation(int key);
+    void executeSelected();
 
 private:
     Ui::MainWindow *ui;

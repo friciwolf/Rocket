@@ -2,6 +2,7 @@
 #define PAGERCIRCULARINDICATOR_H
 
 #include "pager.h"
+#include "stylingparams.h"
 
 #include <QObject>
 #include <QWidget>
@@ -13,25 +14,23 @@ public:
     explicit PagerCircularIndicator(QWidget *parent, Pager * pager);
     void paintEvent(QPaintEvent *event);
 
-    int getSpacing() {return spacing;}
-    int getRadius() {return radius;}
+    int getSpacing() {return m_spacing;}
+    int getRadius() {return m_radius;}
     Pager * getPager() {return m_pager;}
-
-    // The height of the object
-    int height = 30;
-    int width;
-
-public slots:
-    void repaint();
 
 private:
     QPixmap pixmap;
     Pager * m_pager;
+
+    // The height of the object
+    int m_height = RocketStyle::indicator_height;
+    int m_width;
+
     /*
      * Space between the circles and their radius.
     */
-    int spacing = 5;
-    int radius = 10;
+    int m_spacing = RocketStyle::indicator_spacing;
+    int m_radius = RocketStyle::indicator_radius;
 };
 
 #endif // PAGERCIRCULARINDICATOR_H

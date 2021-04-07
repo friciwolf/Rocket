@@ -1,4 +1,5 @@
 #include "icongriditemcanvas.h"
+#include "stylingparams.h"
 #include <QPainter>
 #include <KMessageBox>
 #include <iostream>
@@ -48,7 +49,7 @@ void IconGridItemCanvas::mouseMoveEvent(QMouseEvent *event)
 {
     int dx = QCursor::pos().x()-m_pressPos.x();
     int dy = QCursor::pos().y()-m_pressPos.y();
-    if (dx*dx+dy*dy>=100)
+    if (dx*dx+dy*dy>=RocketStyle::icongridcanvas_threshold)
     {
         m_clicked = false;
         event->ignore();

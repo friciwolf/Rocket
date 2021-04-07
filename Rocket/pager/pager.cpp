@@ -47,6 +47,7 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
         else
         {
             PagerItem * page = new PagerItem(this,applications);
+            connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
             addItem(page);
             applications.clear();
 
@@ -55,8 +56,8 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
     }
 
     // Adding the rest..
-    // TODO: filling up the rest with empty entries
     PagerItem * page = new PagerItem(this,applications);
+    connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
     addItem(page);
 }
 
@@ -70,7 +71,6 @@ void Pager::updatePager(std::vector<KApplication> kapplications)
 
     if (kapplications == m_kapplications)
     {
-        qDebug() << "matches" << element_before_searching;
         current_element = element_before_searching;
     }
     else
@@ -93,14 +93,53 @@ void Pager::addItem(PagerItem * page)
     pages.push_back(page);
 }
 
+void Pager::goToPage(int deltaPage)
+{
+    if (current_element+deltaPage==getNumberOfElements() || current_element+deltaPage==-1) return;
+    if (searching) return;
+    int newpage = current_element+deltaPage;
+    for (int i=0;i<pages.size(); i++)
+    {
+        pages[i]->move(QPoint((i-newpage)*m_width,pages[i]->pos().y()));
+    }
+    if (deltaPage==1)
+    {
+        IconGrid * oldGrid = pages[current_element]->getIconGrid();
+        int oldElement = oldGrid->getActiveElement(); // 0 ... N_elements
+        int oldElementRow = (int) ((oldElement)/(oldGrid->getCurrentNumberOfColumns())); // 0...N_rows
+        IconGrid * newGrid = pages[current_element+1]->getIconGrid();
+        if (oldElementRow > newGrid->getCurrentNumberOfRows())
+        {
+           newGrid->highlight((newGrid->getCurrentNumberOfRows())*newGrid->getCurrentNumberOfColumns());
+        }
+        else
+        {
+            newGrid->highlight(oldElementRow*newGrid->getCurrentNumberOfColumns());
+        }
+    }
+    if (deltaPage==-1)
+    {
+        IconGrid * oldGrid = pages[current_element]->getIconGrid();
+        int oldElement = oldGrid->getActiveElement(); // 0 ... N_elements
+        int oldElementRow = (int) ((oldElement)/(oldGrid->getCurrentNumberOfColumns())); // 0...N_rows
+        IconGrid * newGrid = pages[current_element-1]->getIconGrid();
+        newGrid->highlight((oldElementRow+1)*newGrid->getCurrentNumberOfColumns()-1);
+    }
+
+
+    current_element = newpage;
+    new_element = current_element;
+    element_before_searching = current_element;
+    page_turned = true;
+}
+
 void Pager::resizeEvent(QResizeEvent *event)
 {
     m_width = this->width();
     m_height = this->height();
     for (int i=0;i<pages.size();i++)
     {
-        // +30: due to the height of the indicators!
-        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+30*2));
+        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+RocketStyle::indicator_height*2));
     }
     QPixmap bkgnd("grid.jpeg");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
@@ -111,6 +150,7 @@ void Pager::resizeEvent(QResizeEvent *event)
 
 void Pager::mousePressEvent(QMouseEvent *e)
 {
+    pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
     dragging = true;
     drag_start_position = QCursor::pos();
     drag_0 = QCursor::pos();
@@ -122,7 +162,7 @@ void Pager::mouseMoveEvent(QMouseEvent * event)
     int dx0 = (QCursor::pos()-drag_0).x();
     if (dragging && !searching)
     {
-        if ((current_element==0 && dx0>50) || (current_element==pages.size()-1 && dx0<-50))
+        if ((current_element==0 && dx0>RocketStyle::pager_deadzone_threshold) || (current_element==pages.size()-1 && dx0<-RocketStyle::pager_deadzone_threshold))
         {
             return;
         }
@@ -161,6 +201,7 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
         animation->start();
     }
 
+    pages[new_element]->getIconGrid()->resetHighlightAndActiveElement();
     current_element = new_element;
     element_before_searching = current_element;
     dragging = false;

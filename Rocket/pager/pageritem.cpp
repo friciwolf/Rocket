@@ -17,6 +17,7 @@ PagerItem::PagerItem(QWidget *parent, vector<KApplication> applications) : QWidg
     setLayout(itemlayout);
 
     IconGrid * grid = new IconGrid(this);
+    m_grid = grid;
 
     for (int i=0;i<applications.size();i++)
     {
@@ -30,14 +31,12 @@ PagerItem::PagerItem(QWidget *parent, vector<KApplication> applications) : QWidg
         label->setAutoFillBackground(true);
         label->setPalette(RocketStyle::WhiteBackground);
         label->setAlignment(Qt::AlignCenter);
-        label->setMinimumSize(500,50);
+        label->setMinimumSize(RocketStyle::pageritem_error_label_size);
         QFont f;
-        label->setFont(QFont(f.defaultFamily(),16));
+        label->setFont(RocketStyle::pageritem_error_label_font);
         itemlayout->addWidget(label,1,1);
     }
     else {
-        grid->setAutoFillBackground(true);
-        grid->setPalette(RocketStyle::WhiteBackground);
         itemlayout->addWidget(grid,1,1);
     }
 

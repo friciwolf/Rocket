@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QPropertyAnimation>
 #include "icongrid/kmenuitems.h"
+#include "stylingparams.h"
 
 class Pager : public QWidget
 {
@@ -26,17 +27,18 @@ public:
     int element_before_searching = 0;
 
     // below this threshold, the user cannot swipe to the next page
-    int swipe_decision_threshold = 200;
+    int swipe_decision_threshold = RocketStyle::pager_swpipe_threshold;
 
     // indicates whether the user is currently dragging
     bool dragging = false;
     QPoint drag_start_position;
     QPoint drag_0;
     bool searching = false;
+    bool page_turned = false;
 
     explicit Pager(QWidget * parent);
-    void addItem(PagerItem * page);
     void constructPager(std::vector<KApplication> kapplications);
+    void addItem(PagerItem * page);
     void updatePager(std::vector<KApplication> kapplications);
 
     int getNumberOfElements() {return pages.size();}
@@ -48,6 +50,7 @@ public:
 
 public slots:
     void activateSearch(const QString & query);
+    void goToPage(int deltaPage);
 
 signals:
     void updated(bool indicator_visibility);
