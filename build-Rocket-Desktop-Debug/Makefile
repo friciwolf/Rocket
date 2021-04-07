@@ -15,7 +15,7 @@ CXX           = g++
 DEFINES       = -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_DBUS_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++11 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I../Rocket -I. -isystem /usr/include/KF5/KIOFileWidgets -isystem /usr/include/KF5/KIOWidgets -isystem /usr/include/KF5/KBookmarks -isystem /usr/include/KF5/KXmlGui -isystem /usr/include/KF5/KConfigWidgets -isystem /usr/include/KF5/KWidgetsAddons -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/KF5/KConfigGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/KF5/KIOCore -isystem /usr/include/KF5/KAuth -isystem /usr/include/KF5/KNTLM -isystem /usr/include/KF5/KCoreAddons -isystem /usr/include/KF5/KService -isystem /usr/include/KF5/KConfigCore -isystem /usr/include/x86_64-linux-gnu/qt5/QtXml -isystem /usr/include/x86_64-linux-gnu/qt5/QtDBus -isystem /usr/include/KF5/KCodecs -isystem /usr/include/KF5/Solid -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
+INCPATH       = -I../Rocket -I. -isystem /usr/include/KF5/KIOFileWidgets -isystem /usr/include/KF5/KIOWidgets -isystem /usr/include/KF5/KBookmarks -isystem /usr/include/KF5/KXmlGui -isystem /usr/include/KF5/KConfigWidgets -isystem /usr/include/KF5/KWidgetsAddons -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/KF5/KConfigGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/KF5/KIOCore -isystem /usr/include/KF5/KAuth -isystem /usr/include/KF5/KNTLM -isystem /usr/include/KF5/KCoreAddons -isystem /usr/include/KF5/KService -isystem /usr/include/KF5/KConfigCore -isystem /usr/include/x86_64-linux-gnu/qt5/QtXml -isystem /usr/include/x86_64-linux-gnu/qt5/QtDBus -isystem /usr/include/KF5/KCodecs -isystem /usr/include/KF5/Solid -isystem /usr/include/KF5/KI18n -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -35,10 +35,10 @@ MOVE          = mv -f
 TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = Rocket1.0.0
-DISTDIR = /home/m/Bureau/build-Rocket-Desktop-Debug/.tmp/Rocket1.0.0
+DISTDIR = /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/.tmp/Rocket1.0.0
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS) -lKF5KIOFileWidgets -lKF5KIOWidgets -lKF5Bookmarks -lKF5XmlGui -lKF5ConfigWidgets -lKF5WidgetsAddons -lQt5Widgets -lKF5ConfigGui -lQt5Gui -lKF5KIOCore -lKF5Auth -lKF5KIONTLM -lKF5CoreAddons -lKF5Service -lKF5ConfigCore -lQt5Xml -lQt5DBus -lKF5Codecs -lKF5Solid -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -lKF5KIOFileWidgets -lKF5KIOWidgets -lKF5Bookmarks -lKF5XmlGui -lKF5ConfigWidgets -lKF5WidgetsAddons -lQt5Widgets -lKF5ConfigGui -lQt5Gui -lKF5KIOCore -lKF5Auth -lKF5KIONTLM -lKF5CoreAddons -lKF5Service -lKF5ConfigCore -lQt5Xml -lQt5DBus -lKF5Codecs -lKF5Solid -lKF5I18n -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -60,14 +60,18 @@ SOURCES       = ../Rocket/main.cpp \
 		../Rocket/icongrid/icongriditem.cpp \
 		../Rocket/icongrid/icongriditemcanvas.cpp \
 		../Rocket/icongrid/kmenuitems.cpp \
-		../Rocket/icongrid/kapplication.cpp moc_mainwindow.cpp \
+		../Rocket/icongrid/kapplication.cpp \
+		../Rocket/stylingparams.cpp \
+		../Rocket/searchfield/searchfield.cpp \
+		../Rocket/tools/searchingapps.cpp moc_mainwindow.cpp \
 		moc_pager.cpp \
 		moc_pageritem.cpp \
 		moc_pagercircularindicator.cpp \
 		moc_pagercircularactiveindicator.cpp \
 		moc_icongrid.cpp \
 		moc_icongriditem.cpp \
-		moc_icongriditemcanvas.cpp
+		moc_icongriditemcanvas.cpp \
+		moc_searchfield.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		pager.o \
@@ -79,6 +83,9 @@ OBJECTS       = main.o \
 		icongriditemcanvas.o \
 		kmenuitems.o \
 		kapplication.o \
+		stylingparams.o \
+		searchfield.o \
+		searchingapps.o \
 		moc_mainwindow.o \
 		moc_pager.o \
 		moc_pageritem.o \
@@ -86,7 +93,8 @@ OBJECTS       = main.o \
 		moc_pagercircularactiveindicator.o \
 		moc_icongrid.o \
 		moc_icongriditem.o \
-		moc_icongriditemcanvas.o
+		moc_icongriditemcanvas.o \
+		moc_searchfield.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -186,6 +194,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		../Rocket/.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -217,7 +226,10 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../Rocket/icongrid/icongriditem.h \
 		../Rocket/icongrid/icongriditemcanvas.h \
 		../Rocket/icongrid/kmenuitems.h \
-		../Rocket/icongrid/kapplication.h ../Rocket/main.cpp \
+		../Rocket/icongrid/kapplication.h \
+		../Rocket/stylingparams.h \
+		../Rocket/searchfield/searchfield.h \
+		../Rocket/tools/searchingapps.h ../Rocket/main.cpp \
 		../Rocket/mainwindow.cpp \
 		../Rocket/pager/pager.cpp \
 		../Rocket/pager/pageritem.cpp \
@@ -227,7 +239,10 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../Rocket/icongrid/icongriditem.cpp \
 		../Rocket/icongrid/icongriditemcanvas.cpp \
 		../Rocket/icongrid/kmenuitems.cpp \
-		../Rocket/icongrid/kapplication.cpp
+		../Rocket/icongrid/kapplication.cpp \
+		../Rocket/stylingparams.cpp \
+		../Rocket/searchfield/searchfield.cpp \
+		../Rocket/tools/searchingapps.cpp
 QMAKE_TARGET  = Rocket
 DESTDIR       = 
 TARGET        = Rocket
@@ -338,6 +353,7 @@ Makefile: ../Rocket/Rocket.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/q
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -466,6 +482,7 @@ Makefile: ../Rocket/Rocket.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/q
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -509,8 +526,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../Rocket/mainwindow.h ../Rocket/pager/pager.h ../Rocket/pager/pageritem.h ../Rocket/pager/pagercircularindicator.h ../Rocket/pager/pagercircularactiveindicator.h ../Rocket/icongrid/icongrid.h ../Rocket/icongrid/icongriditem.h ../Rocket/icongrid/icongriditemcanvas.h ../Rocket/icongrid/kmenuitems.h ../Rocket/icongrid/kapplication.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../Rocket/main.cpp ../Rocket/mainwindow.cpp ../Rocket/pager/pager.cpp ../Rocket/pager/pageritem.cpp ../Rocket/pager/pagercircularindicator.cpp ../Rocket/pager/pagercircularactiveindicator.cpp ../Rocket/icongrid/icongrid.cpp ../Rocket/icongrid/icongriditem.cpp ../Rocket/icongrid/icongriditemcanvas.cpp ../Rocket/icongrid/kmenuitems.cpp ../Rocket/icongrid/kapplication.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../Rocket/mainwindow.h ../Rocket/pager/pager.h ../Rocket/pager/pageritem.h ../Rocket/pager/pagercircularindicator.h ../Rocket/pager/pagercircularactiveindicator.h ../Rocket/icongrid/icongrid.h ../Rocket/icongrid/icongriditem.h ../Rocket/icongrid/icongriditemcanvas.h ../Rocket/icongrid/kmenuitems.h ../Rocket/icongrid/kapplication.h ../Rocket/stylingparams.h ../Rocket/searchfield/searchfield.h ../Rocket/tools/searchingapps.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../Rocket/main.cpp ../Rocket/mainwindow.cpp ../Rocket/pager/pager.cpp ../Rocket/pager/pageritem.cpp ../Rocket/pager/pagercircularindicator.cpp ../Rocket/pager/pagercircularactiveindicator.cpp ../Rocket/icongrid/icongrid.cpp ../Rocket/icongrid/icongriditem.cpp ../Rocket/icongrid/icongriditemcanvas.cpp ../Rocket/icongrid/kmenuitems.cpp ../Rocket/icongrid/kapplication.cpp ../Rocket/stylingparams.cpp ../Rocket/searchfield/searchfield.cpp ../Rocket/tools/searchingapps.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../Rocket/mainwindow.ui $(DISTDIR)/
 
 
@@ -543,67 +560,82 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++11 -Wall -W -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_pager.cpp moc_pageritem.cpp moc_pagercircularindicator.cpp moc_pagercircularactiveindicator.cpp moc_icongrid.cpp moc_icongriditem.cpp moc_icongriditemcanvas.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_pager.cpp moc_pageritem.cpp moc_pagercircularindicator.cpp moc_pagercircularactiveindicator.cpp moc_icongrid.cpp moc_icongriditem.cpp moc_icongriditemcanvas.cpp moc_searchfield.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_pager.cpp moc_pageritem.cpp moc_pagercircularindicator.cpp moc_pagercircularactiveindicator.cpp moc_icongrid.cpp moc_icongriditem.cpp moc_icongriditemcanvas.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_pager.cpp moc_pageritem.cpp moc_pagercircularindicator.cpp moc_pagercircularactiveindicator.cpp moc_icongrid.cpp moc_icongriditem.cpp moc_icongriditemcanvas.cpp moc_searchfield.cpp
 moc_mainwindow.cpp: ../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pagercircularactiveindicator.h \
+		../Rocket/searchfield/searchfield.h \
 		../Rocket/mainwindow.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Bureau/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Bureau/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/mainwindow.h -o moc_mainwindow.cpp
 
 moc_pager.cpp: ../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pager.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Bureau/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Bureau/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pager.h -o moc_pager.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pager.h -o moc_pager.cpp
 
 moc_pageritem.cpp: ../Rocket/icongrid/kapplication.h \
 		../Rocket/pager/pageritem.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Bureau/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Bureau/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pageritem.h -o moc_pageritem.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pageritem.h -o moc_pageritem.cpp
 
 moc_pagercircularindicator.cpp: ../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularindicator.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Bureau/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Bureau/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pagercircularindicator.h -o moc_pagercircularindicator.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pagercircularindicator.h -o moc_pagercircularindicator.cpp
 
 moc_pagercircularactiveindicator.cpp: ../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularactiveindicator.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Bureau/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Bureau/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pagercircularactiveindicator.h -o moc_pagercircularactiveindicator.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/pager/pagercircularactiveindicator.h -o moc_pagercircularactiveindicator.cpp
 
 moc_icongrid.cpp: ../Rocket/icongrid/icongriditem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/stylingparams.h \
 		../Rocket/icongrid/icongrid.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Bureau/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Bureau/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/icongrid/icongrid.h -o moc_icongrid.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/icongrid/icongrid.h -o moc_icongrid.cpp
 
 moc_icongriditem.cpp: ../Rocket/icongrid/kapplication.h \
 		../Rocket/icongrid/icongriditem.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Bureau/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Bureau/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/icongrid/icongriditem.h -o moc_icongriditem.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/icongrid/icongriditem.h -o moc_icongriditem.cpp
 
 moc_icongriditemcanvas.cpp: ../Rocket/icongrid/kapplication.h \
 		../Rocket/icongrid/icongriditemcanvas.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Bureau/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Bureau/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/icongrid/icongriditemcanvas.h -o moc_icongriditemcanvas.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/icongrid/icongriditemcanvas.h -o moc_icongriditemcanvas.cpp
+
+moc_searchfield.cpp: ../Rocket/pager/pager.h \
+		../Rocket/pager/pageritem.h \
+		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
+		../Rocket/searchfield/searchfield.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/m/Documents/Rocket/build-Rocket-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/m/Documents/Rocket/Rocket -I/usr/include/KF5/KIOFileWidgets -I/usr/include/KF5/KIOWidgets -I/usr/include/KF5/KBookmarks -I/usr/include/KF5/KXmlGui -I/usr/include/KF5/KConfigWidgets -I/usr/include/KF5/KWidgetsAddons -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/KF5/KConfigGui -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/KF5/KIOCore -I/usr/include/KF5/KAuth -I/usr/include/KF5/KNTLM -I/usr/include/KF5/KCoreAddons -I/usr/include/KF5/KService -I/usr/include/KF5/KConfigCore -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtDBus -I/usr/include/KF5/KCodecs -I/usr/include/KF5/Solid -I/usr/include/KF5/KI18n -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../Rocket/searchfield/searchfield.h -o moc_searchfield.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -630,17 +662,22 @@ main.o: ../Rocket/main.cpp ../Rocket/mainwindow.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularindicator.h \
-		../Rocket/pager/pagercircularactiveindicator.h
+		../Rocket/pager/pagercircularactiveindicator.h \
+		../Rocket/searchfield/searchfield.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../Rocket/main.cpp
 
 mainwindow.o: ../Rocket/mainwindow.cpp ../Rocket/mainwindow.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pagercircularactiveindicator.h \
-		ui_mainwindow.h
+		../Rocket/searchfield/searchfield.h \
+		ui_mainwindow.h \
+		../Rocket/stylingparams.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../Rocket/mainwindow.cpp
 
 pager.o: ../Rocket/pager/pager.cpp ../Rocket/pager/pager.h \
@@ -648,31 +685,38 @@ pager.o: ../Rocket/pager/pager.cpp ../Rocket/pager/pager.h \
 		../Rocket/icongrid/kapplication.h \
 		../Rocket/icongrid/kmenuitems.h \
 		../Rocket/icongrid/icongrid.h \
-		../Rocket/icongrid/icongriditem.h
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h \
+		../Rocket/tools/searchingapps.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pager.o ../Rocket/pager/pager.cpp
 
 pageritem.o: ../Rocket/pager/pageritem.cpp ../Rocket/pager/pageritem.h \
 		../Rocket/icongrid/kapplication.h \
 		../Rocket/icongrid/icongrid.h \
-		../Rocket/icongrid/icongriditem.h
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/stylingparams.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pageritem.o ../Rocket/pager/pageritem.cpp
 
 pagercircularindicator.o: ../Rocket/pager/pagercircularindicator.cpp ../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
-		../Rocket/icongrid/kapplication.h
+		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
+		../Rocket/stylingparams.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pagercircularindicator.o ../Rocket/pager/pagercircularindicator.cpp
 
 pagercircularactiveindicator.o: ../Rocket/pager/pagercircularactiveindicator.cpp ../Rocket/pager/pagercircularactiveindicator.h \
 		../Rocket/pager/pagercircularindicator.h \
 		../Rocket/pager/pager.h \
 		../Rocket/pager/pageritem.h \
-		../Rocket/icongrid/kapplication.h
+		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pagercircularactiveindicator.o ../Rocket/pager/pagercircularactiveindicator.cpp
 
 icongrid.o: ../Rocket/icongrid/icongrid.cpp ../Rocket/icongrid/icongrid.h \
 		../Rocket/icongrid/icongriditem.h \
-		../Rocket/icongrid/kapplication.h
+		../Rocket/icongrid/kapplication.h \
+		../Rocket/stylingparams.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o icongrid.o ../Rocket/icongrid/icongrid.cpp
 
 icongriditem.o: ../Rocket/icongrid/icongriditem.cpp ../Rocket/icongrid/icongriditem.h \
@@ -690,6 +734,23 @@ kmenuitems.o: ../Rocket/icongrid/kmenuitems.cpp ../Rocket/icongrid/kmenuitems.h 
 
 kapplication.o: ../Rocket/icongrid/kapplication.cpp ../Rocket/icongrid/kapplication.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o kapplication.o ../Rocket/icongrid/kapplication.cpp
+
+stylingparams.o: ../Rocket/stylingparams.cpp ../Rocket/stylingparams.h \
+		../Rocket/icongrid/icongrid.h \
+		../Rocket/icongrid/icongriditem.h \
+		../Rocket/icongrid/kapplication.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o stylingparams.o ../Rocket/stylingparams.cpp
+
+searchfield.o: ../Rocket/searchfield/searchfield.cpp ../Rocket/searchfield/searchfield.h \
+		../Rocket/pager/pager.h \
+		../Rocket/pager/pageritem.h \
+		../Rocket/icongrid/kapplication.h \
+		../Rocket/icongrid/kmenuitems.h \
+		../Rocket/stylingparams.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o searchfield.o ../Rocket/searchfield/searchfield.cpp
+
+searchingapps.o: ../Rocket/tools/searchingapps.cpp ../Rocket/icongrid/kapplication.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o searchingapps.o ../Rocket/tools/searchingapps.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
@@ -714,6 +775,9 @@ moc_icongriditem.o: moc_icongriditem.cpp
 
 moc_icongriditemcanvas.o: moc_icongriditemcanvas.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_icongriditemcanvas.o moc_icongriditemcanvas.cpp
+
+moc_searchfield.o: moc_searchfield.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_searchfield.o moc_searchfield.cpp
 
 ####### Install
 

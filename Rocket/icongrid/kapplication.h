@@ -7,12 +7,19 @@
 class KApplication
 {
 public:
-    KApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment);
+    KApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories);
+    KApplication();
     QString name(){return m_name;}
     QString iconname(){return m_iconname;}
     QString exec(){return m_exec;}
     QIcon icon(){return m_icon;}
     QString comment() {return m_comment;}
+    bool terminal() {return m_terminal;}
+    QStringList keywords() {return m_keywords;}
+    QString genericname() {return m_genericname;}
+    QString untranslatedGenericName() {return m_untranslatedGenericName;}
+    QStringList categories() {return m_categories;}
+    friend bool operator==(const KApplication& a, const KApplication& b);
 
 private:
     QString m_name;
@@ -20,6 +27,11 @@ private:
     QString m_exec;
     QIcon m_icon;
     QString m_comment;
+    bool m_terminal;
+    QStringList m_keywords;
+    QString m_genericname;
+    QString m_untranslatedGenericName;
+    QStringList m_categories;
 };
 
 #endif // KAPPLICATION_H

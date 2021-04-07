@@ -6,6 +6,7 @@
 #include "pager/pager.h"
 #include "pager/pagercircularindicator.h"
 #include "pager/pagercircularactiveindicator.h"
+#include "searchfield/searchfield.h"
 
 namespace Ui {
 class MainWindow;
@@ -19,7 +20,7 @@ public:
     Pager * pager;
     PagerCircularIndicator * indicator;
     PagerCircularActiveIndicator * active_indicator;
-    QLineEdit * searchfield;
+    SearchField * searchfield;
 
     int search_width = 300;
     int search_height = 30;

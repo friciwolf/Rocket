@@ -1,6 +1,8 @@
 #include "pager/pager.h"
 #include "icongrid/kmenuitems.h"
 #include "icongrid/icongrid.h"
+#include "stylingparams.h"
+#include "tools/searchingapps.h"
 
 #include <QScrollArea>
 #include <QPropertyAnimation>
@@ -12,8 +14,8 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
 {
     // Colouring the background...
     //QPalette palette;
-    //setAutoFillBackground(true);
-    //palette.setColor(QPalette::ColorRole::Background,Qt::gray);
+    setAutoFillBackground(true);
+    //palette.setColor(QPalette::ColorRole::Background,QColor(255,255,100,100));
     //setPalette(palette);
 
     // Setting the sizes
@@ -22,22 +24,23 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     m_height = parent->geometry().height();
 
     // Getting the entries
-    KMenuItems menuitems;
-    menuitems.scanElements();
+    KMenuItems m_menuitems;
+    m_menuitems.scanElements();
 
-    std::vector<KApplication> kapplications = menuitems.getApplications();
+    m_kapplications = m_menuitems.getApplications();
+    constructPager(m_kapplications);
+    resizeEvent(nullptr);
+}
 
-
-    IconGrid * grid = new IconGrid(this);
-    int page_max_icons = grid->getMaxNumberOfRows()*grid->getMaxNumberOfColumns();
+void Pager::constructPager(std::vector<KApplication> kapplications)
+{
     std::vector<KApplication> applications;
-
-    m_number_of_elements = kapplications.size()/page_max_icons +1;
+    int maxicons = RocketStyle::m_rows*RocketStyle::m_cols;
 
     // Filling up the grid...
-    for (int i=0;i<menuitems.getApplications().size();i++)
+    for (int i=0;i<kapplications.size();i++)
     {
-        if ((i%page_max_icons)!=0 || i==0)
+        if ((i%maxicons)!=0 || i==0)
         {
             applications.push_back(kapplications[i]);
         }
@@ -57,10 +60,37 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     addItem(page);
 }
 
-void Pager::addItem(PagerItem * page, QGridLayout * layout)
+void Pager::updatePager(std::vector<KApplication> kapplications)
+{
+    for (PagerItem * i: pages)
+    {
+        delete i;
+    }
+    pages.clear();
+
+    if (kapplications == m_kapplications)
+    {
+        qDebug() << "matches" << element_before_searching;
+        current_element = element_before_searching;
+    }
+    else
+    {
+        current_element = 0;
+    }
+    constructPager(kapplications);
+
+    for (int i=0;i<pages.size();i++)
+    {
+        // +30: due to the height of the indicators!
+        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+30*2));
+        pages[i]->setEnabled(true);
+        pages[i]->setVisible(true);
+    }
+}
+
+void Pager::addItem(PagerItem * page)
 {
     pages.push_back(page);
-    pagelayouts.push_back(layout);
 }
 
 void Pager::resizeEvent(QResizeEvent *event)
@@ -72,6 +102,11 @@ void Pager::resizeEvent(QResizeEvent *event)
         // +30: due to the height of the indicators!
         pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+30*2));
     }
+    QPixmap bkgnd("grid.jpeg");
+    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Background, bkgnd);
+    setPalette(palette);
 }
 
 void Pager::mousePressEvent(QMouseEvent *e)
@@ -85,11 +120,10 @@ void Pager::mousePressEvent(QMouseEvent *e)
 void Pager::mouseMoveEvent(QMouseEvent * event)
 {
     int dx0 = (QCursor::pos()-drag_0).x();
-    if (dragging)
+    if (dragging && !searching)
     {
-        if (current_element==0 && dx0>50 || current_element==pages.size()-1 && dx0<-50)
+        if ((current_element==0 && dx0>50) || (current_element==pages.size()-1 && dx0<-50))
         {
-            qDebug()<< "stuck at " << current_element;
             return;
         }
 
@@ -105,6 +139,11 @@ void Pager::mouseMoveEvent(QMouseEvent * event)
 
 void Pager::mouseReleaseEvent(QMouseEvent * event)
 {
+    if (searching)
+    {
+        event->ignore();
+        return;
+    }
     int dx0 = (QCursor::pos()-drag_0).x();
     if (dx0>swipe_decision_threshold && current_element!=0) {
         new_element = current_element-1;
@@ -113,7 +152,6 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
         new_element = current_element+1;
     }
 
-    qDebug() << "going to element " << new_element;
     for (int i=0;i<pages.size(); i++)
     {
         QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
@@ -124,6 +162,15 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
     }
 
     current_element = new_element;
+    element_before_searching = current_element;
     dragging = false;
     event->accept();
+}
+
+void Pager::activateSearch(const QString &query)
+{
+    searching = (query!="");
+    std::vector<KApplication> found_apps = searchApplication(m_kapplications,query);
+    updatePager(found_apps);
+    updated(searching);
 }

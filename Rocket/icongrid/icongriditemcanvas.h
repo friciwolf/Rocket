@@ -27,7 +27,7 @@ private:
     int m_icon_size;
     QIcon m_icon;
     QPixmap pixmap;
-    KApplication * m_application;
+    KApplication m_application;
 
     bool m_clicked = false;
     QPoint m_pressPos;

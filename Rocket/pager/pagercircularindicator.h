@@ -21,6 +21,9 @@ public:
     int height = 30;
     int width;
 
+public slots:
+    void repaint();
+
 private:
     QPixmap pixmap;
     Pager * m_pager;

@@ -7,6 +7,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QPropertyAnimation>
+#include <QDebug>
 
 IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(parent)
 {
@@ -26,7 +27,6 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(
     int icon_area_width = m_item_size;
 
     IconGridItemCanvas * canvas = new IconGridItemCanvas(this,application,icon_area_width,icon_area_height,m_icon_size);
-
 
     QLabel * name_label = new QLabel(m_label,this);
     QFont label_font = name_label->font();

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui KIOCore KIOFileWidgets KIOWidgets KNTLM
+QT       += core gui KIOCore KIOFileWidgets KIOWidgets KNTLM KI18n
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -35,7 +35,10 @@ SOURCES += \
     icongrid/icongriditem.cpp \
     icongrid/icongriditemcanvas.cpp \
     icongrid/kmenuitems.cpp \
-    icongrid/kapplication.cpp
+    icongrid/kapplication.cpp \
+    stylingparams.cpp \
+    searchfield/searchfield.cpp \
+    tools/searchingapps.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,7 +50,10 @@ HEADERS += \
     icongrid/icongriditem.h \
     icongrid/icongriditemcanvas.h \
     icongrid/kmenuitems.h \
-    icongrid/kapplication.h
+    icongrid/kapplication.h \
+    stylingparams.h \
+    searchfield/searchfield.h \
+    tools/searchingapps.h
 
 FORMS += \
         mainwindow.ui

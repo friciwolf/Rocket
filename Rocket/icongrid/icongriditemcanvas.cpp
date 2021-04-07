@@ -8,6 +8,7 @@
 #include <QProcess>
 #include <QApplication>
 #include <KRun>
+#include "kapplication.h"
 
 IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application, int area_width, int area_height, int iconsize)
 {
@@ -15,7 +16,7 @@ IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application
     m_area_width = area_width;
     m_area_height = area_height;
     m_icon_size = iconsize;
-    m_application = new KApplication(application.name(),application.iconname(),application.icon(),application.exec(),application.comment());
+    m_application = application;
     QPalette p;
     //this->setAutoFillBackground(true);
     //p.setColor(QPalette::ColorRole::Background,Qt::cyan);
@@ -59,9 +60,18 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
     if (m_clicked)
     {
         m_clicked = false;
-        qDebug() << m_application->exec();
-        if(KRun::run(m_application->exec(),QList<QUrl>(),nullptr,m_application->name(),m_application->iconname())) {
-            qApp->exit();
+        QList<QUrl> urls;
+        if (m_application.terminal())
+        {
+            if(KRun::run("konsole -e "+m_application.exec(),urls,nullptr,m_application.name(),m_application.iconname()))
+            {
+                qApp->exit();
+            }
+        }
+        else {
+            if(KRun::run(m_application.exec(),urls,nullptr,m_application.name(),m_application.iconname())) {
+                qApp->exit();
+            }
         }
 
     }

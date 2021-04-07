@@ -1,10 +1,12 @@
 #include <QGridLayout>
 #include <QLabel>
+#include <klocalizedstring.h>
 
 #include "pager/pageritem.h"
 
 #include "icongrid/icongrid.h"
 #include "icongrid/icongriditem.h"
+#include "stylingparams.h"
 
 using namespace std;
 
@@ -14,9 +16,6 @@ PagerItem::PagerItem(QWidget *parent, vector<KApplication> applications) : QWidg
     itemlayout->setAlignment(Qt::AlignCenter);
     setLayout(itemlayout);
 
-    //setAutoFillBackground(true);
-    //setPalette(p);
-
     IconGrid * grid = new IconGrid(this);
 
     for (int i=0;i<applications.size();i++)
@@ -25,11 +24,22 @@ PagerItem::PagerItem(QWidget *parent, vector<KApplication> applications) : QWidg
         grid->addItem(griditem);
     }
 
-    QPalette p;
-    p.setColor(QPalette::ColorRole::Background,QColor(255,255,255,150));
-    grid->setAutoFillBackground(true);
-    grid->setPalette(p);
-    itemlayout->addWidget(grid,1,1);
+    if (applications.size()==0)
+    {
+        QLabel * label = new QLabel(ki18n("No results found").toString(),grid);
+        label->setAutoFillBackground(true);
+        label->setPalette(RocketStyle::WhiteBackground);
+        label->setAlignment(Qt::AlignCenter);
+        label->setMinimumSize(500,50);
+        QFont f;
+        label->setFont(QFont(f.defaultFamily(),16));
+        itemlayout->addWidget(label,1,1);
+    }
+    else {
+        grid->setAutoFillBackground(true);
+        grid->setPalette(RocketStyle::WhiteBackground);
+        itemlayout->addWidget(grid,1,1);
+    }
 
     itemlayout->setColumnStretch(0,1);
     itemlayout->setColumnStretch(1,2);

@@ -19,6 +19,11 @@ void KMenuItems::scanElements(QString path,int n)
         QString exec;
         QString comment;
         QIcon icon;
+        QStringList keywords;
+        QString genericname;
+        QString untranslatedGenericName;
+        QStringList categories;
+        bool terminal;
         if (p->isType(KST_KService)) {
             const KService::Ptr service(static_cast<KService *>(p.data()));
             if (service->noDisplay()) continue;
@@ -27,6 +32,11 @@ void KMenuItems::scanElements(QString path,int n)
             icon = QIcon::fromTheme(service->icon());
             exec = service->exec();
             comment = service->comment();
+            terminal = service->terminal();
+            keywords = service->keywords();
+            genericname = service->genericName();
+            untranslatedGenericName = service->untranslatedGenericName();
+            categories = service->categories();
             bool doubled = false;
             for (KApplication a : applications)
             {
@@ -37,7 +47,7 @@ void KMenuItems::scanElements(QString path,int n)
                 }
             }
             if (doubled) continue;
-            applications.push_back(KApplication(name,iconname,icon,exec,comment));
+            applications.push_back(KApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories));
         }
         else if (p->isType(KST_KServiceGroup)) {
             const KServiceGroup::Ptr serviceGroup(static_cast<KServiceGroup *>(p.data()));
@@ -48,7 +58,7 @@ void KMenuItems::scanElements(QString path,int n)
             scanElements(serviceGroup->entryPath(),n+1);
         }
         else {
-            // ??
+            // ?? (Even KDE devs don't know what this case means...)
             continue;
         }
     }
@@ -67,7 +77,7 @@ void KMenuItems::sortElementsAlphabetically()
         j++;
         for (int i=0;i<applications.size()-j;i++)
         {
-            if (applications[i].name().toStdString()>applications[i+1].name().toStdString())
+            if (applications[i].name().toLower().toStdString()>applications[i+1].name().toLower().toStdString())
             {
                 KApplication temp = applications[i];
                 applications[i] = applications[i+1];
@@ -77,4 +87,9 @@ void KMenuItems::sortElementsAlphabetically()
             }
         }
     }
+}
+
+KApplication KMenuItems::search(const QString &query)
+{
+    return applications[0];
 }
