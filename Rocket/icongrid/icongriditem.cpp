@@ -16,14 +16,12 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(
     m_application = application;
     m_icon = application.icon();
     m_label = application.name();
-    this->setMinimumSize(m_item_size,m_item_size);
-    setMouseTracking(true);
+    setMinimumSize(m_item_size,m_item_size);
 
-
-    QPalette p;
-    setAutoFillBackground(true);
-    p.setColor(QPalette::ColorRole::Background,Qt::transparent);
-    setPalette(p);
+    //QPalette p;
+    //setAutoFillBackground(true);
+    //p.setColor(QPalette::ColorRole::Background,Qt::green);
+    //setPalette(p);
 
 
     this->setLayout(m_layout);
@@ -32,7 +30,8 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(
     int icon_area_height = m_item_size*ratio_rows[0]/(ratio_rows[0]+ratio_rows[1]);
     int icon_area_width = m_item_size;
 
-    IconGridItemCanvas * canvas = new IconGridItemCanvas(this,application,icon_area_width,icon_area_height,m_icon_size);
+    m_canvas = new IconGridItemCanvas(this,application,icon_area_width,icon_area_height,m_icon_size);
+    m_canvas->move(width()*0.5-m_canvas->width()*0.5,0);
 
     QLabel * name_label = new QLabel(m_label,this);
     QFont label_font = name_label->font();
@@ -47,7 +46,7 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application) : QWidget(
     //p2.setColor(QPalette::ColorRole::Background,Qt::green);
     //name_label->setPalette(p2);
 
-    m_layout->addWidget(canvas,0,0);
+    m_layout->addWidget(m_canvas,0,0);
     m_layout->addWidget(name_label,1,0);
     m_layout->setRowStretch(0,ratio_rows[0]);
     m_layout->setRowStretch(1,ratio_rows[1]);
@@ -60,6 +59,15 @@ void IconGridItem::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(RocketStyle::WhiteColour,Qt::BrushStyle::SolidPattern));
     painter.setPen(Qt::white);
     painter.drawRoundedRect(0,0,width(),height()*0.99,15,15);
+}
+
+void IconGridItem::resizeEvent(QResizeEvent *event)
+{
+    QRect g = parentWidget()->geometry();
+    m_item_size = g.width()*0.95/RocketStyle::m_cols;
+    setMinimumSize(m_item_size,m_item_size);
+    update();
+    m_canvas->resizeEvent(event);
 }
 
 void IconGridItem::mouseMoveEvent(QMouseEvent *event)

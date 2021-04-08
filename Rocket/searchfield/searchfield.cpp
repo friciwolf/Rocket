@@ -7,7 +7,7 @@
 SearchField::SearchField(QWidget *parent, int search_width, int search_height) : QLineEdit(parent)
 {
     setAutoFillBackground(true);
-    setMinimumSize(search_width,search_height);
+    //setMinimumSize(search_width,search_height);
     //setMaximumSize(search_width,search_height);
     setPlaceholderText("search");
     addAction(QIcon::fromTheme("search"),QLineEdit::LeadingPosition);
@@ -17,6 +17,12 @@ SearchField::SearchField(QWidget *parent, int search_width, int search_height) :
     searchfield_palette.setColor(QPalette::ColorRole::Highlight,Qt::blue);
     searchfield_palette.setColor(QPalette::Text,Qt::black);
     setPalette(searchfield_palette);
+}
+
+void SearchField::resizeEvent(QResizeEvent *event)
+{
+    QRect g = parentWidget()->geometry();
+    setGeometry(g.width()/2-width()/2,height()*1.5,g.width()*0.2,g.height()*0.05);
 }
 
 void SearchField::keyPressEvent(QKeyEvent *event)

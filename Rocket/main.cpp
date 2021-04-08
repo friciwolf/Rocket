@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     QPropertyAnimation * animation = new QPropertyAnimation(&w,"windowOpacity");
     animation->setStartValue(0);
     animation->setEndValue(1);
-    animation->setDuration(100);
+    animation->setDuration(500);
     //animation->setEasingCurve(QEasingCurve::OutQuad);
     animation->start();
     return a.exec();

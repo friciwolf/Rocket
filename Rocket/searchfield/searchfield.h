@@ -12,6 +12,7 @@ class SearchField : public QLineEdit
 public:
     explicit SearchField(QWidget *parent, int search_width, int search_height);
     void keyPressEvent(QKeyEvent *event);
+    void resizeEvent(QResizeEvent *event);
 
 signals:
     void navigate(int key);

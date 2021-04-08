@@ -10,6 +10,7 @@ IconGrid::IconGrid(QWidget * parent) : QWidget (parent)
     m_layout->setAlignment(Qt::AlignCenter);
     m_layout->setSpacing(1);
     setLayout(m_layout);
+    setMaximumSize(parentWidget()->size().width()*0.9,parentWidget()->size().height()*0.8);
 }
 
 void IconGrid::addItem(IconGridItem * item)
@@ -76,6 +77,15 @@ void IconGrid::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(RocketStyle::WhiteColour,Qt::BrushStyle::SolidPattern));
     painter.setPen(RocketStyle::WhiteColour);
     painter.drawRoundedRect(0,0,width(),height(),30,30);
+}
+
+void IconGrid::resizeEvent(QResizeEvent *event)
+{
+    setMaximumSize(parentWidget()->size().width()*0.9,parentWidget()->size().height()*0.8);
+    for (IconGridItem * i : getItems())
+    {
+        i->resizeEvent(event);
+    }
 }
 
 IconGrid::~IconGrid()

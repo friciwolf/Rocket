@@ -22,13 +22,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     pager = new Pager(centralWidget());
 
+
     indicator = new PagerCircularIndicator(centralWidget(),pager);
     indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
 
     active_indicator = new PagerCircularActiveIndicator(centralWidget(),indicator);
     active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
 
-    searchfield = new SearchField(centralWidget(),search_width,search_height);
+    searchfield = new SearchField(centralWidget(),width()*0.2,height()*0.05);
     connect(searchfield,&QLineEdit::textEdited,pager,&Pager::activateSearch);
     connect(pager,&Pager::updated,indicator,&PagerCircularIndicator::setHidden);
     connect(pager,&Pager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
@@ -38,10 +39,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    pager->setGeometry(0,0,this->width(),this->height());
+    //pager->setFixedSize(width(),height());
+    pager->setGeometry(0,0,width(),height());
+    //pager->resizeEvent(event);
+    indicator->resizeEvent(event);
     indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
+    active_indicator->resizeEvent(event);
     active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
-    searchfield->move((width()-search_width)/2,search_height*1.5);
+    searchfield->resizeEvent(event);
+    searchfield->move((width()-searchfield->width())/2,searchfield->height()*1.5);
 }
 
 

@@ -9,6 +9,7 @@
 
 #include "kapplication.h"
 #include "stylingparams.h"
+#include "icongriditemcanvas.h"
 
 class IconGridItem : public QWidget
 {
@@ -17,13 +18,20 @@ public:
     explicit IconGridItem(QWidget *parent, KApplication application);
     void mouseMoveEvent(QMouseEvent * event);
     void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent *event);
     ~IconGridItem();
 
     void setHighlighted(bool highlighted){m_highlighted = highlighted;}
+    void setItemSize(int size) {m_item_size = size;}
+    int getItemSize(){return  m_item_size;}
+    void setIconSize(int size) {m_icon_size = size;}
+    int getIconSize(){return  m_icon_size;}
     KApplication getApplication(){return m_application;}
+    IconGridItemCanvas * getCanvas(){return m_canvas;}
 
 private:
     KApplication m_application;
+    IconGridItemCanvas * m_canvas;
     QIcon m_icon = QIcon::fromTheme("file");
     QString m_label = "file";
     QGridLayout * m_layout = new QGridLayout(this);

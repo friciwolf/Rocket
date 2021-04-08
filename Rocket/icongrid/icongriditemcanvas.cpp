@@ -8,8 +8,10 @@
 #include <QTimer>
 #include <QProcess>
 #include <QApplication>
+#include <QGridLayout>
 #include <KRun>
 #include "kapplication.h"
+#include "stylingparams.h"
 
 IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application, int area_width, int area_height, int iconsize)
 {
@@ -18,19 +20,21 @@ IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application
     m_area_height = area_height;
     m_icon_size = iconsize;
     m_application = application;
-    QPalette p;
-    //this->setAutoFillBackground(true);
+
+    //QPalette p;
+    //setAutoFillBackground(true);
     //p.setColor(QPalette::ColorRole::Background,Qt::cyan);
-    this->setPalette(p);
+    //setPalette(p);
 }
 
 void IconGridItemCanvas::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    int pos_x = (m_area_width-m_icon_size)/2;
-    int pos_y = (m_area_height-m_icon_size)/2;
-    // Some icons are drawn weirdly, thus the -5
-    m_icon.paint(&painter,pos_x-5,pos_y-5,m_icon_size,m_icon_size);
+    painter.setBrush(QBrush(Qt::red,Qt::BrushStyle::SolidPattern));
+    int pos_x = (width()-m_icon_size)/2;
+    int pos_y = (height()-m_icon_size)/2;
+    //painter.drawRect(pos_x,pos_y,m_icon_size,m_icon_size);
+    m_icon.paint(&painter,pos_x,pos_y,m_icon_size,m_icon_size,Qt::AlignCenter);
 
 }
 
@@ -89,6 +93,11 @@ void IconGridItemCanvas::longpressanimation()
         KMessageBox::information(nullptr,"move_animation");
         m_clicked = false;
     }
+}
+
+void IconGridItemCanvas::resizeEvent(QResizeEvent *event)
+{
+    m_icon_size = (width()<height() ? width() : height());
 }
 
 

@@ -16,9 +16,13 @@ class PagerItem : public QWidget
 public:
     explicit PagerItem(QWidget *parent, vector<KApplication> applications);
     IconGrid * getIconGrid(){return m_grid;}
+    QGridLayout * getItemLayout() {return m_itemlayout;}
+    void resizeEvent(QResizeEvent *event);
 
 private:
     IconGrid * m_grid;
+    QGridLayout * m_itemlayout;
+
 };
 
 #endif // PAGERITEM_H

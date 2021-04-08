@@ -43,6 +43,7 @@ public:
 
     int getNumberOfElements() {return pages.size();}
 
+
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent * e);
     void mouseMoveEvent(QMouseEvent * event);

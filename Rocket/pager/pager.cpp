@@ -30,7 +30,6 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
 
     m_kapplications = m_menuitems.getApplications();
     constructPager(m_kapplications);
-    resizeEvent(nullptr);
 }
 
 void Pager::constructPager(std::vector<KApplication> kapplications)
@@ -86,8 +85,8 @@ void Pager::updatePager(std::vector<KApplication> kapplications)
 
     for (int i=0;i<pages.size();i++)
     {
-        // +30: due to the height of the indicators!
-        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+30*2));
+        int indicator_height = parentWidget()->size().height()*0.1;
+        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+indicator_height));
         pages[i]->setEnabled(true);
         pages[i]->setVisible(true);
     }
@@ -142,9 +141,11 @@ void Pager::resizeEvent(QResizeEvent *event)
 {
     m_width = this->width();
     m_height = this->height();
+    int indicator_height = parentWidget()->size().height()*0.1;
     for (int i=0;i<pages.size();i++)
     {
-        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+RocketStyle::indicator_height*2));
+        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+indicator_height));
+        pages[i]->resizeEvent(event);
     }
     QPixmap bkgnd(QDir::homePath()+"/.config/rocket/wallpaper.jpeg");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);

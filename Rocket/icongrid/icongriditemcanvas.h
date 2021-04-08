@@ -6,6 +6,7 @@
 #include <QIcon>
 #include <QDateTime>
 #include "kapplication.h"
+#include "stylingparams.h"
 
 class IconGridItemCanvas : public QWidget
 {
@@ -15,6 +16,14 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    void setIconSize(int size){m_icon_size = size;}
+    void setAreaWidth(int width){m_area_width = width;}
+    void setAreaHeight(int height){m_area_width = height;}
+    //void setIconOffset(int offset){m_icon_offset = offset;}
+    int getIconSize(){return m_icon_size;}
+    //int getIconOffset(){return m_icon_offset;}
+    int getAreaWidth(){return m_area_width;}
     ~IconGridItemCanvas();
 
 
@@ -25,6 +34,7 @@ private:
     int m_area_height;
     int m_area_width;
     int m_icon_size;
+    //int m_icon_offset = RocketStyle::icongridcanvas_icon_offset;
     QIcon m_icon;
     QPixmap pixmap;
     KApplication m_application;

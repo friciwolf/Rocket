@@ -23,8 +23,8 @@ public:
     PagerCircularActiveIndicator * active_indicator;
     SearchField * searchfield;
 
-    int search_width = RocketStyle::searchfield_width;
-    int search_height = RocketStyle::searchfield_height;
+    int search_width;
+    int search_height;
 
     explicit MainWindow(QWidget *parent = nullptr);
 

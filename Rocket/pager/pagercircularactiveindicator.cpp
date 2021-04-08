@@ -27,3 +27,13 @@ void PagerCircularActiveIndicator::paintEvent(QPaintEvent *event)
     //painter.drawEllipse(spacing*0.5+current_item*(radius*2+spacing)+correction,height/2-radius,radius*2,radius*2);
     painter.drawEllipse(spacing*0.5+position,height/2-radius,radius*2,radius*2);
 }
+
+void PagerCircularActiveIndicator::resizeEvent(QResizeEvent *event)
+{
+    radius = indicator->getRadius();
+    spacing = indicator->getSpacing();
+    height = indicator->height();
+    width = indicator->width();
+    pager = indicator->getPager();
+    setMinimumSize(width,height);
+}
