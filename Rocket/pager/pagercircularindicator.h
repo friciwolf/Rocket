@@ -12,6 +12,7 @@ class PagerCircularIndicator : public QWidget
     Q_OBJECT
 public:
     explicit PagerCircularIndicator(QWidget *parent, Pager * pager);
+    void positioning();
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
 
@@ -22,18 +23,15 @@ public:
 private:
     QPixmap pixmap;
     Pager * m_pager;
-
-    // The height of the object
-    int m_height; // = RocketStyle::indicator_height;
-    int m_width;
+    QRect m_parent_geometry;
 
     int m_elements;
 
     /*
      * Space between the circles and their radius.
     */
-    int m_spacing;// = RocketStyle::indicator_spacing;
-    int m_radius; // = RocketStyle::indicator_radius;
+    int m_spacing;
+    int m_radius;
 };
 
 #endif // PAGERCIRCULARINDICATOR_H

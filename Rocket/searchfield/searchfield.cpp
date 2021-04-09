@@ -4,11 +4,9 @@
 #include <QKeyEvent>
 #include <QDebug>
 
-SearchField::SearchField(QWidget *parent, int search_width, int search_height) : QLineEdit(parent)
+SearchField::SearchField(QWidget *parent) : QLineEdit(parent)
 {
     setAutoFillBackground(true);
-    //setMinimumSize(search_width,search_height);
-    //setMaximumSize(search_width,search_height);
     setPlaceholderText("search");
     addAction(QIcon::fromTheme("search"),QLineEdit::LeadingPosition);
 
@@ -17,17 +15,24 @@ SearchField::SearchField(QWidget *parent, int search_width, int search_height) :
     searchfield_palette.setColor(QPalette::ColorRole::Highlight,Qt::blue);
     searchfield_palette.setColor(QPalette::Text,Qt::black);
     setPalette(searchfield_palette);
+
+    positioning();
+}
+
+void SearchField::positioning()
+{
+    QRect g = parentWidget()->geometry();
+    setGeometry((g.width()-width())*0.5,(g.height()*0.1-height())*0.5,g.width()*0.2,g.height()*0.05);
 }
 
 void SearchField::resizeEvent(QResizeEvent *event)
 {
-    QRect g = parentWidget()->geometry();
-    setGeometry(g.width()/2-width()/2,height()*1.5,g.width()*0.2,g.height()*0.05);
+    positioning();
 }
 
 void SearchField::keyPressEvent(QKeyEvent *event)
 {
-    std::vector<Qt::Key> navigationKeys = {Qt::Key::Key_Right,Qt::Key::Key_Left,Qt::Key::Key_Up,Qt::Key::Key_Down, Qt::Key::Key_Escape};
+    std::vector<Qt::Key> navigationKeys = {Qt::Key::Key_Right,Qt::Key::Key_Left,Qt::Key::Key_Up,Qt::Key::Key_Down, Qt::Key::Key_Escape, Qt::Key::Key_Tab};
     if (std::find(navigationKeys.begin(),navigationKeys.end(),event->key())!=navigationKeys.end())
     {
         navigate(event->key());

@@ -21,13 +21,13 @@ public:
     int getMaxNumberOfRows() {return m_rows;}
     int getMaxNumberOfColumns() {return m_cols;}
     int getNumberOfItems() {return m_items.size();}
-    int getCurrentNumberOfRows() {return (int)(getNumberOfItems()/getMaxNumberOfColumns());}
+    int getCurrentNumberOfRows(){
+        return (getNumberOfItems()<=getMaxNumberOfColumns() ? 1 : (int)(getNumberOfItems()/getMaxNumberOfColumns())+1);}
     int getCurrentNumberOfColumns() {
         return getNumberOfItems()>=getMaxNumberOfColumns() ? getMaxNumberOfColumns() : getNumberOfItems();}
     void setMaxNumberOfRows(int row) {m_rows = row;}
     void setMaxNumberOfColumns(int cols) {m_cols = cols;}
     void addItem(IconGridItem * item);
-    void addItems(std::vector<IconGridItem*> items);
 
     int getActiveElement(){return m_active_element;}
     void setActiveElement(int element);

@@ -1,15 +1,14 @@
-#include "pager/pager.h"
-#include "icongrid/kmenuitems.h"
-#include "icongrid/icongrid.h"
-#include "stylingparams.h"
-#include "tools/searchingapps.h"
-
-#include <QScrollArea>
 #include <QPropertyAnimation>
 #include <QMouseEvent>
 #include <QCursor>
 #include <QDebug>
 #include <QDir>
+
+#include "pager/pager.h"
+#include "icongrid/kmenuitems.h"
+#include "icongrid/icongrid.h"
+#include "stylingparams.h"
+#include "tools/searchingapps.h"
 
 Pager::Pager(QWidget *parent) : QWidget(parent)
 {
@@ -20,9 +19,7 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     //setPalette(palette);
 
     // Setting the sizes
-    setGeometry(parent->geometry());
-    m_width = parent->geometry().width();
-    m_height = parent->geometry().height();
+    setFixedSize(parent->size());
 
     // Getting the entries
     KMenuItems m_menuitems;
@@ -63,6 +60,12 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
     {
         page->getIconGrid()->highlight(0);
     }
+
+    QPixmap bkgnd(QDir::homePath()+"/.config/rocket/wallpaper.jpeg");
+    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Background, bkgnd);
+    setPalette(palette);
 }
 
 void Pager::updatePager(std::vector<KApplication> kapplications)
@@ -85,8 +88,7 @@ void Pager::updatePager(std::vector<KApplication> kapplications)
 
     for (int i=0;i<pages.size();i++)
     {
-        int indicator_height = parentWidget()->size().height()*0.1;
-        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+indicator_height));
+        pages[i]->setGeometry(QRect((i-current_element)*width(),0,width(),height()));
         pages[i]->setEnabled(true);
         pages[i]->setVisible(true);
     }
@@ -104,21 +106,28 @@ void Pager::goToPage(int deltaPage)
     int newpage = current_element+deltaPage;
     for (int i=0;i<pages.size(); i++)
     {
-        pages[i]->move(QPoint((i-newpage)*m_width,pages[i]->pos().y()));
+        pages[i]->move(QPoint((i-newpage)*width(),pages[i]->pos().y()));
     }
     if (deltaPage==1)
     {
         IconGrid * oldGrid = pages[current_element]->getIconGrid();
         int oldElement = oldGrid->getActiveElement(); // 0 ... N_elements
-        int oldElementRow = (int) ((oldElement)/(oldGrid->getCurrentNumberOfColumns())); // 0...N_rows
+        int oldElementRow = (int) ((oldElement)/(oldGrid->getCurrentNumberOfColumns()))+1; // 1...N_rows
         IconGrid * newGrid = pages[current_element+1]->getIconGrid();
         if (oldElementRow > newGrid->getCurrentNumberOfRows())
         {
-           newGrid->highlight((newGrid->getCurrentNumberOfRows())*newGrid->getCurrentNumberOfColumns());
+            if (newGrid->getCurrentNumberOfRows()==1)
+            {
+                newGrid->highlight(0);
+            }
+            else
+            {
+                newGrid->highlight((newGrid->getCurrentNumberOfRows()-1)*newGrid->getCurrentNumberOfColumns());
+            }
         }
         else
         {
-            newGrid->highlight(oldElementRow*newGrid->getCurrentNumberOfColumns());
+            newGrid->highlight((oldElementRow-1)*newGrid->getCurrentNumberOfColumns());
         }
     }
     if (deltaPage==-1)
@@ -139,19 +148,11 @@ void Pager::goToPage(int deltaPage)
 
 void Pager::resizeEvent(QResizeEvent *event)
 {
-    m_width = this->width();
-    m_height = this->height();
-    int indicator_height = parentWidget()->size().height()*0.1;
+    updatePager(m_kapplications);
     for (int i=0;i<pages.size();i++)
     {
-        pages[i]->setGeometry(QRect((i-current_element)*m_width,0,m_width,m_height+indicator_height));
         pages[i]->resizeEvent(event);
     }
-    QPixmap bkgnd(QDir::homePath()+"/.config/rocket/wallpaper.jpeg");
-    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
-    QPalette palette;
-    palette.setBrush(QPalette::Background, bkgnd);
-    setPalette(palette);
 }
 
 void Pager::mousePressEvent(QMouseEvent *e)
@@ -202,7 +203,7 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
     {
         QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
         animation->setStartValue(pages[i]->pos());
-        animation->setEndValue(QPoint((i-new_element)*m_width,pages[i]->pos().y()));
+        animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
         animation->setDuration(100);
         animation->start();
     }

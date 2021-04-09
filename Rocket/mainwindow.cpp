@@ -7,9 +7,7 @@
 #include "stylingparams.h"
 
 #include <QGridLayout>
-#include <QGraphicsBlurEffect>
 #include <QPainter>
-#include <QDir>
 #include <QKeyEvent>
 #include <QDebug>
 #include <KRun>
@@ -20,16 +18,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    pager = new Pager(centralWidget());
+    pager = new Pager(this);
 
 
-    indicator = new PagerCircularIndicator(centralWidget(),pager);
-    indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
+    indicator = new PagerCircularIndicator(this,pager);
 
-    active_indicator = new PagerCircularActiveIndicator(centralWidget(),indicator);
-    active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
+    active_indicator = new PagerCircularActiveIndicator(this,indicator);
+    //active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
 
-    searchfield = new SearchField(centralWidget(),width()*0.2,height()*0.05);
+    searchfield = new SearchField(this);
     connect(searchfield,&QLineEdit::textEdited,pager,&Pager::activateSearch);
     connect(pager,&Pager::updated,indicator,&PagerCircularIndicator::setHidden);
     connect(pager,&Pager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
@@ -39,15 +36,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    //pager->setFixedSize(width(),height());
-    pager->setGeometry(0,0,width(),height());
-    //pager->resizeEvent(event);
-    indicator->resizeEvent(event);
-    indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
-    active_indicator->resizeEvent(event);
-    active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
-    searchfield->resizeEvent(event);
-    searchfield->move((width()-searchfield->width())/2,searchfield->height()*1.5);
+    pager->setFixedSize(width(),height());
+    indicator->positioning();
+    active_indicator->positioning();
+    //active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
+    searchfield->positioning();
 }
 
 
@@ -85,6 +78,10 @@ void MainWindow::navigation(int key)
         {
             qApp->exit();
             break;
+        }
+        case Qt::Key::Key_Tab:
+        {
+            grid->setActiveElement(active+1);
         }
     }
     active = grid->getActiveElement();

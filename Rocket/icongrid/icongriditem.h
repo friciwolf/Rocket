@@ -6,6 +6,7 @@
 #include <QIcon>
 #include <QString>
 #include <QGridLayout>
+#include <QLabel>
 
 #include "kapplication.h"
 #include "stylingparams.h"
@@ -15,9 +16,10 @@ class IconGridItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit IconGridItem(QWidget *parent, KApplication application);
+    explicit IconGridItem(QWidget *parent, KApplication application, int itemsize);
     void mouseMoveEvent(QMouseEvent * event);
     void paintEvent(QPaintEvent *event);
+    void initIconSize();
     void resizeEvent(QResizeEvent *event);
     ~IconGridItem();
 
@@ -35,10 +37,12 @@ private:
     QIcon m_icon = QIcon::fromTheme("file");
     QString m_label = "file";
     QGridLayout * m_layout = new QGridLayout(this);
+    QLabel * m_name_label;
     QPixmap map;
 
-    int m_item_size = RocketStyle::icongrid_item_size;
-    int m_icon_size = RocketStyle::icongrid_icon_size;
+    int m_item_size;
+    int m_icon_size;
+    std::vector<int> m_ratio_rows = RocketStyle::icongrid_ratio_rows;
     bool m_highlighted = false;
 };
 

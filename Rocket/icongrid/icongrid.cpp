@@ -1,8 +1,10 @@
-#include "icongrid.h"
 #include <QGridLayout>
 #include <QMouseEvent>
 #include <QDebug>
 #include <QPainter>
+
+#include "icongrid.h"
+
 
 IconGrid::IconGrid(QWidget * parent) : QWidget (parent)
 {
@@ -10,7 +12,6 @@ IconGrid::IconGrid(QWidget * parent) : QWidget (parent)
     m_layout->setAlignment(Qt::AlignCenter);
     m_layout->setSpacing(1);
     setLayout(m_layout);
-    setMaximumSize(parentWidget()->size().width()*0.9,parentWidget()->size().height()*0.8);
 }
 
 void IconGrid::addItem(IconGridItem * item)
@@ -20,6 +21,7 @@ void IconGrid::addItem(IconGridItem * item)
     m_layout->addWidget(item,row_position,column_position,Qt::AlignCenter);
     m_items.push_back(item);
 }
+
 
 void IconGrid::setActiveElement(int element)
 {
@@ -81,11 +83,7 @@ void IconGrid::paintEvent(QPaintEvent *event)
 
 void IconGrid::resizeEvent(QResizeEvent *event)
 {
-    setMaximumSize(parentWidget()->size().width()*0.9,parentWidget()->size().height()*0.8);
-    for (IconGridItem * i : getItems())
-    {
-        i->resizeEvent(event);
-    }
+
 }
 
 IconGrid::~IconGrid()

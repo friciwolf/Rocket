@@ -11,6 +11,7 @@ class PagerCircularActiveIndicator : public QWidget
     Q_OBJECT
 public:
     explicit PagerCircularActiveIndicator(QWidget *parent, PagerCircularIndicator * indicator);
+    void positioning();
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
 
@@ -18,8 +19,6 @@ private:
     QPixmap pixmap;
     int radius;
     int spacing;
-    int height;
-    int width;
     Pager * pager;
     PagerCircularIndicator * indicator;
 };

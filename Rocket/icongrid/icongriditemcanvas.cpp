@@ -1,23 +1,20 @@
-#include "icongriditemcanvas.h"
 #include "stylingparams.h"
 #include <QPainter>
 #include <KMessageBox>
-#include <iostream>
 #include <QDebug>
 #include <QMouseEvent>
 #include <QTimer>
-#include <QProcess>
 #include <QApplication>
 #include <QGridLayout>
 #include <KRun>
+
+#include "icongriditemcanvas.h"
 #include "kapplication.h"
 #include "stylingparams.h"
 
-IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application, int area_width, int area_height, int iconsize)
+IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application, int iconsize)
 {
     m_icon = application.icon();
-    m_area_width = area_width;
-    m_area_height = area_height;
     m_icon_size = iconsize;
     m_application = application;
 
@@ -97,7 +94,7 @@ void IconGridItemCanvas::longpressanimation()
 
 void IconGridItemCanvas::resizeEvent(QResizeEvent *event)
 {
-    m_icon_size = (width()<height() ? width() : height());
+
 }
 
 

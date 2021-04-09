@@ -18,21 +18,15 @@ namespace RocketStyle {
     const QColor WhiteColour = QColor(255,255,255,200);
     const QPalette WhiteBackground = (QPalette)WhiteBck(WhiteColour);
 
-    // MainWindow
-    //const int searchfield_width = 300;
-    //const int searchfield_height = 30;
-
-    // IconGrid -- more cols then rows, otherwise terrible design
-    const int m_rows = 4;
-    const int m_cols = 8;
+    // IconGrid -- minimum 2 columns, otherwise navigation gets crazy (=it crashes)
+    const int m_rows = 5;
+    const int m_cols = 9;
 
     // IconGridItem
-    const int icongrid_item_size = 150;
-    const int icongrid_icon_size = 80;
+    const std::vector<int> icongrid_ratio_rows({3,1});
 
     // IconGridItemCanvas
     const int icongridcanvas_threshold = 100;
-    //const int icongridcanvas_icon_offset = 5;
 
     // Pager
     const int pager_swpipe_threshold = 200;
@@ -41,11 +35,6 @@ namespace RocketStyle {
     // PagerItem
     const QSize pageritem_error_label_size = QSize(500,50);
     const QFont pageritem_error_label_font = QFont("5",16); // '5': default font QFont::AnyStyle.
-
-    // Indicator Preferences
-    //const int indicator_height = 30;
-    //const int indicator_spacing = 5;
-    //const int indicator_radius = 10;
 
     // Active Indicator
     const QBrush active_indicator_brush = QBrush(QColor(0,0,0,100),Qt::BrushStyle::SolidPattern);

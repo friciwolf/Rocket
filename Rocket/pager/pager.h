@@ -18,9 +18,6 @@ public:
     // Number of pages on which applications are displayed
     std::vector<PagerItem*> pages;
 
-    int m_width;
-    int m_height;
-
     // indicates the currently selected element, and the new one, if the user swipes
     int current_element = 0;
     int new_element = 0;
