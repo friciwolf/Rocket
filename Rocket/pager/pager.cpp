@@ -122,7 +122,7 @@ void Pager::goToPage(int deltaPage)
             }
             else
             {
-                newGrid->highlight((newGrid->getCurrentNumberOfRows()-1)*newGrid->getCurrentNumberOfColumns());
+                newGrid->highlight(newGrid->getCurrentNumberOfColumns()*(newGrid->getCurrentNumberOfRows()-1));
             }
         }
         else

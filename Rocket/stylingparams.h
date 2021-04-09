@@ -19,7 +19,7 @@ namespace RocketStyle {
     const QPalette WhiteBackground = (QPalette)WhiteBck(WhiteColour);
 
     // IconGrid -- minimum 2 columns, otherwise navigation gets crazy (=it crashes)
-    const int m_rows = 5;
+    const int m_rows = 4;
     const int m_cols = 9;
 
     // IconGridItem

@@ -20,11 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     pager = new Pager(this);
 
-
     indicator = new PagerCircularIndicator(this,pager);
 
     active_indicator = new PagerCircularActiveIndicator(this,indicator);
-    //active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
 
     searchfield = new SearchField(this);
     connect(searchfield,&QLineEdit::textEdited,pager,&Pager::activateSearch);
@@ -39,7 +37,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     pager->setFixedSize(width(),height());
     indicator->positioning();
     active_indicator->positioning();
-    //active_indicator->move(width()*0.5-indicator->width()/2,height()-indicator->height());
     searchfield->positioning();
 }
 
@@ -81,7 +78,14 @@ void MainWindow::navigation(int key)
         }
         case Qt::Key::Key_Tab:
         {
-            grid->setActiveElement(active+1);
+            if (active==grid->getItems().size()-1 && pager->searching)
+            {
+                grid->setActiveElement(0);
+            }
+            else {
+                grid->setActiveElement(active+1);
+            }
+            break;
         }
     }
     active = grid->getActiveElement();

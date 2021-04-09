@@ -12,10 +12,9 @@
 #include "kapplication.h"
 #include "stylingparams.h"
 
-IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application, int iconsize)
+IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application)
 {
     m_icon = application.icon();
-    m_icon_size = iconsize;
     m_application = application;
 
     //QPalette p;
@@ -28,11 +27,11 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     painter.setBrush(QBrush(Qt::red,Qt::BrushStyle::SolidPattern));
-    int pos_x = (width()-m_icon_size)/2;
-    int pos_y = (height()-m_icon_size)/2;
+    int size = std::min({width(),height()});
+    int pos_x = (width()-size)/2;
+    int pos_y = (height()-size)/2;
     //painter.drawRect(pos_x,pos_y,m_icon_size,m_icon_size);
-    m_icon.paint(&painter,pos_x,pos_y,m_icon_size,m_icon_size,Qt::AlignCenter);
-
+    m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
 }
 
 void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)

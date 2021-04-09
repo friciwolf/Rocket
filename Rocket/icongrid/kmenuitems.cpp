@@ -88,8 +88,3 @@ void KMenuItems::sortElementsAlphabetically()
         }
     }
 }
-
-KApplication KMenuItems::search(const QString &query)
-{
-    return applications[0];
-}

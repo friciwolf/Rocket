@@ -15,6 +15,5 @@ public:
     void scanElements(QString path=QString("/"),int n=0);
     void sortElementsAlphabetically();
     std::vector<KApplication> getApplications() {return applications;}
-    KApplication search(const QString & query);
 };
 #endif // KMENUITEMS_H

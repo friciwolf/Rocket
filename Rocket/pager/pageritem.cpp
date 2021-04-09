@@ -38,7 +38,7 @@ void PagerItem::setGridProperties()
     // Estimate for a griditemsize
     int size1 = m_grid_maxsize.width()/RocketStyle::m_cols;
     int size2 = m_grid_maxsize.height()/RocketStyle::m_rows;
-    m_grid_itemsize = std::min({size1,size2});
+    m_grid_itemsize = QSize(size1,size2);
 }
 
 void PagerItem::gridLayoutManagement()
@@ -53,6 +53,7 @@ void PagerItem::gridLayoutManagement()
         label->setMaximumSize(RocketStyle::pageritem_error_label_size);
         label->setFont(RocketStyle::pageritem_error_label_font);
         m_itemlayout->addWidget(label,1,1);
+        setLayout(m_itemlayout);
     }
     else {
         m_itemlayout->addWidget(m_grid,1,1);

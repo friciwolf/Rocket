@@ -18,7 +18,7 @@ public:
     void setGridProperties();
     void gridLayoutManagement();
     IconGrid * getIconGrid(){return m_grid;}
-    int getIconGridItemSize(){return m_grid_itemsize;}
+    QSize getIconGridItemSize(){return m_grid_itemsize;}
     QSize getIconGridMaxSize() {return m_grid_maxsize;}
     QGridLayout * getItemLayout() {return m_itemlayout;}
     void resizeEvent(QResizeEvent *event);
@@ -27,7 +27,7 @@ private:
     IconGrid * m_grid;
     QGridLayout * m_itemlayout;
     QSize m_grid_maxsize;
-    int m_grid_itemsize;
+    QSize m_grid_itemsize;
     vector<KApplication> m_applications;
 
 };

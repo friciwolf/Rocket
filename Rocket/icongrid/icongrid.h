@@ -22,7 +22,7 @@ public:
     int getMaxNumberOfColumns() {return m_cols;}
     int getNumberOfItems() {return m_items.size();}
     int getCurrentNumberOfRows(){
-        return (getNumberOfItems()<=getMaxNumberOfColumns() ? 1 : (int)(getNumberOfItems()/getMaxNumberOfColumns())+1);}
+        return getNumberOfItems()/getMaxNumberOfColumns()+(getNumberOfItems()%getMaxNumberOfColumns()>0 ? 1 : 0);}
     int getCurrentNumberOfColumns() {
         return getNumberOfItems()>=getMaxNumberOfColumns() ? getMaxNumberOfColumns() : getNumberOfItems();}
     void setMaxNumberOfRows(int row) {m_rows = row;}
