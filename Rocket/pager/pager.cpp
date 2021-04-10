@@ -9,6 +9,7 @@
 #include "icongrid/icongrid.h"
 #include "stylingparams.h"
 #include "tools/searchingapps.h"
+#include "tools/rocketconfigmanager.h"
 
 Pager::Pager(QWidget *parent) : QWidget(parent)
 {
@@ -32,7 +33,7 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
 void Pager::constructPager(std::vector<KApplication> kapplications)
 {
     std::vector<KApplication> applications;
-    int maxicons = RocketStyle::m_rows*RocketStyle::m_cols;
+    int maxicons = ConfigManager.getRowNumber()*ConfigManager.getColumnNumber();
 
     // Filling up the grid...
     for (int i=0;i<kapplications.size();i++)
@@ -70,6 +71,10 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
 
 void Pager::updatePager(std::vector<KApplication> kapplications)
 {
+    /*
+     * Updates the whole pager, including its children (the icongrids), whenever needed (e.g. while searching).
+     *
+     * */
     for (PagerItem * i: pages)
     {
         delete i;

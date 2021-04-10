@@ -7,6 +7,7 @@
 
 #include "icongriditem.h"
 #include "stylingparams.h"
+#include "tools/rocketconfigmanager.h"
 
 class IconGrid : public QWidget
 {
@@ -45,8 +46,8 @@ private:
     std::vector<IconGridItem*> m_items;
 
     // Maximum Number of Rows and Columns
-    int m_rows = RocketStyle::m_rows;
-    int m_cols = RocketStyle::m_cols;
+    int m_rows = ConfigManager.getRowNumber();
+    int m_cols = ConfigManager.getColumnNumber();
     int m_active_element = -1;
 
     QGridLayout * m_layout;

@@ -8,6 +8,7 @@
 #include "icongrid/icongrid.h"
 #include "icongrid/icongriditem.h"
 #include "stylingparams.h"
+#include "tools/rocketconfigmanager.h"
 
 PagerItem::PagerItem(QWidget *parent, vector<KApplication> applications) : QWidget(parent)
 {
@@ -36,8 +37,8 @@ void PagerItem::setGridProperties()
     m_grid->setMaximumSize(m_grid_maxsize);
 
     // Estimate for a griditemsize
-    int size1 = m_grid_maxsize.width()/RocketStyle::m_cols;
-    int size2 = m_grid_maxsize.height()/RocketStyle::m_rows;
+    int size1 = m_grid_maxsize.width()/ConfigManager.getColumnNumber();
+    int size2 = m_grid_maxsize.height()/ConfigManager.getRowNumber();
     m_grid_itemsize = QSize(size1,size2);
 }
 
@@ -47,11 +48,12 @@ void PagerItem::gridLayoutManagement()
     {
         QLabel * label = new QLabel(ki18n("No results found").toString(),m_grid);
         label->setAutoFillBackground(true);
-        label->setPalette(RocketStyle::WhiteBackground);
+        label->setPalette(ConfigManager.getBaseColourBackgroundPalette());
         label->setAlignment(Qt::AlignCenter);
-        label->setMinimumSize(RocketStyle::pageritem_error_label_size);
-        label->setMaximumSize(RocketStyle::pageritem_error_label_size);
-        label->setFont(RocketStyle::pageritem_error_label_font);
+        label->setFixedHeight(m_grid_itemsize.height());
+        QFont label_font = label->font();
+        label_font.setPointSize(ConfigManager.getFontSize2());
+        label->setFont(label_font);
         m_itemlayout->addWidget(label,1,1);
         setLayout(m_itemlayout);
     }

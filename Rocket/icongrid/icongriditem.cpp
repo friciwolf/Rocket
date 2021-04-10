@@ -8,6 +8,7 @@
 #include "icongriditem.h"
 #include "icongriditemcanvas.h"
 #include "stylingparams.h"
+#include "tools/rocketconfigmanager.h"
 
 
 IconGridItem::IconGridItem(QWidget *parent, KApplication application, QSize itemsize) : QWidget(parent)
@@ -35,7 +36,7 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application, QSize item
 
     m_name_label = new QLabel(m_label,this);
     QFont label_font = m_name_label->font();
-    label_font.setPointSize(10);
+    label_font.setPointSize(ConfigManager.getFontSize1());
     m_name_label->setMaximumWidth(m_item_size.width());
     m_name_label->setFont(label_font);
     m_name_label->setWordWrap(true);
@@ -53,14 +54,13 @@ void IconGridItem::paintEvent(QPaintEvent *event)
 {
     if (!m_highlighted) return;
     QPainter painter(this);
-    painter.setBrush(QBrush(RocketStyle::WhiteColour,Qt::BrushStyle::SolidPattern));
-    painter.setPen(Qt::white);
+    painter.setBrush(QBrush(ConfigManager.getBaseColour(),Qt::BrushStyle::SolidPattern));
+    painter.setPen(ConfigManager.getBaseColour());
     painter.drawRoundedRect(0,0,width(),height()*0.99,15,15);
 }
 
 void IconGridItem::resizeEvent(QResizeEvent *event)
 {
-    //m_name_label->setMaximumWidth(m_item_size.width());
     m_canvas->update();
 }
 

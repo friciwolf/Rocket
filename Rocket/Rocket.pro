@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui KIOCore KIOFileWidgets KIOWidgets KNTLM KI18n
+QT       += core gui KIOCore KIOFileWidgets KIOWidgets KNTLM KI18n KConfigCore KConfigGui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -38,7 +38,8 @@ SOURCES += \
     icongrid/kapplication.cpp \
     stylingparams.cpp \
     searchfield/searchfield.cpp \
-    tools/searchingapps.cpp
+    tools/searchingapps.cpp \
+    tools/rocketconfigmanager.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -53,7 +54,8 @@ HEADERS += \
     icongrid/kapplication.h \
     stylingparams.h \
     searchfield/searchfield.h \
-    tools/searchingapps.h
+    tools/searchingapps.h \
+    tools/rocketconfigmanager.h
 
 FORMS += \
         mainwindow.ui

@@ -5,12 +5,13 @@
 #include "mainwindow.h"
 #include "pager/pagercircularindicator.h"
 #include "stylingparams.h"
+#include "tools/rocketconfigmanager.h"
 
 PagerCircularIndicator::PagerCircularIndicator(QWidget *parent, Pager *pager) : QWidget(parent)
 {
     m_pager = pager;
     m_elements = pager->getNumberOfElements();
-    setPalette(RocketStyle::WhiteBackground);
+    setPalette(ConfigManager.getBaseColourBackgroundPalette());
     positioning();
 }
 
@@ -26,7 +27,7 @@ void PagerCircularIndicator::positioning()
 void PagerCircularIndicator::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.setBrush(QBrush(RocketStyle::WhiteColour,Qt::BrushStyle::SolidPattern));
+    painter.setBrush(QBrush(ConfigManager.getBaseColour(),Qt::BrushStyle::SolidPattern));
     painter.setPen(Qt::transparent);
     //painter.drawRoundedRect(0,0,width,height,5,5);
     for (int i=0;i<m_pager->getNumberOfElements();i++)

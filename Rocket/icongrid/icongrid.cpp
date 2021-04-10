@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QPainter>
 
+#include "tools/rocketconfigmanager.h"
 #include "icongrid.h"
 
 
@@ -76,8 +77,9 @@ void IconGrid::paintEvent(QPaintEvent *event)
 {
     if (getItems().size()==0) return; // search yielded no results -> no drawing
     QPainter painter(this);
-    painter.setBrush(QBrush(RocketStyle::WhiteColour,Qt::BrushStyle::SolidPattern));
-    painter.setPen(RocketStyle::WhiteColour);
+    QColor color = ConfigManager.getBaseColour();
+    painter.setBrush(QBrush(color,Qt::BrushStyle::SolidPattern));
+    painter.setPen(color);
     painter.drawRoundedRect(0,0,width(),height(),30,30);
 }
 

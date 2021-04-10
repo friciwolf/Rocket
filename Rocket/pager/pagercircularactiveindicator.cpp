@@ -4,6 +4,7 @@
 
 #include "pager/pagercircularactiveindicator.h"
 #include "stylingparams.h"
+#include "tools/rocketconfigmanager.h"
 
 PagerCircularActiveIndicator::PagerCircularActiveIndicator(QWidget *parent, PagerCircularIndicator * indicator) : QWidget(parent)
 {
@@ -23,7 +24,7 @@ void PagerCircularActiveIndicator::paintEvent(QPaintEvent *event)
 {
     int position = -(float)pager->pages[0]->pos().x()/pager->width() * (2*radius+spacing);
     QPainter painter(this);
-    painter.setBrush(RocketStyle::active_indicator_brush);
+    painter.setBrush(ConfigManager.getActiveIndicatorBrush());
     painter.setPen(Qt::transparent);
     //painter.drawEllipse(spacing*0.5+current_item*(radius*2+spacing)+correction,height/2-radius,radius*2,radius*2);
     painter.drawEllipse(spacing*0.5+position,height()/2-radius,radius*2,radius*2);

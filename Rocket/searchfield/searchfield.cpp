@@ -1,5 +1,6 @@
 #include "searchfield.h"
 #include "stylingparams.h"
+#include "tools/rocketconfigmanager.h"
 #include <QIcon>
 #include <QKeyEvent>
 #include <QDebug>
@@ -10,11 +11,9 @@ SearchField::SearchField(QWidget *parent) : QLineEdit(parent)
     setPlaceholderText("search");
     addAction(QIcon::fromTheme("search"),QLineEdit::LeadingPosition);
 
-    QPalette searchfield_palette;
-    searchfield_palette.setColor(QPalette::ColorRole::Base,RocketStyle::WhiteColour);
-    searchfield_palette.setColor(QPalette::ColorRole::Highlight,Qt::blue);
-    searchfield_palette.setColor(QPalette::Text,Qt::black);
-    setPalette(searchfield_palette);
+    QFont fieldfont = font();
+    fieldfont.setPointSize(ConfigManager.getFontSize1());
+    setFont(fieldfont);
 
     positioning();
 }

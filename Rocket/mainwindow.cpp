@@ -11,6 +11,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include <KRun>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
