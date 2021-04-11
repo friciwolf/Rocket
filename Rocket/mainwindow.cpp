@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setMouseTracking(true);
 
     pager = new Pager(this);
 
@@ -119,15 +120,7 @@ void MainWindow::executeSelected()
 
 void MainWindow::wheelEvent(QWheelEvent *event)
 {
-    if (event->angleDelta().y()>0)
-    {
-        pager->goToPage(1);
-    }
-    else
-    {
-        pager->goToPage(-1);
-    }
-    pager->pages[pager->current_element]->getIconGrid()->resetHighlightAndActiveElement();
+    pager->wheelEvent(event);
 }
 
 

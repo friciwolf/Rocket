@@ -3,6 +3,7 @@
 #include <QCursor>
 #include <QDebug>
 #include <QDir>
+#include <QApplication>
 
 #include "pager/pager.h"
 #include "icongrid/kmenuitems.h"
@@ -12,7 +13,7 @@
 #include "tools/rocketconfigmanager.h"
 
 Pager::Pager(QWidget *parent) : QWidget(parent)
-{
+{    
     // Colouring the background...
     //QPalette palette;
     setAutoFillBackground(true);
@@ -23,11 +24,13 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     setFixedSize(parent->size());
 
     // Getting the entries
-    KMenuItems m_menuitems;
-    m_menuitems.scanElements();
+    //KMenuItems m_menuitems;
+    //m_menuitems.scanElements();
 
-    m_kapplications = m_menuitems.getApplications();
+    //m_kapplications = m_menuitems.getApplications();
+    m_kapplications = ConfigManager.getApplications();
     constructPager(m_kapplications);
+    setMouseTracking(true);
 }
 
 void Pager::constructPager(std::vector<KApplication> kapplications)
@@ -162,41 +165,77 @@ void Pager::resizeEvent(QResizeEvent *event)
 
 void Pager::mousePressEvent(QMouseEvent *e)
 {
-    pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
-    dragging = true;
-    drag_start_position = QCursor::pos();
-    drag_0 = QCursor::pos();
+    if (e->button() == Qt::LeftButton)
+    {
+        pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
+        drag_start_position = QCursor::pos();
+        drag_0 = QCursor::pos();
+        dragging = true;
+    }
     e->accept();
 }
 
 void Pager::mouseMoveEvent(QMouseEvent * event)
 {
-    int dx0 = (QCursor::pos()-drag_0).x();
-    if (dragging && !searching)
+    if (scrolled) // pages have been scrolled
     {
-        if ((current_element==0 && dx0>RocketStyle::pager_deadzone_threshold) || (current_element==pages.size()-1 && dx0<-RocketStyle::pager_deadzone_threshold))
+        if (mouse_pos_scroll_0!=QCursor::pos())
         {
-            return;
+            finishScrolling();
         }
-
-        QPoint delta = QCursor::pos()-drag_start_position;
-        for (PagerItem *page_i : pages)
+    }
+    else // pages have been dragged manually
+    {
+        int dx0 = (QCursor::pos()-drag_0).x();
+        if (dragging && !searching)
         {
-            page_i->move((page_i->pos()+delta).x(),page_i->pos().y());
+            if ((current_element==0 && dx0>RocketStyle::pager_deadzone_threshold) || (current_element==pages.size()-1 && dx0<-RocketStyle::pager_deadzone_threshold))
+            {
+                event->accept();
+            }
+            else
+            {
+                QPoint delta = QCursor::pos()-drag_start_position;
+                for (PagerItem *page_i : pages)
+                {
+                    page_i->move((page_i->pos()+delta).x(),page_i->pos().y());
+                }
+                drag_start_position = QCursor::pos();
+            }
         }
-        drag_start_position = QCursor::pos();
     }
     event->accept();
 }
 
 void Pager::mouseReleaseEvent(QMouseEvent * event)
 {
+    // Checking whether outside area is clicked; if it's the case, close the app
+    int dx0 = (QCursor::pos()-drag_0).x();
+    int dy0 = (QCursor::pos()-drag_0).y();
+    if (!searching && dx0*dx0+dy0*dy0<RocketStyle::click_tolerance && event->button()==Qt::LeftButton)
+    {
+        bool itemclicked = false;
+        for (PagerItem * i : pages)
+        {
+            if (i->getIconGrid()->geometry().contains(event->pos()))
+            {
+                itemclicked = true;
+                break;
+            }
+        }
+        if (!itemclicked)
+        {
+            event->accept();
+            qApp->exit();
+        }
+    }
+    // Don't allow scrolling while searching
     if (searching)
     {
         event->ignore();
         return;
     }
-    int dx0 = (QCursor::pos()-drag_0).x();
+    // Scroll if neccessary and update
     if (dx0>swipe_decision_threshold && current_element!=0) {
         new_element = current_element-1;
     }
@@ -220,8 +259,74 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
     event->accept();
 }
 
+void Pager::wheelEvent(QWheelEvent *event)
+{
+    pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
+    if (!searching)
+    {
+        if (event->angleDelta().y() % 120 == 0 && event->angleDelta().y()!=0) //scrolling with a mouse
+        {
+            if (event->angleDelta().y()<0) goToPage(1);
+            else goToPage(-1);
+            pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
+            event->accept();
+        }
+        else // scrolling with a touchpad
+        {
+            int delta = (event->angleDelta().y()==0 ? -(event->angleDelta().x()) : event->angleDelta().y() );
+            if ((pages[0]->pos().x()<=0 && delta<0) || (pages[0]->pos().x()>=-pages[0]->width()*(getNumberOfElements()-1)&& delta>0))
+            {
+                if (pages[0]->pos().x()-delta<=0 && pages[0]->pos().x()-delta>=-pages[0]->width()*(getNumberOfElements()-1))
+                {
+                    m_scrolltimeouttimer->stop();
+                    event->ignore();
+                    scrolled = true;
+                    mouse_pos_scroll_0 = QCursor::pos();
+                    for (PagerItem *page_i : pages)
+                    {
+                        page_i->move(page_i->pos().x()-delta,page_i->pos().y());
+                    }
+                    m_scrolltimeouttimer = new QTimer();
+                    connect(m_scrolltimeouttimer,&QTimer::timeout,this,&Pager::finishScrolling);
+                    m_scrolltimeouttimer->start(500);
+                    m_scrolltimeouttimer->setSingleShot(true);
+                }
+                event->accept();
+            }
+        }
+    }
+}
+
+void Pager::finishScrolling()
+{
+    current_element = (-pages[0]->pos().x()+pages[0]->width()/2)/pages[0]->width();
+    element_before_searching = current_element;
+    new_element = current_element;
+    scrolled = false;
+    for (int i=0;i<pages.size(); i++)
+    {
+        QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
+        animation->setStartValue(pages[i]->pos());
+        animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
+        animation->setDuration(100);
+        animation->start();
+    }
+}
+
+
 void Pager::activateSearch(const QString &query)
 {
+    if (scrolled) // pages have been scrolled
+    {
+        m_scrolltimeouttimer->stop();
+        if (mouse_pos_scroll_0!=QCursor::pos())
+        {
+            current_element = (-pages[0]->pos().x()+pages[0]->width()/2)/pages[0]->width();
+            element_before_searching = current_element;
+            new_element = current_element;
+            scrolled = false;
+        }
+    }
     searching = (query!="");
     std::vector<KApplication> found_apps = searchApplication(m_kapplications,query);
     updatePager(found_apps);

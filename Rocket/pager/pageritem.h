@@ -21,6 +21,7 @@ public:
     QSize getIconGridItemSize(){return m_grid_itemsize;}
     QSize getIconGridMaxSize() {return m_grid_maxsize;}
     QGridLayout * getItemLayout() {return m_itemlayout;}
+    void mouseMoveEvent(QMouseEvent *event);
     void resizeEvent(QResizeEvent *event);
 
 private:

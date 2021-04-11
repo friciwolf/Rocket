@@ -15,15 +15,15 @@ namespace RocketStyle {
     const int fontsize1 = 10;
     const int fontsize2 = 20;
 
+    // A click is recongnized only if the mouse moves 10 pixels
+    const int click_tolerance = 100;
+
     // IconGrid -- minimum 2 columns, otherwise navigation gets crazy (=it crashes)
     const int m_rows = 4;
     const int m_cols = 9;
 
     // IconGridItem
     const std::vector<int> icongrid_ratio_rows({3,1});
-
-    // IconGridItemCanvas
-    const int icongridcanvas_threshold = 100;
 
     // Pager
     const int pager_swpipe_threshold = 200;

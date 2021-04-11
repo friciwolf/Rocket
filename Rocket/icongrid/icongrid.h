@@ -18,6 +18,7 @@ public:
     ~IconGrid();
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
     int getMaxNumberOfRows() {return m_rows;}
     int getMaxNumberOfColumns() {return m_cols;}

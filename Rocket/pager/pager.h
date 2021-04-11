@@ -8,6 +8,7 @@
 #include <QGridLayout>
 #include <QScrollArea>
 #include <QPropertyAnimation>
+#include <QTimer>
 #include "icongrid/kmenuitems.h"
 #include "stylingparams.h"
 
@@ -30,8 +31,10 @@ public:
     bool dragging = false;
     QPoint drag_start_position;
     QPoint drag_0;
+    QPoint mouse_pos_scroll_0;
     bool searching = false;
     bool page_turned = false;
+    bool scrolled = false;
 
     explicit Pager(QWidget * parent);
     void constructPager(std::vector<KApplication> kapplications);
@@ -45,16 +48,19 @@ public:
     void mousePressEvent(QMouseEvent * e);
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
+    void wheelEvent(QWheelEvent *event);
 
 public slots:
     void activateSearch(const QString & query);
     void goToPage(int deltaPage);
+    void finishScrolling();
 
 signals:
     void updated(bool indicator_visibility);
 
 private:
     std::vector<KApplication> m_kapplications;
+    QTimer * m_scrolltimeouttimer = new QTimer();
 };
 
 #endif // PAGER_H

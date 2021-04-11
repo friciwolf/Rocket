@@ -13,6 +13,7 @@ IconGrid::IconGrid(QWidget * parent) : QWidget (parent)
     m_layout->setAlignment(Qt::AlignCenter);
     m_layout->setSpacing(1);
     setLayout(m_layout);
+    setMouseTracking(true);
 }
 
 void IconGrid::addItem(IconGridItem * item)
@@ -81,6 +82,11 @@ void IconGrid::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(color,Qt::BrushStyle::SolidPattern));
     painter.setPen(color);
     painter.drawRoundedRect(0,0,width(),height(),30,30);
+}
+
+void IconGrid::mouseMoveEvent(QMouseEvent *event)
+{
+    event->ignore();
 }
 
 void IconGrid::resizeEvent(QResizeEvent *event)

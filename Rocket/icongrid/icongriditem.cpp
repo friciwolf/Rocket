@@ -18,6 +18,7 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application, QSize item
     m_label = application.name();
     m_item_size = itemsize;
     setFixedSize(m_item_size);
+    setMouseTracking(true);
 
     //QPalette p;
     //setAutoFillBackground(true);
@@ -42,6 +43,7 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application, QSize item
     m_name_label->setWordWrap(true);
     m_name_label->setAlignment(Qt::AlignCenter);
     m_name_label->setGeometry(0,0,m_item_size.width(),10);
+    m_name_label->setMouseTracking(true);
     m_layout->addWidget(m_name_label,1,0);
 
     m_layout->addWidget(m_canvas,0,0);

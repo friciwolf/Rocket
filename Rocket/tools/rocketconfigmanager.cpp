@@ -1,6 +1,8 @@
 #include "rocketconfigmanager.h"
 #include <KConfigSkeleton>
 #include <QPalette>
+#include <iterator>
+#include <vector>
 
 class DefaultGroupsAndKeys {
 public:
@@ -72,7 +74,7 @@ QColor RocketConfigManager::getBaseColour()
     if (r.size()==3) return QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),255);
     else
     {
-        qDebug() << "Invalid argument for 'color' and 'base'. Falling back to defaults...";
+        qDebug() << "Invalid argument for 'base'. Falling back to defaults...";
         return RocketStyle::BaseColour;
     }
 }
@@ -85,7 +87,7 @@ QColor RocketConfigManager::getSecondaryColour()
     if (r.size()==3) return QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),255);
     else
     {
-        qDebug() << "Invalid argument for 'color' and 'secondary'. Falling back to defaults...";
+        qDebug() << "Invalid argument for 'secondary'. Falling back to defaults...";
         return RocketStyle::SecondaryColour;
     }
 }
@@ -105,7 +107,7 @@ QBrush RocketConfigManager::getActiveIndicatorBrush()
     if (r.size()==3) return QBrush(QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),255),Qt::BrushStyle::SolidPattern);
     else
     {
-        qDebug() << "Invalid argument for 'color' and 'secondary'. Falling back to defaults...";
+        qDebug() << "Invalid argument for 'secondary'. Falling back to defaults...";
         return RocketStyle::active_indicator_brush;
     }
 }
@@ -115,7 +117,7 @@ int RocketConfigManager::getFontSize1()
     int size = getStyleValue("font","size1").toInt();
     if (size>0) return size;
     else {
-        qDebug() << "Invalid argument for 'font' and 'size1'. Falling back to defaults...";
+        qDebug() << "Invalid argument for 'size1'. Falling back to defaults...";
         return RocketStyle::fontsize1;
     }
 }
@@ -125,7 +127,7 @@ int RocketConfigManager::getFontSize2()
     int size = getStyleValue("font","size2").toInt();
     if (size>0) return size;
     else {
-        qDebug() << "Invalid argument for 'font' and 'size2'. Falling back to defaults...";
+        qDebug() << "Invalid argument for 'size2'. Falling back to defaults...";
         return RocketStyle::fontsize2;
     }
 }
@@ -136,7 +138,7 @@ int RocketConfigManager::getRowNumber()
     if (rows>0) return rows;
     else
     {
-        qDebug() << "Invalid argument for 'dimensions' and 'rows'. Falling back to defaults...";
+        qDebug() << "Invalid argument for 'rows'. Falling back to defaults...";
         return RocketStyle::m_rows;
     }
 }
@@ -147,8 +149,57 @@ int RocketConfigManager::getColumnNumber()
     if (cols>1) return cols;
     else
     {
-        qDebug() << "Invalid argument for 'dimensions' and 'columns'. Falling back to defaults...";
+        qDebug() << "Invalid argument for 'columns'. Falling back to defaults...";
         if (cols==1) qDebug() << "only columns more than one are supported...";
         return RocketStyle::m_cols;
+    }
+}
+
+void RocketConfigManager::checkAppGridConfigFile()
+{
+    KConfig * config = m_appgridconfig;
+    if (config->groupList().size()==0)
+    {
+        qDebug() << "Appgrid configuration not found. Generating one...";
+        KMenuItems m_menuitems;
+        m_menuitems.scanElements();
+        int i = 0;
+        for (KApplication app : m_menuitems.getApplications())
+        {
+            config->group("Entry"+QString::number(i)).writeEntry("name",app.name());
+            config->group("Entry"+QString::number(i)).writeEntry("iconname",app.iconname());
+            config->group("Entry"+QString::number(i)).writeEntry("exec",app.exec());
+            config->group("Entry"+QString::number(i)).writeEntry("comment",app.comment());
+            config->group("Entry"+QString::number(i)).writeEntry("terminal",app.terminal());
+            config->group("Entry"+QString::number(i)).writeEntry("keywords",app.keywords());
+            config->group("Entry"+QString::number(i)).writeEntry("genericname",app.genericname());
+            config->group("Entry"+QString::number(i)).writeEntry("untranslatedgenericname",app.untranslatedGenericName());
+            config->group("Entry"+QString::number(i)).writeEntry("categories",app.categories());
+            config->group("Entry"+QString::number(i)).writeEntry("pos",QString::number(i));
+            i++;
+        }
+        m_apps = m_menuitems.getApplications();
+    }
+    else
+    {
+        int N = config->groupList().size();
+        KApplication apps[N];
+        for (QString item : config->groupList())
+        {
+            QString name = config->group(item).readEntry("name");
+            QString iconname = config->group(item).readEntry("iconname");
+            QString exec = config->group(item).readEntry("exec");
+            QString comment = config->group(item).readEntry("comment");
+            QIcon icon = QIcon::fromTheme(iconname);
+            QStringList keywords = config->group(item).readEntry("keywords").split(",");
+            QString genericname = config->group(item).readEntry("genericname");
+            QString untranslatedGenericName = config->group(item).readEntry("untranslatedgenericname");
+            QStringList categories = config->group(item).readEntry("categories").split(",");
+            bool terminal = (config->group(item).readEntry("terminal") == "false" ? false : true);
+            int pos = config->group(item).readEntry("pos").toInt();
+            apps[pos] = KApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories);
+        }
+        std::vector<KApplication> appvector(apps,apps+N);
+        m_apps = appvector;
     }
 }

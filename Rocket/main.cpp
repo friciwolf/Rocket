@@ -14,9 +14,13 @@ int main(int argc, char *argv[])
 
     QString name = a.applicationName().toLower();
 
-    KConfig config(QDir::homePath()+"/.config/"+name+"/"+name+"style",KConfig::OpenFlag::SimpleConfig);
-    ConfigManager.setStyleConfig(&config);
+    KConfig styleconfig(QDir::homePath()+"/.config/"+name+"/"+name+"style",KConfig::OpenFlag::SimpleConfig);
+    KConfig appgridconfig(QDir::homePath()+"/.config/"+name+"/"+name+"appgrid",KConfig::OpenFlag::SimpleConfig);
+
+    ConfigManager.setStyleConfig(&styleconfig);
     ConfigManager.checkStyleConfigFile();
+    ConfigManager.setAppGridConfig(&appgridconfig);
+    ConfigManager.checkAppGridConfigFile();
 
     MainWindow w;
 

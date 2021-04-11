@@ -2,6 +2,7 @@
 #include <QLabel>
 #include <klocalizedstring.h>
 #include <QDebug>
+#include <QApplication>
 
 #include "pager/pageritem.h"
 
@@ -23,6 +24,7 @@ PagerItem::PagerItem(QWidget *parent, vector<KApplication> applications) : QWidg
         m_grid->addItem(griditem);
     }
     gridLayoutManagement();
+    setMouseTracking(true);
 }
 
 void PagerItem::setGridProperties()
@@ -67,6 +69,11 @@ void PagerItem::gridLayoutManagement()
     m_itemlayout->setRowStretch(0,1);
     m_itemlayout->setRowStretch(1,m_grid->getCurrentNumberOfRows());
     m_itemlayout->setRowStretch(2,1);
+}
+
+void PagerItem::mouseMoveEvent(QMouseEvent *event)
+{
+    event->ignore();
 }
 
 void PagerItem::resizeEvent(QResizeEvent *event)
