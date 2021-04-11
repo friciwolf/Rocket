@@ -32,16 +32,28 @@ std::vector<KApplication> searchApplication(std::vector<KApplication> list, QStr
             res.push_back(i);
             continue;
         }
-        if (i.keywords().contains(query,Qt::CaseSensitivity::CaseInsensitive))
+        bool found = false;
+        for (QString i2 : i.keywords())
         {
-            res.push_back(i);
-            continue;
+            if (i2.contains(query,Qt::CaseSensitivity::CaseInsensitive))
+            {
+                res.push_back(i);
+                found = true;
+                break;
+            }
         }
-        if (i.categories().contains(query,Qt::CaseSensitivity::CaseInsensitive))
+        if (found) continue;
+        found = false;
+        for (QString i2 : i.keywords())
         {
-            res.push_back(i);
-            continue;
+            if(i2.contains(query,Qt::CaseSensitivity::CaseInsensitive))
+            {
+                res.push_back(i);
+                found = true;
+                break;
+            }
         }
+        if (found) continue;
     }
     return res;
 }
