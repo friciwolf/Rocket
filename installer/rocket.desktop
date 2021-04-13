@@ -1,12 +1,9 @@
 [Desktop Entry]
-Comment[fr_FR]=Application Launcher for KDE Plasma
 Comment=Application Launcher for KDE Plasma
-Exec=rocket
-GenericName[fr_FR]=
+Exec=~/.local/bin/rocket
 GenericName=
 Icon=rocket
 MimeType=
-Name[fr_FR]=Rocket
 Name=Rocket
 NoDisplay=true
 Path=
