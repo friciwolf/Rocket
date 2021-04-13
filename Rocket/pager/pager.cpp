@@ -327,7 +327,7 @@ void Pager::wheelEvent(QWheelEvent *event)
                 m_scrolltimeouttimer = new QTimer();
                 connect(m_scrolltimeouttimer,&QTimer::timeout,this,&Pager::finishScrolling);
                 m_scrolltimeouttimer->setSingleShot(true);
-                m_scrolltimeouttimer->start(500);
+                m_scrolltimeouttimer->start(250);
             }
             else {
                 // we've reached the last/first page, don't do anything anymore
