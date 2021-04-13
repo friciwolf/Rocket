@@ -22,6 +22,7 @@ void KMenuItems::scanElements(QString path,int n)
         QStringList keywords;
         QString genericname;
         QString untranslatedGenericName;
+        QString entrypath;
         QStringList categories;
         bool terminal;
         if (p->isType(KST_KService)) {
@@ -37,6 +38,7 @@ void KMenuItems::scanElements(QString path,int n)
             genericname = service->genericName();
             untranslatedGenericName = service->untranslatedGenericName();
             categories = service->categories();
+            entrypath = service->entryPath();
             bool doubled = false;
             for (KApplication a : applications)
             {
@@ -47,7 +49,7 @@ void KMenuItems::scanElements(QString path,int n)
                 }
             }
             if (doubled) continue;
-            applications.push_back(KApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories));
+            applications.push_back(KApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories,entrypath));
         }
         else if (p->isType(KST_KServiceGroup)) {
             const KServiceGroup::Ptr serviceGroup(static_cast<KServiceGroup *>(p.data()));
@@ -77,7 +79,11 @@ void KMenuItems::sortElementsAlphabetically()
         j++;
         for (int i=0;i<applications.size()-j;i++)
         {
-            if (applications[i].name().toLower().toStdString()>applications[i+1].name().toLower().toStdString())
+            QString a = applications[i].name().normalized(QString::NormalizationForm_KD);
+            a.remove(QRegExp("[^a-zA-Z\\s]"));
+            QString b = applications[i+1].name().normalized(QString::NormalizationForm_KD);
+            b.remove(QRegExp("[^a-zA-Z\\s]"));
+            if (a.toLower().toStdString()>b.toLower().toStdString())
             {
                 KApplication temp = applications[i];
                 applications[i] = applications[i+1];

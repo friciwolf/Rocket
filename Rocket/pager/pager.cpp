@@ -4,6 +4,10 @@
 #include <QDebug>
 #include <QDir>
 #include <QApplication>
+#include <QParallelAnimationGroup>
+#include <QDropEvent>
+#include <QMimeData>
+#include <QDrag>
 
 #include "pager/pager.h"
 #include "icongrid/kmenuitems.h"
@@ -20,17 +24,13 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     //palette.setColor(QPalette::ColorRole::Background,QColor(255,255,100,100));
     //setPalette(palette);
 
+    setMouseTracking(true);
+
     // Setting the sizes
     setFixedSize(parent->size());
 
-    // Getting the entries
-    //KMenuItems m_menuitems;
-    //m_menuitems.scanElements();
-
-    //m_kapplications = m_menuitems.getApplications();
     m_kapplications = ConfigManager.getApplications();
     constructPager(m_kapplications);
-    setMouseTracking(true);
 }
 
 void Pager::constructPager(std::vector<KApplication> kapplications)
@@ -48,7 +48,14 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
         else
         {
             PagerItem * page = new PagerItem(this,applications);
+            if (!searching)
+            {
+                //page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
+                //page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+                //page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
+            }
             connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
+
             addItem(page);
             applications.clear();
 
@@ -58,12 +65,28 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
 
     // Adding the rest..
     PagerItem * page = new PagerItem(this,applications);
+    if (!searching)
+    {
+        //page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
+        //page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+        //page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
+    }
     connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
     addItem(page);
     if (kapplications.size()==1) // only 1 item found after searching
     {
         page->getIconGrid()->highlight(0);
     }
+    /*
+    for (PagerItem * i : pages)
+    {
+        for (IconGridItem * i2 : i->getIconGrid()->getItems())
+        {
+            connect(i2->getCanvas(),&IconGridItemCanvas::iconDraggingOn,this,&Pager::iconDraggingOn);
+            connect(this,&Pager::enableIconDragging,i2->getCanvas(),&IconGridItemCanvas::setDraggable);
+        }
+    }
+    */
 
     QPixmap bkgnd(QDir::homePath()+"/.config/rocket/wallpaper.jpeg");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
@@ -106,6 +129,7 @@ void Pager::addItem(PagerItem * page)
 {
     pages.push_back(page);
 }
+
 
 void Pager::goToPage(int deltaPage)
 {
@@ -173,15 +197,24 @@ void Pager::mousePressEvent(QMouseEvent *e)
         dragging = true;
     }
     e->accept();
+    //qDebug() << "pager: mouse press!";
 }
 
 void Pager::mouseMoveEvent(QMouseEvent * event)
 {
+    //qDebug() << "Pagermousemove with dragging:" << dragging;
+    if (m_icon_dragging_on)
+    {
+        dragging = false;
+        qDebug() << "    icondragging on, thus dragging:" << dragging;
+        event->accept();
+        return;
+    }
     if (scrolled) // pages have been scrolled
     {
         if (mouse_pos_scroll_0!=QCursor::pos())
         {
-            finishScrolling();
+            finishScrolling(); // update the state
         }
     }
     else // pages have been dragged manually
@@ -209,6 +242,11 @@ void Pager::mouseMoveEvent(QMouseEvent * event)
 
 void Pager::mouseReleaseEvent(QMouseEvent * event)
 {
+    if (m_icon_dragging_on)
+    {
+        event->ignore();
+        return;
+    }
     // Checking whether outside area is clicked; if it's the case, close the app
     int dx0 = (QCursor::pos()-drag_0).x();
     int dy0 = (QCursor::pos()-drag_0).y();
@@ -243,20 +281,23 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
         new_element = current_element+1;
     }
 
+    QParallelAnimationGroup * animationgroup = new QParallelAnimationGroup;
     for (int i=0;i<pages.size(); i++)
     {
         QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
         animation->setStartValue(pages[i]->pos());
         animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
         animation->setDuration(100);
-        animation->start();
+        animationgroup->addAnimation(animation);
     }
+    animationgroup->start();
 
     pages[new_element]->getIconGrid()->resetHighlightAndActiveElement();
     current_element = new_element;
     element_before_searching = current_element;
     dragging = false;
     event->accept();
+    //qDebug() << "pager: mouse up!";
 }
 
 void Pager::wheelEvent(QWheelEvent *event)
@@ -264,52 +305,64 @@ void Pager::wheelEvent(QWheelEvent *event)
     pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
     if (!searching)
     {
-        if (event->angleDelta().y() % 120 == 0 && event->angleDelta().y()!=0) //scrolling with a mouse
+        if (event->angleDelta().y() % 120 == 0 && event->angleDelta().y()!=0 && !touchpad) //scrolling with a mouse
         {
             if (event->angleDelta().y()<0) goToPage(1);
             else goToPage(-1);
             pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
-            event->accept();
         }
         else // scrolling with a touchpad
         {
+            touchpad = true; // touchpads need to build up some momentum, thus this switch
             int delta = (event->angleDelta().y()==0 ? -(event->angleDelta().x()) : event->angleDelta().y() );
-            if ((pages[0]->pos().x()<=0 && delta<0) || (pages[0]->pos().x()>=-pages[0]->width()*(getNumberOfElements()-1)&& delta>0))
+            if (pages[0]->pos().x()-delta<=0 && pages[0]->pos().x()-delta>=-width()*(getNumberOfElements()-1))
             {
-                if (pages[0]->pos().x()-delta<=0 && pages[0]->pos().x()-delta>=-pages[0]->width()*(getNumberOfElements()-1))
+                m_scrolltimeouttimer->stop();
+                scrolled = true;
+                mouse_pos_scroll_0 = QCursor::pos();
+                for (PagerItem *page_i : pages)
                 {
-                    m_scrolltimeouttimer->stop();
-                    event->ignore();
-                    scrolled = true;
-                    mouse_pos_scroll_0 = QCursor::pos();
-                    for (PagerItem *page_i : pages)
-                    {
-                        page_i->move(page_i->pos().x()-delta,page_i->pos().y());
-                    }
-                    m_scrolltimeouttimer = new QTimer();
-                    connect(m_scrolltimeouttimer,&QTimer::timeout,this,&Pager::finishScrolling);
-                    m_scrolltimeouttimer->start(500);
-                    m_scrolltimeouttimer->setSingleShot(true);
+                    page_i->move(page_i->pos().x()-delta,page_i->pos().y());
                 }
-                event->accept();
+                m_scrolltimeouttimer = new QTimer();
+                connect(m_scrolltimeouttimer,&QTimer::timeout,this,&Pager::finishScrolling);
+                m_scrolltimeouttimer->setSingleShot(true);
+                m_scrolltimeouttimer->start(500);
+            }
+            else {
+                // we've reached the last/first page, don't do anything anymore
+                current_element = (-pages[0]->pos().x()+width()/2)/width();
+                element_before_searching = current_element;
+                new_element = current_element;
+                for (int i=0;i<pages.size(); i++)
+                {
+                    pages[i]->move(QPoint((i-new_element)*width(),pages[i]->pos().y()));
+                }
             }
         }
     }
+    event->accept();
 }
 
 void Pager::finishScrolling()
 {
-    current_element = (-pages[0]->pos().x()+pages[0]->width()/2)/pages[0]->width();
+    current_element = (-pages[0]->pos().x()+width()/2)/width();
     element_before_searching = current_element;
     new_element = current_element;
     scrolled = false;
-    for (int i=0;i<pages.size(); i++)
+    touchpad = false;
+    if (pages[0]->pos().x()!=0 || pages[0]->pos().x()!=-width()*(getNumberOfElements()-1))
     {
-        QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
-        animation->setStartValue(pages[i]->pos());
-        animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
-        animation->setDuration(100);
-        animation->start();
+        QParallelAnimationGroup * animationgroup = new QParallelAnimationGroup;
+        for (int i=0;i<pages.size(); i++)
+        {
+            QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
+            animation->setStartValue(pages[i]->pos());
+            animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
+            animation->setDuration(100);
+            animationgroup->addAnimation(animation);
+        }
+        animationgroup->start();
     }
 }
 
@@ -321,7 +374,7 @@ void Pager::activateSearch(const QString &query)
         m_scrolltimeouttimer->stop();
         if (mouse_pos_scroll_0!=QCursor::pos())
         {
-            current_element = (-pages[0]->pos().x()+pages[0]->width()/2)/pages[0]->width();
+            current_element = (-pages[0]->pos().x()+width()/2)/width();
             element_before_searching = current_element;
             new_element = current_element;
             scrolled = false;
@@ -331,4 +384,6 @@ void Pager::activateSearch(const QString &query)
     std::vector<KApplication> found_apps = searchApplication(m_kapplications,query);
     updatePager(found_apps);
     updated(searching);
+    //qDebug() << "activate search sends enableicondragging with" << !searching;
+    enableIconDragging(!searching);
 }

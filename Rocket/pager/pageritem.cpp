@@ -3,6 +3,8 @@
 #include <klocalizedstring.h>
 #include <QDebug>
 #include <QApplication>
+#include <QDropEvent>
+#include <QMimeData>
 
 #include "pager/pageritem.h"
 

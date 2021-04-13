@@ -29,10 +29,12 @@ public:
     int getRowNumber();
     int getColumnNumber();
     std::vector<KApplication> getApplications(){return m_apps;}
+    bool updateApplicationList();
 private:
     KConfig * m_styleconfig;
     KConfig * m_appgridconfig;
     std::vector<KApplication> m_apps;
+    void generateAppGridConfigFile(KConfig * config,KMenuItems menuitems);
 };
 
 extern RocketConfigManager ConfigManager;

@@ -17,7 +17,6 @@ public:
     //explicit IconGrid(QWidget * parent, int rows, int columns);
     ~IconGrid();
     void paintEvent(QPaintEvent *event);
-    void resizeEvent(QResizeEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
 
     int getMaxNumberOfRows() {return m_rows;}
@@ -31,6 +30,7 @@ public:
     void setMaxNumberOfColumns(int cols) {m_cols = cols;}
     void addItem(IconGridItem * item);
 
+    QGridLayout * getLayout(){return m_layout;}
     int getActiveElement(){return m_active_element;}
     void setActiveElement(int element);
     void unhighlightAll();

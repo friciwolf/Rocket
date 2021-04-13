@@ -4,6 +4,8 @@
 #include <QFont>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QDrag>
+#include <QMimeData>
 
 #include "icongriditem.h"
 #include "icongriditemcanvas.h"
@@ -19,6 +21,7 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application, QSize item
     m_item_size = itemsize;
     setFixedSize(m_item_size);
     setMouseTracking(true);
+    setAcceptDrops(true);
 
     //QPalette p;
     //setAutoFillBackground(true);
@@ -54,13 +57,56 @@ IconGridItem::IconGridItem(QWidget *parent, KApplication application, QSize item
 
 void IconGridItem::paintEvent(QPaintEvent *event)
 {
-    if (!m_highlighted) return;
     QPainter painter(this);
-    painter.setBrush(QBrush(ConfigManager.getBaseColour(),Qt::BrushStyle::SolidPattern));
-    painter.setPen(ConfigManager.getBaseColour());
-    painter.drawRoundedRect(0,0,width(),height()*0.99,15,15);
+    /*if (m_hoveredover_during_drag_and_drop)
+    {
+        QPen pen = painter.pen();
+        pen.setWidth(3);
+        pen.setColor(ConfigManager.getSecondaryColour());
+        painter.setPen(pen);
+        //painter.drawLine(0,0,0,height());
+        painter.drawRoundedRect(0,0,width()*0.99,height()*0.99,15,15);
+    }*/
+    if(m_highlighted)
+    {
+        painter.setBrush(QBrush(ConfigManager.getBaseColour(),Qt::BrushStyle::SolidPattern));
+        painter.setPen(ConfigManager.getBaseColour());
+        painter.drawRoundedRect(0,0,width()*0.99,height()*0.99,15,15);
+    }
 }
 
+/*
+void IconGridItem::dragEnterEvent(QDragEnterEvent *event)
+{
+    qDebug() << "griditem: dragging into " << m_application.name();
+    //m_hoveredover_during_drag_and_drop = true;
+    update();
+    event->ignore();
+}
+
+/*
+void IconGridItem::dropEvent(QDropEvent *event)
+{
+    qDebug() << "griditem: dropped" << event->mimeData()->text() << "on"<< m_application.name();
+    event->ignore();
+}
+
+
+void IconGridItem::dragMoveEvent(QDragMoveEvent *event)
+{
+    qDebug() << "griditem: dragMoveIconGriditem";
+    event->accept();
+}
+
+
+void IconGridItem::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    qDebug() << "griditem: dragging left";
+    m_hoveredover_during_drag_and_drop = false;
+    update();
+    event->ignore();
+}
+*/
 void IconGridItem::resizeEvent(QResizeEvent *event)
 {
     m_canvas->update();

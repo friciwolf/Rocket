@@ -89,10 +89,6 @@ void IconGrid::mouseMoveEvent(QMouseEvent *event)
     event->ignore();
 }
 
-void IconGrid::resizeEvent(QResizeEvent *event)
-{
-
-}
 
 IconGrid::~IconGrid()
 {

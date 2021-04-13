@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    a.setStartDragTime(3000);
+
     QString name = a.applicationName().toLower();
 
     KConfig styleconfig(QDir::homePath()+"/.config/"+name+"/"+name+"style",KConfig::OpenFlag::SimpleConfig);
@@ -34,6 +36,13 @@ int main(int argc, char *argv[])
     animation->setDuration(500);
     //animation->setEasingCurve(QEasingCurve::OutQuad);
     animation->start();
+
+    if(ConfigManager.updateApplicationList())
+    {
+        w.pager->setApplicationList(ConfigManager.getApplications());
+        w.pager->updatePager(ConfigManager.getApplications());
+        qDebug() << "application list updated";
+    }
 
     return a.exec();
 }

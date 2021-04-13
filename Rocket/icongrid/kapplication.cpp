@@ -1,6 +1,6 @@
 #include "kapplication.h"
 
-KApplication::KApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories)
+KApplication::KApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath)
 {
     m_name = name;
     m_iconname = iconname;
@@ -12,6 +12,7 @@ KApplication::KApplication(QString name, QString iconname, QIcon icon, QString e
     m_genericname = genericname;
     m_untranslatedGenericName = untranslatedGenericName;
     m_categories = categories;
+    m_entrypath = entrypath;
 }
 
 KApplication::KApplication()
@@ -29,5 +30,6 @@ bool operator==(const KApplication& a, const KApplication& b)
     if (a.m_genericname!=b.m_genericname) return false;
     if (a.m_untranslatedGenericName!=b.m_untranslatedGenericName) return false;
     if (a.m_categories!=b.m_categories) return false;
+    if (a.m_entrypath!=b.m_entrypath) return false;
     return true;
 }

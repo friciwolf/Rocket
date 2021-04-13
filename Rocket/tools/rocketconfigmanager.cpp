@@ -161,24 +161,9 @@ void RocketConfigManager::checkAppGridConfigFile()
     if (config->groupList().size()==0)
     {
         qDebug() << "Appgrid configuration not found. Generating one...";
-        KMenuItems m_menuitems;
-        m_menuitems.scanElements();
-        int i = 0;
-        for (KApplication app : m_menuitems.getApplications())
-        {
-            config->group("Entry"+QString::number(i)).writeEntry("name",app.name());
-            config->group("Entry"+QString::number(i)).writeEntry("iconname",app.iconname());
-            config->group("Entry"+QString::number(i)).writeEntry("exec",app.exec());
-            config->group("Entry"+QString::number(i)).writeEntry("comment",app.comment());
-            config->group("Entry"+QString::number(i)).writeEntry("terminal",app.terminal());
-            config->group("Entry"+QString::number(i)).writeEntry("keywords",app.keywords());
-            config->group("Entry"+QString::number(i)).writeEntry("genericname",app.genericname());
-            config->group("Entry"+QString::number(i)).writeEntry("untranslatedgenericname",app.untranslatedGenericName());
-            config->group("Entry"+QString::number(i)).writeEntry("categories",app.categories());
-            config->group("Entry"+QString::number(i)).writeEntry("pos",QString::number(i));
-            i++;
-        }
-        m_apps = m_menuitems.getApplications();
+        KMenuItems menuitems;
+        menuitems.scanElements();
+        generateAppGridConfigFile(config,menuitems);
     }
     else
     {
@@ -196,10 +181,51 @@ void RocketConfigManager::checkAppGridConfigFile()
             QString untranslatedGenericName = config->group(item).readEntry("untranslatedgenericname");
             QStringList categories = config->group(item).readEntry("categories").split(",");
             bool terminal = (config->group(item).readEntry("terminal") == "false" ? false : true);
+            QString entrypath = config->group(item).readEntry("entrypath");
             int pos = config->group(item).readEntry("pos").toInt();
-            apps[pos] = KApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories);
+            apps[pos] = KApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories,entrypath);
         }
         std::vector<KApplication> appvector(apps,apps+N);
         m_apps = appvector;
     }
+}
+
+void RocketConfigManager::generateAppGridConfigFile(KConfig * config,KMenuItems menuitems)
+{
+    int i = 0;
+    for (KApplication app : menuitems.getApplications())
+    {
+        config->group("Entry"+QString::number(i)).writeEntry("name",app.name());
+        config->group("Entry"+QString::number(i)).writeEntry("iconname",app.iconname());
+        config->group("Entry"+QString::number(i)).writeEntry("exec",app.exec());
+        config->group("Entry"+QString::number(i)).writeEntry("comment",app.comment());
+        config->group("Entry"+QString::number(i)).writeEntry("terminal",app.terminal());
+        config->group("Entry"+QString::number(i)).writeEntry("keywords",app.keywords());
+        config->group("Entry"+QString::number(i)).writeEntry("genericname",app.genericname());
+        config->group("Entry"+QString::number(i)).writeEntry("untranslatedgenericname",app.untranslatedGenericName());
+        config->group("Entry"+QString::number(i)).writeEntry("categories",app.categories());
+        config->group("Entry"+QString::number(i)).writeEntry("entrypath",app.entrypath());
+        config->group("Entry"+QString::number(i)).writeEntry("pos",QString::number(i));
+        i++;
+    }
+    m_apps = menuitems.getApplications();
+}
+
+bool RocketConfigManager::updateApplicationList()
+{
+    KMenuItems menuitems;
+    menuitems.scanElements();
+
+    if (menuitems.getApplications().size()!=m_apps.size())
+    {
+        qDebug() << "Appgrid configuration changed. Generating new configuration file...";
+        for (QString group : m_appgridconfig->groupList())
+        {
+            m_appgridconfig->deleteGroup(group);
+        }
+        generateAppGridConfigFile(m_appgridconfig,menuitems);
+        m_appgridconfig->reparseConfiguration();
+        return true;
+    }
+    return false;
 }

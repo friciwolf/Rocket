@@ -44,7 +44,7 @@ std::vector<KApplication> searchApplication(std::vector<KApplication> list, QStr
         }
         if (found) continue;
         found = false;
-        for (QString i2 : i.keywords())
+        for (QString i2 : i.categories())
         {
             if(i2.contains(query,Qt::CaseSensitivity::CaseInsensitive))
             {

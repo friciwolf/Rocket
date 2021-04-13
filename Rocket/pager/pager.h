@@ -32,6 +32,7 @@ public:
     QPoint drag_start_position;
     QPoint drag_0;
     QPoint mouse_pos_scroll_0;
+    bool touchpad = false;
     bool searching = false;
     bool page_turned = false;
     bool scrolled = false;
@@ -42,6 +43,7 @@ public:
     void updatePager(std::vector<KApplication> kapplications);
 
     int getNumberOfElements() {return pages.size();}
+    void setApplicationList(std::vector<KApplication> newlist){m_kapplications = newlist;}
 
 
     void resizeEvent(QResizeEvent *event);
@@ -54,11 +56,14 @@ public slots:
     void activateSearch(const QString & query);
     void goToPage(int deltaPage);
     void finishScrolling();
+    void iconDraggingOn(bool on){m_icon_dragging_on=on;dragging=false;}
 
 signals:
     void updated(bool indicator_visibility);
+    void enableIconDragging(bool enable);
 
 private:
+    bool m_icon_dragging_on = false; //true: icons are dragged
     std::vector<KApplication> m_kapplications;
     QTimer * m_scrolltimeouttimer = new QTimer();
 };

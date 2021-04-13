@@ -1,22 +1,29 @@
 #include "stylingparams.h"
 #include <QPainter>
-#include <KMessageBox>
 #include <QDebug>
 #include <QMouseEvent>
 #include <QTimer>
 #include <QApplication>
 #include <QGridLayout>
+#include <QDrag>
+#include <QMimeData>
+#include <QMimeData>
+
 #include <KRun>
+#include <KService>
+#include <KDesktopFile>
 
 #include "icongriditemcanvas.h"
 #include "kapplication.h"
 #include "stylingparams.h"
+#include "tools/rocketconfigmanager.h"
 
 IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application)
 {
     m_icon = application.icon();
     m_application = application;
     setMouseTracking(true);
+    setAcceptDrops(true);
 
     //QPalette p;
     //setAutoFillBackground(true);
@@ -41,13 +48,40 @@ void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)
     {
         m_clicked = true;
         m_pressPos = QCursor::pos();
-        QTimer * timer = new QTimer();
-        connect(timer,&QTimer::timeout,this,&IconGridItemCanvas::longpressanimation);
-        timer->start(1000);
-        timer->setSingleShot(true);
-        event->ignore();
+        m_longclicktimer = new QTimer();
+        connect(m_longclicktimer,&QTimer::timeout,this,&IconGridItemCanvas::m_starticondragging);
+        m_longclicktimer->setSingleShot(true);
+        //m_longclicktimer->start(1000);
     }
-    event->accept();
+    event->ignore();
+}
+
+void IconGridItemCanvas::setDraggable(bool draggable)
+{
+    m_draggable = draggable;
+}
+
+void IconGridItemCanvas::m_starticondragging()
+{
+    if (!m_draggable)
+    {
+        return;
+    }
+    if (m_clicked) //i.e. cursor has not moved a lot
+    {
+        iconDraggingOn(true);
+        QDrag *drag = new QDrag(this);
+        QMimeData *mime = new QMimeData;
+        mime->setText(m_application.name());
+        drag->setMimeData(mime);
+        drag->setPixmap(m_application.icon().pixmap(size()));
+        drag->setHotSpot(QPoint(drag->pixmap().width()/2,drag->pixmap().height()/2));
+        Qt::DropAction dropAction = drag->exec();
+    }
+    else {
+        iconDraggingOn(false);
+    }
+    m_clicked = false;
 }
 
 void IconGridItemCanvas::mouseMoveEvent(QMouseEvent *event)
@@ -56,6 +90,7 @@ void IconGridItemCanvas::mouseMoveEvent(QMouseEvent *event)
     int dy = QCursor::pos().y()-m_pressPos.y();
     if (dx*dx+dy*dy>=RocketStyle::click_tolerance && m_clicked)
     {
+        m_longclicktimer->stop();
         m_clicked = false;
     }
     event->ignore();
@@ -67,35 +102,51 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
     {
         m_clicked = false;
         QList<QUrl> urls;
-        if (m_application.terminal())
+        KDesktopFile d(m_application.entrypath());
+        KService s(&d,m_application.entrypath());
+        if (KRun::run(s,urls,nullptr))
         {
-            if(KRun::run("konsole -e "+m_application.exec(),urls,nullptr,m_application.name(),m_application.iconname()))
-            {
-                qApp->exit();
-            }
+            qApp->exit();
         }
-        else {
-            if(KRun::run(m_application.exec(),urls,nullptr,m_application.name(),m_application.iconname())) {
-                qApp->exit();
-            }
-        }
-
+        event->accept();
     }
     else
     {
         event->ignore();
     }
 }
-
-void IconGridItemCanvas::longpressanimation()
+/*
+void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (m_clicked)
-    {
-        KMessageBox::information(nullptr,"move_animation");
-        m_clicked = false;
-    }
+    qDebug() << "dragging into" << m_application.name();
+    event->acceptProposedAction();
 }
 
+void IconGridItemCanvas::dropEvent(QDropEvent *event)
+{
+    qDebug() << "dropped" << event->mimeData()->text() << "on"<< m_application.name();
+    iconDraggingOn(false);
+    event->acceptProposedAction();
+}
+
+void IconGridItemCanvas::dragMoveEvent(QDragMoveEvent *event)
+{
+    //qDebug() << "dragMoveIconGriditem";
+    if (event->source()!=this)
+    {
+        move(pos().x()+(width()/2-event->pos().x())*0.1,pos().y());
+    }
+    event->accept();
+}
+
+void IconGridItemCanvas::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    qDebug() << "dragging left";
+    iconDraggingOn(false);
+    update();
+    event->ignore();
+}
+*/
 void IconGridItemCanvas::resizeEvent(QResizeEvent *event)
 {
 

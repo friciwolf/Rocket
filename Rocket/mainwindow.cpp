@@ -118,12 +118,6 @@ void MainWindow::executeSelected()
     }
 }
 
-void MainWindow::wheelEvent(QWheelEvent *event)
-{
-    pager->wheelEvent(event);
-}
-
-
 MainWindow::~MainWindow()
 {
     delete ui;
