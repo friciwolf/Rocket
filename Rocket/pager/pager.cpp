@@ -96,7 +96,9 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
     {
         KConfig config(QDir::homePath()+"/.config/plasma-org.kde.plasma.desktop-appletsrc");
         std::vector<QString> wallpaper_candidates;
-        for (QString l : config.group("Containments").groupList())
+        QStringList list = config.group("Containments").groupList();
+        list.sort();
+        for (QString l : list)
         {
             if (config.group("Containments").group(l).groupList().contains("Wallpaper"))
             {
