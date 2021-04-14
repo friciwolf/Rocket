@@ -14,17 +14,18 @@ Please send in bug reports, development is still in early stage*. It has been te
 # Screenshot Gallery
 
 ## Default view
-![Alt text](/screenshots/screenshot.png?raw=true "")
+![Alt text](/screenshots/screenshot.jpeg?raw=true "")
 
 ## Dark Theme
-![Alt text](/screenshots/screenshot_dark.png?raw=true "")
+![Alt text](/screenshots/screenshot_dark.jpeg?raw=true "")
 
 
 ## Searching
-![Alt text](/screenshots/screenshot_search.png?raw=true "")
+![Alt text](/screenshots/screenshot_search.jpeg?raw=true "")
 
 ## Custom Grid with increased Font and Keyboard Navigation
-![Alt text](/screenshots/screenshot_large_grid.png?raw=true "")
+![Alt text](/screenshots/screenshot_large_grid.jpeg?raw=true "")
 
 -------------------------------------------
 \* Disclaimer: I'm not a professional developer, but it works on my configuration perfectly, and I love it. However, on your custom environment, you might experience unwanted bugs -- feel free to fork and to contribute.
+This software does not contain any code which messes with your base system, so if it does not work for you, it's easy to uninstall -- just follow the instructions in the release notes.
