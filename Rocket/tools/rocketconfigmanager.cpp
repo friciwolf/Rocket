@@ -23,6 +23,11 @@ public:
         dimensions["rows"] = QString::number(RocketStyle::m_rows);
         dimensions["columns"] = QString::number(RocketStyle::m_cols);
         items["dimensions"] = dimensions;
+
+        map<QString,QVariant> background;
+        background["use_system_wallpaper"] = QString((RocketStyle::use_system_wallpaper) ? "true" : "false");
+        background["wallpaper_of_screen"] = QString::number(RocketStyle::use_system_wallpaper_screen);
+        items["background"] = background;
     }
 };
 
@@ -153,6 +158,23 @@ int RocketConfigManager::getColumnNumber()
         if (cols==1) qDebug() << "only columns more than one are supported...";
         return RocketStyle::m_cols;
     }
+}
+
+bool RocketConfigManager::getUsingSystemWallpaper()
+{
+    KConfig * config = m_styleconfig;
+    QString value = m_styleconfig->group("background").readEntry("use_system_wallpaper");
+    if (value==QString("true")) return true;
+    if (value==QString("false")) return false;
+    qDebug() <<  "Invalid argument for 'use_system_wallpaper'. Falling back to defaults...";
+    return RocketStyle::use_system_wallpaper;
+}
+
+int RocketConfigManager::getWallpaperScreen()
+{
+    KConfig * config = m_styleconfig;
+    QString value = m_styleconfig->group("background").readEntry("wallpaper_of_screen");
+    return value.toInt(); //returns 0 as default if a random string is entered.
 }
 
 void RocketConfigManager::checkAppGridConfigFile()

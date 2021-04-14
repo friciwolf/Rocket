@@ -29,6 +29,9 @@ namespace RocketStyle {
     const int pager_swpipe_threshold = 200;
     const int pager_deadzone_threshold = 50;
 
+    const bool use_system_wallpaper = true;
+    const bool use_system_wallpaper_screen = 0;
+
     // Active Indicator
     const QBrush active_indicator_brush = QBrush(SecondaryColour,Qt::BrushStyle::SolidPattern);
 }

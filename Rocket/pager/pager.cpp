@@ -9,6 +9,9 @@
 #include <QMimeData>
 #include <QDrag>
 
+#include <KConfig>
+#include <KConfigGroup>
+
 #include "pager/pager.h"
 #include "icongrid/kmenuitems.h"
 #include "icongrid/icongrid.h"
@@ -88,7 +91,38 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
     }
     */
 
-    QPixmap bkgnd(QDir::homePath()+"/.config/rocket/wallpaper.jpeg");
+    QString backgroundPath = QDir::homePath()+"/.config/rocket/wallpaper.jpeg";
+    if (ConfigManager.getUsingSystemWallpaper())
+    {
+        KConfig config(QDir::homePath()+"/.config/plasma-org.kde.plasma.desktop-appletsrc");
+        std::vector<QString> wallpaper_candidates;
+        for (QString l : config.group("Containments").groupList())
+        {
+            if (config.group("Containments").group(l).groupList().contains("Wallpaper"))
+            {
+                QString variable = config.group("Containments").group(l).group("Wallpaper").group("org.kde.image").group("General").readEntry("Image");
+                if (variable.split("file://").size()>1)
+                {
+                    wallpaper_candidates.push_back(variable.split("file://")[1]);
+                }
+            }
+        }
+        if (wallpaper_candidates.size()==0)
+        {
+            qDebug() << "No KDE Wallpaper found. Using the default one ~/.config/rocket/wallpaper.jpeg.";
+        }
+        else
+        {
+            if (ConfigManager.getWallpaperScreen()<wallpaper_candidates.size())
+            {
+                backgroundPath = wallpaper_candidates[ConfigManager.getWallpaperScreen()];
+            }
+            else {
+                qDebug() << "No KDE Wallpaper found for screen "<< ConfigManager.getWallpaperScreen() <<". Using the default one ~/.config/rocket/wallpaper.jpeg.";
+            }
+        }
+    }
+    QPixmap bkgnd(backgroundPath);
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Background, bkgnd);

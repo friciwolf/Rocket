@@ -28,6 +28,8 @@ public:
     int getFontSize2();
     int getRowNumber();
     int getColumnNumber();
+    bool getUsingSystemWallpaper();
+    int getWallpaperScreen();
     std::vector<KApplication> getApplications(){return m_apps;}
     bool updateApplicationList();
 private:
