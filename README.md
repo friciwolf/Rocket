@@ -1,6 +1,6 @@
 # Rocket
 
-**Rocket** is an application launcher for KDE Plasma. It sorts all of your applications in a horizontal grid alphabetically, so you will always find what you are looking for at first glance. No more menu navigation, only scrolling.
+**Rocket** is an application launcher for KDE Plasma. It sorts all of your applications in a horizontal or vertical grid alphabetically, so you will always find what you are looking for at first glance. No more menu navigation, only scrolling.
 
 Features:
  - Customizable row and column sizes
@@ -24,6 +24,9 @@ Please also send in bug reports, development is still in early stage*. It has be
 
 ## Searching
 ![Alt text](/screenshots/screenshot_search.jpeg?raw=true "")
+
+## Vertical Grid View
+![Alt text](/screenshots/vertical_scrolling.jpeg?raw=true "")
 
 ## Custom Grid with increased Font and Keyboard Navigation
 ![Alt text](/screenshots/screenshot_large_grid.jpeg?raw=true "")
