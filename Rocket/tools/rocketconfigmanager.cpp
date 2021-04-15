@@ -22,6 +22,7 @@ public:
         map<QString,QVariant> dimensions;
         dimensions["rows"] = QString::number(RocketStyle::m_rows);
         dimensions["columns"] = QString::number(RocketStyle::m_cols);
+        dimensions["vertical_orientation"] = QString((RocketStyle::pager_vertical_orientation) ? "true" : "false");
         items["dimensions"] = dimensions;
 
         map<QString,QVariant> background;
@@ -160,9 +161,17 @@ int RocketConfigManager::getColumnNumber()
     }
 }
 
+bool RocketConfigManager::getVerticalModeSetting()
+{
+    QString value = m_styleconfig->group("dimensions").readEntry("vertical_orientation");
+    if (value==QString("true")) return true;
+    if (value==QString("false")) return false;
+    qDebug() <<  "Invalid argument for 'vertical_orientation'. Falling back to defaults...";
+    return RocketStyle::use_system_wallpaper;
+}
+
 bool RocketConfigManager::getUsingSystemWallpaper()
 {
-    KConfig * config = m_styleconfig;
     QString value = m_styleconfig->group("background").readEntry("use_system_wallpaper");
     if (value==QString("true")) return true;
     if (value==QString("false")) return false;
@@ -172,7 +181,6 @@ bool RocketConfigManager::getUsingSystemWallpaper()
 
 int RocketConfigManager::getWallpaperScreen()
 {
-    KConfig * config = m_styleconfig;
     QString value = m_styleconfig->group("background").readEntry("wallpaper_of_screen");
     return value.toInt(); //returns 0 as default if a random string is entered.
 }

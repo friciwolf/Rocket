@@ -20,6 +20,7 @@ private:
     int radius;
     int spacing;
     Pager * pager;
+    VerticalPager * verticalpager;
     PagerCircularIndicator * indicator;
 };
 

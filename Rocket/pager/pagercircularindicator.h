@@ -2,6 +2,7 @@
 #define PAGERCIRCULARINDICATOR_H
 
 #include "pager.h"
+#include "verticalpager.h"
 #include "stylingparams.h"
 
 #include <QObject>
@@ -12,6 +13,7 @@ class PagerCircularIndicator : public QWidget
     Q_OBJECT
 public:
     explicit PagerCircularIndicator(QWidget *parent, Pager * pager);
+    explicit PagerCircularIndicator(QWidget *parent, VerticalPager * pager);
     void positioning();
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
@@ -19,10 +21,12 @@ public:
     int getSpacing() {return m_spacing;}
     int getRadius() {return m_radius;}
     Pager * getPager() {return m_pager;}
+    VerticalPager * getVerticalPager() {return m_verticalpager;}
 
 private:
     QPixmap pixmap;
     Pager * m_pager;
+    VerticalPager * m_verticalpager;
     QRect m_parent_geometry;
 
     int m_elements;

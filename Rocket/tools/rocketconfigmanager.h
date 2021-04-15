@@ -28,6 +28,7 @@ public:
     int getFontSize2();
     int getRowNumber();
     int getColumnNumber();
+    bool getVerticalModeSetting();
     bool getUsingSystemWallpaper();
     int getWallpaperScreen();
     std::vector<KApplication> getApplications(){return m_apps;}

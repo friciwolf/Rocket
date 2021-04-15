@@ -28,20 +28,44 @@ void IconGrid::addItem(IconGridItem * item)
 void IconGrid::setActiveElement(int element)
 {
     int delta = element-m_active_element;
-    if (delta == 1) //Key_Right
+    // Vertical Mode Behaviour
+    if (ConfigManager.getVerticalModeSetting())
     {
-        if (m_active_element % m_cols == m_cols-1) //Last Column
+        if (delta == m_cols) //Key_Down
         {
-            goToPage(1);
-            return;
+            if ((int)(m_active_element/m_cols) == m_rows-1) //Last Row, Vertical Mode
+            {
+                goToPage(1);
+                return;
+            }
+        }
+        if (delta == -m_cols) //Key_Up
+        {
+            if ((int)(m_active_element/m_cols) == 0) //First Column, Vertical Mode
+            {
+                goToPage(-1);
+                return;
+            }
         }
     }
-    if (delta == -1) //Key_Left
+    // Horizontal Mode Behaviour
+    if (!ConfigManager.getVerticalModeSetting())
     {
-        if (m_active_element % m_cols == 0) //First Column
+        if (delta == 1) //Key_Right
         {
-            goToPage(-1);
-            return;
+            if (m_active_element % m_cols == m_cols-1) //Last Column, Horizontal Mode
+            {
+                goToPage(1);
+                return;
+            }
+        }
+        if (delta == -1) //Key_Left
+        {
+            if (m_active_element % m_cols == 0) //First Column, Horizontal Mode
+            {
+                goToPage(-1);
+                return;
+            }
         }
     }
 
@@ -49,6 +73,8 @@ void IconGrid::setActiveElement(int element)
     {
         m_active_element = element;
     }
+
+
 }
 
 

@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "pager/pager.h"
+#include "pager/verticalpager.h"
 #include "pager/pageritem.h"
 #include "pager/pagercircularindicator.h"
 #include "pager/pagercircularactiveindicator.h"
@@ -20,34 +21,74 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setMouseTracking(true);
 
-    pager = new Pager(this);
+    if (ConfigManager.getVerticalModeSetting())
+    {
+        verticalpager = new VerticalPager(this);
 
-    indicator = new PagerCircularIndicator(this,pager);
+        indicator = new PagerCircularIndicator(this,verticalpager);
+        connect(verticalpager,&VerticalPager::updated,indicator,&PagerCircularIndicator::setHidden);
 
-    active_indicator = new PagerCircularActiveIndicator(this,indicator);
+        active_indicator = new PagerCircularActiveIndicator(this,indicator);
+        connect(verticalpager,&VerticalPager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
 
-    searchfield = new SearchField(this);
-    connect(searchfield,&QLineEdit::textEdited,pager,&Pager::activateSearch);
-    connect(pager,&Pager::updated,indicator,&PagerCircularIndicator::setHidden);
-    connect(pager,&Pager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
-    connect(searchfield,&SearchField::navigate,this,&MainWindow::navigation);
-    connect(searchfield,&QLineEdit::returnPressed,this,&MainWindow::executeSelected);
+        searchfield = new SearchField(this);
+        connect(searchfield,&QLineEdit::textEdited,verticalpager,&VerticalPager::activateSearch);
+        connect(searchfield,&SearchField::navigate,this,&MainWindow::navigation);
+        connect(searchfield,&QLineEdit::returnPressed,this,&MainWindow::executeSelected);
+    }
+    else
+    {
+        pager = new Pager(this);
+
+        indicator = new PagerCircularIndicator(this,pager);
+        connect(pager,&Pager::updated,indicator,&PagerCircularIndicator::setHidden);
+
+        active_indicator = new PagerCircularActiveIndicator(this,indicator);
+        connect(pager,&Pager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
+
+        searchfield = new SearchField(this);
+        connect(searchfield,&QLineEdit::textEdited,pager,&Pager::activateSearch);
+        connect(searchfield,&SearchField::navigate,this,&MainWindow::navigation);
+        connect(searchfield,&QLineEdit::returnPressed,this,&MainWindow::executeSelected);
+    }
+
+
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    pager->setFixedSize(width(),height());
-    indicator->positioning();
-    active_indicator->positioning();
-    searchfield->positioning();
+    if (ConfigManager.getVerticalModeSetting())
+    {
+        verticalpager->setFixedSize(width(),height());
+        indicator->positioning();
+        active_indicator->positioning();
+        searchfield->positioning();
+    }
+    else
+    {
+        pager->setFixedSize(width(),height());
+        indicator->positioning();
+        active_indicator->positioning();
+        searchfield->positioning();
+    }
 }
 
 
 void MainWindow::navigation(int key)
 {
-    IconGrid * grid = pager->pages[pager->current_element]->getIconGrid();
-    if (grid->getNumberOfItems()==0) return; // "No Results found" - screen
-    pager->page_turned = false;
+    IconGrid * grid;
+    if (ConfigManager.getVerticalModeSetting())
+    {
+        grid = verticalpager->pages[verticalpager->current_element]->getIconGrid();
+        if (grid->getNumberOfItems()==0) return; // "No Results found" - screen
+        verticalpager->page_turned = false;
+    }
+    else
+    {
+        grid = pager->pages[pager->current_element]->getIconGrid();
+        if (grid->getNumberOfItems()==0) return; // "No Results found" - screen
+        pager->page_turned = false;
+    }
     grid->unhighlightAll();
     int active = grid->getActiveElement();
     switch (key)
@@ -80,7 +121,7 @@ void MainWindow::navigation(int key)
         }
         case Qt::Key::Key_Tab:
         {
-            if (active==grid->getItems().size()-1 && pager->searching)
+            if (active==grid->getItems().size()-1 && (ConfigManager.getVerticalModeSetting() ? verticalpager->searching : pager->searching))
             {
                 grid->setActiveElement(0);
             }
@@ -91,15 +132,26 @@ void MainWindow::navigation(int key)
         }
     }
     active = grid->getActiveElement();
-    if (active!=-1 && !pager->page_turned)
+    if (ConfigManager.getVerticalModeSetting())
     {
-        grid->highlight(active);
+        if (active!=-1 && !verticalpager->page_turned) grid->highlight(active);
+    }
+    else
+    {
+        if (active!=-1 && !pager->page_turned) grid->highlight(active);
     }
 }
 
 void MainWindow::executeSelected()
 {
-    IconGrid * grid = pager->pages[pager->current_element]->getIconGrid();
+    IconGrid * grid;
+    if (ConfigManager.getVerticalModeSetting())
+    {
+        grid = verticalpager->pages[verticalpager->current_element]->getIconGrid();
+    }
+    else {
+        grid = pager->pages[pager->current_element]->getIconGrid();
+    }
     int active = grid->getActiveElement();
     if (active==-1) return;
     KApplication application = grid->getItems()[active]->getApplication();

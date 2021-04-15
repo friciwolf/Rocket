@@ -39,7 +39,8 @@ SOURCES += \
     stylingparams.cpp \
     searchfield/searchfield.cpp \
     tools/searchingapps.cpp \
-    tools/rocketconfigmanager.cpp
+    tools/rocketconfigmanager.cpp \
+    pager/verticalpager.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -55,7 +56,8 @@ HEADERS += \
     stylingparams.h \
     searchfield/searchfield.h \
     tools/searchingapps.h \
-    tools/rocketconfigmanager.h
+    tools/rocketconfigmanager.h \
+    pager/verticalpager.h
 
 FORMS += \
         mainwindow.ui

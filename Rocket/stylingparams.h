@@ -29,6 +29,8 @@ namespace RocketStyle {
     const int pager_swpipe_threshold = 200;
     const int pager_deadzone_threshold = 50;
 
+    const bool pager_vertical_orientation = false;
+
     const bool use_system_wallpaper = true;
     const bool use_system_wallpaper_screen = 0;
 

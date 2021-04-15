@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLineEdit>
 #include "pager/pager.h"
+#include "pager/verticalpager.h"
 #include "pager/pagercircularindicator.h"
 #include "pager/pagercircularactiveindicator.h"
 #include "searchfield/searchfield.h"
@@ -19,6 +20,8 @@ class MainWindow : public QMainWindow
 
 public:
     Pager * pager;
+    VerticalPager * verticalpager;
+
     PagerCircularIndicator * indicator;
     PagerCircularActiveIndicator * active_indicator;
     SearchField * searchfield;
