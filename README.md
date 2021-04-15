@@ -26,7 +26,7 @@ Please also send in bug reports, development is still in early stage*. It has be
 ![Alt text](/screenshots/screenshot_search.jpeg?raw=true "")
 
 ## Vertical Grid View
-![Alt text](/screenshots/vertical_scrolling.jpeg?raw=true "")
+![Alt text](/screenshots/vertical_scrolling.jpg?raw=true "")
 
 ## Custom Grid with increased Font and Keyboard Navigation
 ![Alt text](/screenshots/screenshot_large_grid.jpeg?raw=true "")
