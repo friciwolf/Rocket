@@ -9,7 +9,7 @@ Features:
  - Scroll support for touchpad, mouse and the mouse wheel
  - Keyboard navigation
 
-For more information check out the wiki and the release notes.
+For more information check out the **wiki** and the **release notes**.
 
 Please also send in bug reports, development is still in early stage*. It has been tested on Kubuntu, but it should also work on any platform with KDE installed.
 
