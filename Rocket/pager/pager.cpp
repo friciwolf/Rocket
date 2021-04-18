@@ -95,9 +95,8 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
     if (ConfigManager.getUsingSystemWallpaper())
     {
         KConfig config(QDir::homePath()+"/.config/plasma-org.kde.plasma.desktop-appletsrc");
-        std::vector<QString> wallpaper_candidates;
+        QStringList wallpaper_candidates;
         QStringList list = config.group("Containments").groupList();
-        list.sort();
         for (QString l : list)
         {
             if (config.group("Containments").group(l).groupList().contains("Wallpaper"))
@@ -105,19 +104,25 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
                 QString variable = config.group("Containments").group(l).group("Wallpaper").group("org.kde.image").group("General").readEntry("Image");
                 if (variable.split("file://").size()>1)
                 {
-                    wallpaper_candidates.push_back(variable.split("file://")[1]);
+                    wallpaper_candidates.push_back(config.group("Containments").group(l).readEntry("lastScreen")+variable.split("file://")[1]);
+                }
+                else
+                {
+                    if (variable.at(variable.size()-1)!="/") wallpaper_candidates.push_back(config.group("Containments").group(l).readEntry("lastScreen")+variable);
+                    else qDebug() << "Wallpaper packages are not supported, please pick the image file manually.";
                 }
             }
         }
         if (wallpaper_candidates.size()==0)
         {
-            qDebug() << "No KDE Wallpaper found. Using the default one ~/.config/rocket/wallpaper.jpeg.";
+            qDebug() << "No wallpapers found in /.config/plasma-org.kde.plasma.desktop-appletsrc. Falling back the default one ~/.config/rocket/wallpaper.jpeg.";
         }
         else
         {
             if (ConfigManager.getWallpaperScreen()<wallpaper_candidates.size())
             {
-                backgroundPath = wallpaper_candidates[ConfigManager.getWallpaperScreen()];
+                wallpaper_candidates.sort();
+                backgroundPath = wallpaper_candidates[ConfigManager.getWallpaperScreen()].right(wallpaper_candidates[ConfigManager.getWallpaperScreen()].size()-1);
             }
             else {
                 qDebug() << "No KDE Wallpaper found for screen "<< ConfigManager.getWallpaperScreen() <<". Using the default one ~/.config/rocket/wallpaper.jpeg.";
