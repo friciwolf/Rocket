@@ -31,6 +31,8 @@ public:
     bool getVerticalModeSetting();
     bool getUsingSystemWallpaper();
     int getWallpaperScreen();
+    int getInvertedScrollFactorXfromSettings();
+    int getInvertedScrollFactorYfromSettings();
     std::vector<KApplication> getApplications(){return m_apps;}
     bool updateApplicationList();
 private:

@@ -29,6 +29,11 @@ public:
         background["use_system_wallpaper"] = QString((RocketStyle::use_system_wallpaper) ? "true" : "false");
         background["wallpaper_of_screen"] = QString::number(RocketStyle::use_system_wallpaper_screen);
         items["background"] = background;
+
+        map<QString,QVariant> settigs;
+        settigs["inverted_scrolling_x"] = QString((RocketStyle::inverted_scrolling_x) ? "true" : "false");
+        settigs["inverted_scrolling_y"] = QString((RocketStyle::inverted_scrolling_y) ? "true" : "false");
+        items["settings"] = settigs;
     }
 };
 
@@ -41,7 +46,7 @@ RocketConfigManager::RocketConfigManager()
 void RocketConfigManager::checkStyleConfigFile()
 {
     /*
-     *  This function checks whether the config file exists and contains the neccessary key-value pairs.
+     *  This function checks whether the config file exists and if it contains the neccessary key-value pairs.
      *  It does not check however, whether they are valid.
      * */
     KConfig * config = m_styleconfig;
@@ -163,7 +168,7 @@ int RocketConfigManager::getColumnNumber()
 
 bool RocketConfigManager::getVerticalModeSetting()
 {
-    QString value = m_styleconfig->group("dimensions").readEntry("vertical_orientation");
+    QString value = getStyleValue("dimensions","vertical_orientation");
     if (value==QString("true")) return true;
     if (value==QString("false")) return false;
     qDebug() <<  "Invalid argument for 'vertical_orientation'. Falling back to defaults...";
@@ -172,7 +177,7 @@ bool RocketConfigManager::getVerticalModeSetting()
 
 bool RocketConfigManager::getUsingSystemWallpaper()
 {
-    QString value = m_styleconfig->group("background").readEntry("use_system_wallpaper");
+    QString value = getStyleValue("background","use_system_wallpaper");
     if (value==QString("true")) return true;
     if (value==QString("false")) return false;
     qDebug() <<  "Invalid argument for 'use_system_wallpaper'. Falling back to defaults...";
@@ -181,8 +186,22 @@ bool RocketConfigManager::getUsingSystemWallpaper()
 
 int RocketConfigManager::getWallpaperScreen()
 {
-    QString value = m_styleconfig->group("background").readEntry("wallpaper_of_screen");
+    QString value = getStyleValue("background","wallpaper_of_screen");
     return value.toInt(); //returns 0 as default if a random string is entered.
+}
+
+int RocketConfigManager::getInvertedScrollFactorXfromSettings()
+{
+    QString value = getStyleValue("settings","inverted_scrolling_x");
+    bool val = (value==QString("false") ? false : true);
+    return (val ? -1 : 1);
+}
+
+int RocketConfigManager::getInvertedScrollFactorYfromSettings()
+{
+    QString value = getStyleValue("settings","inverted_scrolling_y");
+    bool inverted = (value==QString("true") ? true : false);
+    return (inverted ? -1 : 1);
 }
 
 void RocketConfigManager::checkAppGridConfigFile()

@@ -33,6 +33,8 @@ namespace RocketStyle {
 
     const bool use_system_wallpaper = true;
     const bool use_system_wallpaper_screen = 0;
+    const bool inverted_scrolling_x = false;
+    const bool inverted_scrolling_y = false;
 
     // Active Indicator
     const QBrush active_indicator_brush = QBrush(SecondaryColour,Qt::BrushStyle::SolidPattern);

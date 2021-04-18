@@ -327,7 +327,7 @@ void VerticalPager::wheelEvent(QWheelEvent *event)
         else // scrolling with a touchpad
         {
             touchpad = true; // touchpads need to build up some momentum, thus this switch
-            int delta = (event->angleDelta().y()==0 ? -(event->angleDelta().x()) : -(event->angleDelta().y()));
+            int delta = (event->angleDelta().y()==0 ? -(event->angleDelta().x())*ConfigManager.getInvertedScrollFactorXfromSettings() : event->angleDelta().y()*ConfigManager.getInvertedScrollFactorYfromSettings() );
             if (pages[0]->pos().y()-delta<=0 && pages[0]->pos().y()-delta>=-height()*(getNumberOfElements()-1))
             {
                 m_scrolltimeouttimer->stop();
