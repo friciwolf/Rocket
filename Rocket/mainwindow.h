@@ -32,6 +32,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
     void resizeEvent(QResizeEvent *event);
+    void leaveEvent(QEvent *event);
 
 
     ~MainWindow();

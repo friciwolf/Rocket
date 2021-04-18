@@ -73,6 +73,11 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     }
 }
 
+void MainWindow::leaveEvent(QEvent *event)
+{
+    qApp->exit();
+    event->accept();
+}
 
 void MainWindow::navigation(int key)
 {
