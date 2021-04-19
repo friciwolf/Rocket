@@ -20,6 +20,9 @@ public:
     KConfig * getAppGridConfig(){return m_appgridconfig;}
     void checkAppGridConfigFile();
     QString getStyleValue(QString group, QString key);
+    QColor getStyleValue(QString group, QString key, QColor defaultvalue);
+    int getStyleValue(QString group, QString key, int defaultvalue);
+    bool getStyleValue(QString group, QString key, bool defaultvalue);
     QColor getBaseColour();
     QColor getSecondaryColour();
     QPalette getBaseColourBackgroundPalette();

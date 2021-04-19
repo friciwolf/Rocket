@@ -1,8 +1,11 @@
 #include "rocketconfigmanager.h"
+#include "stylingparams.h"
 #include <KConfigSkeleton>
 #include <QPalette>
 #include <iterator>
 #include <vector>
+
+using namespace RocketConfig;
 
 class DefaultGroupsAndKeys {
 public:
@@ -10,30 +13,30 @@ public:
     DefaultGroupsAndKeys()
     {
         map<QString,QVariant> colors;
-        colors["base"] = RocketStyle::BaseColour;
-        colors["secondary"] = RocketStyle::SecondaryColour;
-        items["color"] = colors;
+        colors[Color::base] = RocketStyle::BaseColour;
+        colors[Color::secondary] = RocketStyle::SecondaryColour;
+        items[Color::group] = colors;
 
         map<QString,QVariant> font;
-        font["size1"] = QString::number(RocketStyle::fontsize1);
-        font["size2"] = QString::number(RocketStyle::fontsize2);
-        items["font"] = font;
+        font[Font::size1] = RocketStyle::fontsize1;
+        font[Font::size2] = RocketStyle::fontsize2;
+        items[Font::group] = font;
 
         map<QString,QVariant> dimensions;
-        dimensions["rows"] = QString::number(RocketStyle::m_rows);
-        dimensions["columns"] = QString::number(RocketStyle::m_cols);
-        dimensions["vertical_orientation"] = QString((RocketStyle::pager_vertical_orientation) ? "true" : "false");
-        items["dimensions"] = dimensions;
+        dimensions[Dimensions::rows] = RocketStyle::m_rows;
+        dimensions[Dimensions::columns] = RocketStyle::m_cols;
+        dimensions[Dimensions::verticalorientation] = RocketStyle::pager_vertical_orientation;
+        items[Dimensions::group] = dimensions;
 
         map<QString,QVariant> background;
-        background["use_system_wallpaper"] = QString((RocketStyle::use_system_wallpaper) ? "true" : "false");
-        background["wallpaper_of_screen"] = QString::number(RocketStyle::use_system_wallpaper_screen);
-        items["background"] = background;
+        background[Background::usesystemwallpaper] = RocketStyle::use_system_wallpaper;
+        background[Background::wallpaperofscreen] = RocketStyle::use_system_wallpaper_screen;
+        items[Background::group] = background;
 
         map<QString,QVariant> settigs;
-        settigs["inverted_scrolling_x"] = QString((RocketStyle::inverted_scrolling_x) ? "true" : "false");
-        settigs["inverted_scrolling_y"] = QString((RocketStyle::inverted_scrolling_y) ? "true" : "false");
-        items["settings"] = settigs;
+        settigs[Settings::invertedscrollingx] = RocketStyle::inverted_scrolling_x;
+        settigs[Settings::invertedscrollingy] = RocketStyle::inverted_scrolling_y;
+        items[Settings::group] = settigs;
     }
 };
 
@@ -77,30 +80,35 @@ QString RocketConfigManager::getStyleValue(QString group, QString key)
     return getStyleConfig()->group(group).readEntry(key);
 }
 
+QColor RocketConfigManager::getStyleValue(QString group, QString key, QColor defaultvalue)
+{
+    return getStyleConfig()->group(group).readEntry(key,defaultvalue);
+}
+
+int RocketConfigManager::getStyleValue(QString group, QString key, int defaultvalue)
+{
+    return getStyleConfig()->group(group).readEntry(key,defaultvalue);
+}
+
+bool RocketConfigManager::getStyleValue(QString group, QString key, bool defaultvalue)
+{
+    bool value = getStyleConfig()->group(group).readEntry(key,defaultvalue);
+    QString str = getStyleValue(group,key);
+    if (str==QString("true") || str==QString("false")) return value;
+    else {
+        qDebug() << "Invalid argument for" << key << "(" << str << "). Falling back to defaults...";
+        return defaultvalue;
+    }
+}
+
 QColor RocketConfigManager::getBaseColour()
 {
-    QString res = getStyleValue("color","base");
-    QStringList r = res.split(",");
-    if (r.size()==4) return QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),r[3].toInt());
-    if (r.size()==3) return QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),255);
-    else
-    {
-        qDebug() << "Invalid argument for 'base'. Falling back to defaults...";
-        return RocketStyle::BaseColour;
-    }
+    return getStyleValue(Color::group,Color::base,RocketStyle::BaseColour);
 }
 
 QColor RocketConfigManager::getSecondaryColour()
 {
-    QString res = getStyleValue("color","secondary");
-    QStringList r = res.split(",");
-    if (r.size()==4) return QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),r[3].toInt());
-    if (r.size()==3) return QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),255);
-    else
-    {
-        qDebug() << "Invalid argument for 'secondary'. Falling back to defaults...";
-        return RocketStyle::SecondaryColour;
-    }
+    return getStyleValue(Color::group,Color::secondary,RocketStyle::SecondaryColour);
 }
 
 QPalette RocketConfigManager::getBaseColourBackgroundPalette()
@@ -112,55 +120,47 @@ QPalette RocketConfigManager::getBaseColourBackgroundPalette()
 
 QBrush RocketConfigManager::getActiveIndicatorBrush()
 {
-    QString res = getStyleValue("color","secondary");
-    QStringList r = res.split(",");
-    if (r.size()==4) return QBrush(QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),r[3].toInt()),Qt::BrushStyle::SolidPattern);
-    if (r.size()==3) return QBrush(QColor(r[0].toInt(),r[1].toInt(),r[2].toInt(),255),Qt::BrushStyle::SolidPattern);
-    else
-    {
-        qDebug() << "Invalid argument for 'secondary'. Falling back to defaults...";
-        return RocketStyle::active_indicator_brush;
-    }
+    return QBrush(getSecondaryColour(),Qt::BrushStyle::SolidPattern);
 }
 
 int RocketConfigManager::getFontSize1()
 {
-    int size = getStyleValue("font","size1").toInt();
+    int size = getStyleValue(Font::group,Font::size1,RocketStyle::fontsize1);
     if (size>0) return size;
     else {
-        qDebug() << "Invalid argument for 'size1'. Falling back to defaults...";
+        qDebug() << "Invalid argument for" << Font::size1 << "(" << size << "). Falling back to defaults...";
         return RocketStyle::fontsize1;
     }
 }
 
 int RocketConfigManager::getFontSize2()
 {
-    int size = getStyleValue("font","size2").toInt();
+    int size = getStyleValue(Font::group,Font::size2,RocketStyle::fontsize2);
     if (size>0) return size;
     else {
-        qDebug() << "Invalid argument for 'size2'. Falling back to defaults...";
+        qDebug() << "Invalid argument for" << Font::size2 << "(" << size << "). Falling back to defaults...";
         return RocketStyle::fontsize2;
     }
 }
 
 int RocketConfigManager::getRowNumber()
 {
-    int rows = getStyleValue("dimensions","rows").toInt();
+    int rows = getStyleValue(Dimensions::group,Dimensions::rows,RocketStyle::m_rows);
     if (rows>0) return rows;
     else
     {
-        qDebug() << "Invalid argument for 'rows'. Falling back to defaults...";
+        qDebug() << "Invalid argument for" << Dimensions::rows << "(" << rows << "). Falling back to defaults...";
         return RocketStyle::m_rows;
     }
 }
 
 int RocketConfigManager::getColumnNumber()
 {
-    int cols = getStyleValue("dimensions","columns").toInt();
+    int cols = getStyleValue(Dimensions::group,Dimensions::columns,RocketStyle::m_cols);
     if (cols>1) return cols;
     else
     {
-        qDebug() << "Invalid argument for 'columns'. Falling back to defaults...";
+        qDebug() << "Invalid argument for" << Dimensions::columns << "(" << cols << "). Falling back to defaults...";
         if (cols==1) qDebug() << "only columns more than one are supported...";
         return RocketStyle::m_cols;
     }
@@ -168,39 +168,28 @@ int RocketConfigManager::getColumnNumber()
 
 bool RocketConfigManager::getVerticalModeSetting()
 {
-    QString value = getStyleValue("dimensions","vertical_orientation");
-    if (value==QString("true")) return true;
-    if (value==QString("false")) return false;
-    qDebug() <<  "Invalid argument for 'vertical_orientation'. Falling back to defaults...";
-    return RocketStyle::use_system_wallpaper;
+    return getStyleValue(Dimensions::group,Dimensions::verticalorientation,RocketStyle::pager_vertical_orientation);
 }
 
 bool RocketConfigManager::getUsingSystemWallpaper()
 {
-    QString value = getStyleValue("background","use_system_wallpaper");
-    if (value==QString("true")) return true;
-    if (value==QString("false")) return false;
-    qDebug() <<  "Invalid argument for 'use_system_wallpaper'. Falling back to defaults...";
-    return RocketStyle::use_system_wallpaper;
+    return getStyleValue(Background::group,Background::usesystemwallpaper,RocketStyle::use_system_wallpaper);
 }
 
 int RocketConfigManager::getWallpaperScreen()
 {
-    QString value = getStyleValue("background","wallpaper_of_screen");
-    return value.toInt(); //returns 0 as default if a random string is entered.
+    return getStyleValue(Background::group,Background::wallpaperofscreen,RocketStyle::use_system_wallpaper_screen);
 }
 
 int RocketConfigManager::getInvertedScrollFactorXfromSettings()
 {
-    QString value = getStyleValue("settings","inverted_scrolling_x");
-    bool val = (value==QString("false") ? false : true);
+    bool val = getStyleValue(Settings::group,Settings::invertedscrollingx,RocketStyle::inverted_scrolling_x);
     return (val ? -1 : 1);
 }
 
 int RocketConfigManager::getInvertedScrollFactorYfromSettings()
 {
-    QString value = getStyleValue("settings","inverted_scrolling_y");
-    bool inverted = (value==QString("true") ? true : false);
+    bool inverted = getStyleValue(Settings::group,Settings::invertedscrollingy,RocketStyle::inverted_scrolling_y);
     return (inverted ? -1 : 1);
 }
 

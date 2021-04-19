@@ -32,12 +32,45 @@ namespace RocketStyle {
     const bool pager_vertical_orientation = false;
 
     const bool use_system_wallpaper = true;
-    const bool use_system_wallpaper_screen = 0;
+    const int use_system_wallpaper_screen = 0;
     const bool inverted_scrolling_x = false;
     const bool inverted_scrolling_y = false;
 
     // Active Indicator
     const QBrush active_indicator_brush = QBrush(SecondaryColour,Qt::BrushStyle::SolidPattern);
+}
+
+namespace RocketConfig {
+    namespace Color {
+        const QString group = QString("color");
+        const QString base = QString("base");
+        const QString secondary = QString("secondary");
+    }
+
+    namespace Font {
+        const QString group = QString("font");
+        const QString size1 = QString("size1");
+        const QString size2 = QString("size2");
+    }
+
+    namespace Dimensions {
+        const QString group = QString("dimensions");
+        const QString rows = QString("rows");
+        const QString columns = QString("columns");
+        const QString verticalorientation = QString("vertical_orientation");
+    }
+
+    namespace Background {
+        const QString group = QString("background");
+        const QString usesystemwallpaper = QString("use_system_wallpaper");
+        const QString wallpaperofscreen = QString("wallpaper_of_screen");
+    }
+
+    namespace Settings {
+        const QString group = QString("settings");
+        const QString invertedscrollingx = QString("inverted_scrolling_x");
+        const QString invertedscrollingy = QString("inverted_scrolling_y");
+    }
 }
 
 #endif // STYLINGPARAMS_H
