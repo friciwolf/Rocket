@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    a.setStartDragTime(3000);
+    //a.setStartDragTime(3000);
 
     QString name = a.applicationName().toLower();
 
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
     QPropertyAnimation * animation = new QPropertyAnimation(&w,"windowOpacity");
     animation->setStartValue(0);
     animation->setEndValue(1);
-    animation->setDuration(500);
+    animation->setDuration(150);
     //animation->setEasingCurve(QEasingCurve::OutQuad);
     animation->start();
 
