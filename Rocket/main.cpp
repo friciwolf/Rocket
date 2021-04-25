@@ -6,6 +6,7 @@
 #include <KConfigGroup>
 #include <QDebug>
 #include <QLockFile>
+#include <QProcess>
 
 extern RocketConfigManager ConfigManager = RocketConfigManager();
 
@@ -17,6 +18,9 @@ int main(int argc, char *argv[])
     QLockFile mainlockFile(QDir::homePath()+"/.config/"+name+"/"+name+"main.lock");
     if (!mainlockFile.tryLock(100))
     {
+        QProcess p;
+        p.start("pkill rocket");
+        p.waitForFinished(1000);
         return 1;
     }
 

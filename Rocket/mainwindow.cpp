@@ -14,7 +14,6 @@
 #include <KRun>
 #include <QTimer>
 #include <QtDBus>
-#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
