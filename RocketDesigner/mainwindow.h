@@ -17,8 +17,13 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    void resizeEvent(QResizeEvent *event);
     ~MainWindow();
+
+public slots:
+    void OkClicked();
+    void ResetClicked();
+    void ApplyClicked();
+    void CancelClicked();
 
 private:
     Ui::MainWindow *ui;
