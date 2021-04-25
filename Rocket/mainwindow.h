@@ -9,7 +9,6 @@
 #include "pager/pagercircularindicator.h"
 #include "pager/pagercircularactiveindicator.h"
 #include "searchfield/searchfield.h"
-#include "stylingparams.h"
 
 namespace Ui {
 class MainWindow;

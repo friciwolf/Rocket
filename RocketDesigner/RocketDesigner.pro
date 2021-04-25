@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2021-04-04T22:20:17
+# Project created by QtCreator 2021-04-19T21:43:39
 #
 #-------------------------------------------------
 
@@ -8,8 +8,10 @@ QT       += core gui KIOCore KIOFileWidgets KIOWidgets KNTLM KI18n KConfigCore K
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Rocket
+TARGET = RocketDesigner
 TEMPLATE = app
+INCLUDEPATH += ../Rocket
+DEPENDPATH += ../Rocket
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -27,37 +29,37 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    pager/pager.cpp \
-    pager/pageritem.cpp \
-    pager/pagercircularindicator.cpp \
-    pager/pagercircularactiveindicator.cpp \
-    icongrid/icongrid.cpp \
-    icongrid/icongriditem.cpp \
-    icongrid/icongriditemcanvas.cpp \
-    icongrid/kmenuitems.cpp \
-    icongrid/kapplication.cpp \
-    searchfield/searchfield.cpp \
-    tools/searchingapps.cpp \
-    tools/rocketconfigmanager.cpp \
-    pager/verticalpager.cpp \
-    ../RocketLibrary/rocketlibrary.cpp
+        pager/pager.cpp \
+        pager/pageritem.cpp \
+        pager/pagercircularindicator.cpp \
+        pager/pagercircularactiveindicator.cpp \
+        icongrid/icongrid.cpp \
+        icongrid/icongriditem.cpp \
+        icongrid/icongriditemcanvas.cpp \
+        icongrid/kmenuitems.cpp \
+        icongrid/kapplication.cpp \
+        searchfield/searchfield.cpp \
+        tools/searchingapps.cpp \
+        tools/rocketconfigmanager.cpp \
+        pager/verticalpager.cpp \
+      ../RocketLibrary/rocketlibrary.cpp
 
 HEADERS += \
         mainwindow.h \
-    pager/pager.h \
-    pager/pageritem.h \
-    pager/pagercircularindicator.h \
-    pager/pagercircularactiveindicator.h \
-    icongrid/icongrid.h \
-    icongrid/icongriditem.h \
-    icongrid/icongriditemcanvas.h \
-    icongrid/kmenuitems.h \
-    icongrid/kapplication.h \
-    searchfield/searchfield.h \
-    tools/searchingapps.h \
-    tools/rocketconfigmanager.h \
-    pager/verticalpager.h \
-    ../RocketLibrary/rocketlibrary.h
+        pager/pager.h \
+        pager/pageritem.h \
+        pager/pagercircularindicator.h \
+        pager/pagercircularactiveindicator.h \
+        icongrid/icongrid.h \
+        icongrid/icongriditem.h \
+        icongrid/icongriditemcanvas.h \
+        icongrid/kmenuitems.h \
+        icongrid/kapplication.h \
+        searchfield/searchfield.h \
+        tools/searchingapps.h \
+        tools/rocketconfigmanager.h \
+        pager/verticalpager.h \
+      ../RocketLibrary/rocketlibrary.h
 
 FORMS += \
         mainwindow.ui
@@ -68,4 +70,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 SUBDIRS += \
-    ../RocketLibrary/RocketLibrary.pro
+      ../RocketLibrary/RocketLibrary.pro \
+      ../Rocket.pro

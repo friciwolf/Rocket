@@ -5,15 +5,17 @@
 #include "pager/pageritem.h"
 #include "pager/pagercircularindicator.h"
 #include "pager/pagercircularactiveindicator.h"
-#include "stylingparams.h"
 
 #include <QGridLayout>
 #include <QPainter>
 #include <QKeyEvent>
 #include <QDebug>
-#include <KRun>
 #include <QTimer>
 #include <QtDBus>
+
+#include <KRun>
+#include <KService>
+#include <KDesktopFile>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -179,17 +181,11 @@ void MainWindow::executeSelected()
     if (active==-1) return;
     KApplication application = grid->getItems()[active]->getApplication();
     QList<QUrl> urls;
-    if (application.terminal())
+    KDesktopFile d(application.entrypath());
+    KService s(&d,application.entrypath());
+    if (KRun::run(s,urls,nullptr))
     {
-        if(KRun::run("konsole -e "+application.exec(),urls,nullptr,application.name(),application.iconname()))
-        {
-            qApp->exit();
-        }
-    }
-    else {
-        if(KRun::run(application.exec(),urls,nullptr,application.name(),application.iconname())) {
-            qApp->exit();
-        }
+        qApp->exit();
     }
 }
 

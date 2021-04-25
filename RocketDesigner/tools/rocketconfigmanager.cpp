@@ -254,20 +254,7 @@ bool RocketConfigManager::updateApplicationList()
     KMenuItems menuitems;
     menuitems.scanElements();
 
-    bool changes = false;
-    if (menuitems.getApplications().size()!=m_apps.size()) changes = true;
-    else
-    {
-        for (int i=0;i<m_apps.size(); i++)
-        {
-            if (!(menuitems.getApplications()[i]==m_apps[i]))
-            {
-                changes = true;
-                break;
-            }
-        }
-    }
-    if (changes)
+    if (menuitems.getApplications().size()!=m_apps.size())
     {
         qDebug() << "Appgrid configuration changed. Generating new configuration file...";
         for (QString group : m_appgridconfig->groupList())

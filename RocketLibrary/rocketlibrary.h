@@ -1,9 +1,8 @@
-#ifndef STYLINGPARAMS_H
-#define STYLINGPARAMS_H
+#ifndef ROCKETLIBRARY_H
+#define ROCKETLIBRARY_H
 
+#include <QString>
 #include <QPalette>
-#include <QFont>
-
 
 namespace RocketStyle {
     /*
@@ -73,4 +72,4 @@ namespace RocketConfig {
     }
 }
 
-#endif // STYLINGPARAMS_H
+#endif // ROCKETLIBRARY_H

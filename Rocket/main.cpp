@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QString name = a.applicationName().toLower();
-    QLockFile mainlockFile(QDir::homePath()+"/.config/"+name+"/"+name+"main.lock");
+    QLockFile mainlockFile(QDir::homePath()+"/.config/"+name+"/."+name+"main.lock");
     if (!mainlockFile.tryLock(100))
     {
         QProcess p;
