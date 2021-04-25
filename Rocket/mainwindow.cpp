@@ -13,11 +13,20 @@
 #include <QDebug>
 #include <KRun>
 #include <QTimer>
+#include <QtDBus>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    setStarupArgs(new QStringList(qApp->arguments()));
+
+    QDBusConnection connection = QDBusConnection::sessionBus();
+    connection.interface()->registerService("com.friciwolf.rocket");
+    connection.registerObject("/",this,QDBusConnection::ExportAllSlots);
+    connection.connect("com.friciwolf.rocket","/","com.friciwolf.rocket","dBusToggleWindowState",this,SLOT(MainWindow::dBusToggleWindowState()));
+
     ui->setupUi(this);
     setMouseTracking(true);
 
@@ -51,8 +60,18 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(searchfield,&SearchField::navigate,this,&MainWindow::navigation);
         connect(searchfield,&QLineEdit::returnPressed,this,&MainWindow::executeSelected);
     }
+}
 
-
+void MainWindow::dBusToggleWindowState(QString event)
+{
+    if (event==QString("_toggle") && !getStarupArgs()->contains("--dbus"))
+    {
+        qApp->exit();
+    }
+    if (getStarupArgs()->contains("--dbus"))
+    {
+        getStarupArgs()->removeAt(getStarupArgs()->indexOf("--dbus"));
+    }
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QLineEdit>
+#include <QLockFile>
 #include "pager/pager.h"
 #include "pager/verticalpager.h"
 #include "pager/pagercircularindicator.h"
@@ -33,6 +34,8 @@ public:
 
     void resizeEvent(QResizeEvent *event);
     void leaveEvent(QEvent *event);
+    void setStarupArgs(QStringList * args){m_startupargs = args;}
+    QStringList * getStarupArgs(){return m_startupargs;}
 
 
     ~MainWindow();
@@ -40,9 +43,11 @@ public:
 public slots:
     void navigation(int key);
     void executeSelected();
+    void dBusToggleWindowState(QString event);
 
 private:
     Ui::MainWindow *ui;
+    QStringList * m_startupargs;
 };
 
 #endif // MAINWINDOW_H

@@ -5,6 +5,7 @@
 #include <QDir>
 #include <KConfigGroup>
 #include <QDebug>
+#include <QLockFile>
 
 extern RocketConfigManager ConfigManager = RocketConfigManager();
 
@@ -12,9 +13,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    //a.setStartDragTime(3000);
-
     QString name = a.applicationName().toLower();
+    QLockFile mainlockFile(QDir::homePath()+"/.config/"+name+"/"+name+"main.lock");
+    if (!mainlockFile.tryLock(100))
+    {
+        return 1;
+    }
 
     KConfig styleconfig(QDir::homePath()+"/.config/"+name+"/"+name+"style",KConfig::OpenFlag::SimpleConfig);
     KConfig appgridconfig(QDir::homePath()+"/.config/"+name+"/"+name+"appgrid",KConfig::OpenFlag::SimpleConfig);
@@ -25,7 +29,6 @@ int main(int argc, char *argv[])
     ConfigManager.checkAppGridConfigFile();
 
     MainWindow w;
-
     w.setWindowOpacity(0);
     w.showFullScreen();
 
@@ -34,7 +37,6 @@ int main(int argc, char *argv[])
     animation->setStartValue(0);
     animation->setEndValue(1);
     animation->setDuration(150);
-    //animation->setEasingCurve(QEasingCurve::OutQuad);
     animation->start();
 
     if(ConfigManager.updateApplicationList())
