@@ -8,6 +8,7 @@ Features:
  - Search for keywords (such as "file manager")
  - Scroll support for touchpad, mouse and the mouse wheel
  - Keyboard navigation
+ - Launch by pressing the Meta button
 
 For more information check out the **wiki** and the **release notes**.
 
