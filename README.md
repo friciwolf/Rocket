@@ -31,6 +31,9 @@ Please also send in bug reports, development is still in early stage*. It has be
 ## Custom Grid with increased Font and Keyboard Navigation
 ![Alt text](/screenshots/screenshot_large_grid.jpeg?raw=true "")
 
+## Rocket Designer, the Customization Tool
+![Alt text](/screenshots/rocket_designer.jpg?raw=true "")
+
 -------------------------------------------
 \* Disclaimer: I'm not a professional developer, but it works on my configuration perfectly, and I love it. However, on your custom environment, you might experience unwanted bugs -- feel free to fork and to contribute.
 This software does not contain any code which messes with your base system, so if it does not work for you, it's easy to uninstall -- just follow the instructions in the release notes.
