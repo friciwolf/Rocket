@@ -32,7 +32,7 @@ Please also send in bug reports, development is still in early stage*. It has be
 ![Alt text](/screenshots/screenshot_large_grid.jpeg?raw=true "")
 
 ## Rocket Designer, the Customization Tool
-![Alt text](/screenshots/rocket_designer.jpg?raw=true "")
+![Alt text](/screenshots/rocket_designer.png?raw=true "")
 
 -------------------------------------------
 \* Disclaimer: I'm not a professional developer, but it works on my configuration perfectly, and I love it. However, on your custom environment, you might experience unwanted bugs -- feel free to fork and to contribute.
