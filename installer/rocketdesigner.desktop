@@ -1,0 +1,18 @@
+[Desktop Entry]
+Comment=Design your own Rocket (Launcher)!
+Exec=~/.local/bin/rocketdesigner
+GenericName=
+Icon=rocketdesigner
+MimeType=
+Name=Rocket Designer
+NoDisplay=false
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+StartupWMClass=RocketDesigner

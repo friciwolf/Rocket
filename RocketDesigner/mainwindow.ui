@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Rocket Designer</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGroupBox" name="groupBox">
@@ -403,27 +403,27 @@
     <widget class="QCheckBox" name="horizontalInversionCheckBox">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>240</x>
        <y>40</y>
        <width>221</width>
        <height>22</height>
       </rect>
      </property>
      <property name="text">
-      <string>Inverted horizontal Scrolling</string>
+      <string>Inverted Horizontal Scrolling</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="verticalInversionCheckBox">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>240</x>
        <y>80</y>
        <width>221</width>
        <height>22</height>
       </rect>
      </property>
      <property name="text">
-      <string>Inverted vertical Scrolling</string>
+      <string>Inverted Vertical Scrolling</string>
      </property>
     </widget>
     <widget class="QComboBox" name="gridOrientationCombo">
@@ -483,6 +483,61 @@
      </property>
      <property name="text">
       <string>Select Custom Wallpaper</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="systemWallpaperScreenSpin">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>156</y>
+       <width>52</width>
+       <height>32</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="systemWallpaperScreenLabel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>156</y>
+       <width>151</width>
+       <height>30</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Use Wallpaper of Screen</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="currentWallpaperLabel">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>187</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Current Wallpaper:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="wallpaperLabel">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>207</y>
+       <width>221</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>
@@ -546,7 +601,7 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>Font Size of the Icons and the Search Bar</string>
+      <string>Font Size of the Icons and of the Search Bar</string>
      </property>
      <property name="statusTip">
       <string/>
@@ -560,6 +615,9 @@
      <property name="maximum">
       <number>100</number>
      </property>
+     <property name="value">
+      <number>10</number>
+     </property>
     </widget>
     <widget class="QLabel" name="label_11">
      <property name="geometry">
@@ -569,6 +627,9 @@
        <width>71</width>
        <height>20</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>Font Size of the &quot;No results found&quot; Message</string>
      </property>
      <property name="text">
       <string>Secondary</string>
@@ -583,6 +644,9 @@
        <height>20</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>Font Size of the Icons and of the Search Bar</string>
+     </property>
      <property name="text">
       <string>Primary</string>
      </property>
@@ -593,17 +657,31 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>251</width>
+      <width>271</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
-     <string>Open Rocket if Meta Key is Pressed</string>
+     <string>Open Rocket if the Meta Key is Pressed</string>
     </property>
    </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>rocketMetaCheckBox</tabstop>
+  <tabstop>rowSpin</tabstop>
+  <tabstop>columnSpin</tabstop>
+  <tabstop>gridOrientationCombo</tabstop>
+  <tabstop>horizontalInversionCheckBox</tabstop>
+  <tabstop>verticalInversionCheckBox</tabstop>
+  <tabstop>systemWallpaperCheckBox</tabstop>
+  <tabstop>wallpaperSelectorButton</tabstop>
+  <tabstop>baseColourPickerButton</tabstop>
+  <tabstop>secondaryColourPickerButton</tabstop>
+  <tabstop>font1Spin</tabstop>
+  <tabstop>font2Spin</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -619,6 +697,38 @@
     <hint type="destinationlabel">
      <x>135</x>
      <y>276</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>systemWallpaperCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>systemWallpaperScreenSpin</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>210</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>415</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>systemWallpaperCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>systemWallpaperScreenLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>210</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>305</x>
+     <y>210</y>
     </hint>
    </hints>
   </connection>

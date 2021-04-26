@@ -37,6 +37,10 @@ namespace RocketStyle {
 
     // Active Indicator
     const QBrush active_indicator_brush = QBrush(SecondaryColour,Qt::BrushStyle::SolidPattern);
+
+    // dbus and kwin starter
+    const QString kwindbus = QString("com.friciwolf.rocket,/,local.rocket.MainWindow,dBusToggleWindowState,_toggle");
+    const bool kwin_start_meta = false;
 }
 
 namespace RocketConfig {
@@ -69,6 +73,8 @@ namespace RocketConfig {
         const QString group = QString("settings");
         const QString invertedscrollingx = QString("inverted_scrolling_x");
         const QString invertedscrollingy = QString("inverted_scrolling_y");
+        const QString kwinrcoldmeta = QString("kwinrc_old_meta_value");
+        const QString metastart = QString("meta_start");
     }
 }
 

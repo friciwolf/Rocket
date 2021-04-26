@@ -12,7 +12,6 @@ extern RocketConfigManager ConfigManager = RocketConfigManager();
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    qDebug() << RocketStyle::m_cols;
 
     QString name = QString("rocket");
 
