@@ -2,7 +2,6 @@
 Comment=Application Launcher for KDE Plasma
 Exec=~/.local/bin/rocket
 GenericName=
-Icon=rocket
 MimeType=
 Name=Rocket
 NoDisplay=true

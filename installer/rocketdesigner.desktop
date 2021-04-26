@@ -2,7 +2,6 @@
 Comment=Design your own Rocket (Launcher)!
 Exec=~/.local/bin/rocketdesigner
 GenericName=
-Icon=rocketdesigner
 MimeType=
 Name=Rocket Designer
 NoDisplay=false
