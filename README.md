@@ -12,7 +12,11 @@ Features:
 
 For more information check out the **wiki** and the **release notes**.
 
-Please also send in bug reports, development is still in early stage*. It has been tested on Kubuntu, but it should also work on any platform with KDE installed.
+# Installation
+
+Rocket has been tested on Kubuntu and on Debian, but it should also work on any platform with KDE installed.
+
+Clone the repository or download the zipped file in the folder ```installer```. Then make the bash script ```installer.sh``` executable via ```chmod +x installer.sh``` and run it with ```./installer.sh```.
 
 # Screenshot Gallery
 
