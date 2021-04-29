@@ -32,7 +32,7 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     setFixedSize(parent->size());
 
     m_kapplications = ConfigManager.getApplications();
-    constructPager(m_kapplications);
+    //constructPager(m_kapplications);
 }
 
 void Pager::constructPager(std::vector<KApplication> kapplications)
@@ -220,6 +220,12 @@ void Pager::goToPage(int deltaPage)
 
 void Pager::resizeEvent(QResizeEvent *event)
 {
+    // if not in fullscreen, don't bother constructing the pager...
+    if (parentWidget()->size().width()<17)
+    {
+        event->accept();
+        return;
+    }
     updatePager(m_kapplications);
     for (int i=0;i<pages.size();i++)
     {

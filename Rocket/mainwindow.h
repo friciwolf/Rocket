@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLineEdit>
 #include <QLockFile>
+#include <QThread>
 #include "pager/pager.h"
 #include "pager/verticalpager.h"
 #include "pager/pagercircularindicator.h"
@@ -43,10 +44,24 @@ public slots:
     void navigation(int key);
     void executeSelected();
     void dBusToggleWindowState(QString event);
+    void pagerUpdaterMethod();
 
 private:
     Ui::MainWindow *ui;
     QStringList * m_startupargs;
+};
+
+class ComparingApps : public QThread
+{
+    Q_OBJECT
+    void run() override {
+        if(ConfigManager.updateApplicationList())
+        {
+            emit pagerUpdateNeeded();
+        }
+    }
+signals:
+    void pagerUpdateNeeded();
 };
 
 #endif // MAINWINDOW_H

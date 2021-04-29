@@ -1,4 +1,5 @@
 #include "kapplication.h"
+#include <QDebug>
 
 KApplication::KApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath)
 {
@@ -8,10 +9,10 @@ KApplication::KApplication(QString name, QString iconname, QIcon icon, QString e
     m_exec = exec;
     m_comment = comment;
     m_terminal = terminal;
-    m_keywords = keywords;
+    m_keywords = (keywords.size()==1 ? (keywords[0].contains(",") ? keywords[0].split(",") : keywords) : keywords);
     m_genericname = genericname;
     m_untranslatedGenericName = untranslatedGenericName;
-    m_categories = categories;
+    m_categories = (categories.size()==1 ? (categories[0].contains(",") ? categories[0].split(",") : categories) : categories);
     m_entrypath = entrypath;
 }
 

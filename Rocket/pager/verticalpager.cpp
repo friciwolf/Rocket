@@ -32,7 +32,7 @@ VerticalPager::VerticalPager(QWidget *parent) : QWidget(parent)
     setFixedSize(parent->size());
 
     m_kapplications = ConfigManager.getApplications();
-    constructPager(m_kapplications);
+    //constructPager(m_kapplications);
 }
 
 void VerticalPager::constructPager(std::vector<KApplication> kapplications)
@@ -192,6 +192,12 @@ void VerticalPager::goToPage(int deltaPage)
 
 void VerticalPager::resizeEvent(QResizeEvent *event)
 {
+    // if not in fullscreen, don't bother constructing the pager...
+    if (parentWidget()->size().width()<17)
+    {
+        event->accept();
+        return;
+    }
     updatePager(m_kapplications);
     for (int i=0;i<pages.size();i++)
     {

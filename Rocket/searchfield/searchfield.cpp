@@ -6,15 +6,7 @@
 
 SearchField::SearchField(QWidget *parent) : QLineEdit(parent)
 {
-    setAutoFillBackground(true);
-    setPlaceholderText("search");
-    addAction(QIcon::fromTheme("search"),QLineEdit::LeadingPosition);
 
-    QFont fieldfont = font();
-    fieldfont.setPointSize(ConfigManager.getFontSize1());
-    setFont(fieldfont);
-
-    positioning();
 }
 
 void SearchField::positioning()
@@ -25,6 +17,20 @@ void SearchField::positioning()
 
 void SearchField::resizeEvent(QResizeEvent *event)
 {
+    if (parentWidget()->size().width()<17)
+    {
+        event->accept();
+        return;
+    }
+
+    //it costs less time to set these properties here
+    setAutoFillBackground(true);
+    setPlaceholderText("search");
+    addAction(QIcon::fromTheme("search"),QLineEdit::LeadingPosition);
+
+    QFont fieldfont = font();
+    fieldfont.setPointSize(ConfigManager.getFontSize1());
+    setFont(fieldfont);
     positioning();
 }
 

@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     setMouseTracking(true);
+    setWindowOpacity(0);
 
     if (ConfigManager.getVerticalModeSetting())
     {
@@ -61,6 +62,12 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(searchfield,&SearchField::navigate,this,&MainWindow::navigation);
         connect(searchfield,&QLineEdit::returnPressed,this,&MainWindow::executeSelected);
     }
+
+    // comparing app lists might take a while, so start it in a new thread...
+    ComparingApps * comparerthread = new ComparingApps();
+    connect(comparerthread, &ComparingApps::pagerUpdateNeeded,this,&MainWindow::pagerUpdaterMethod);
+    connect(comparerthread, &ComparingApps::finished,comparerthread,&QObject::deleteLater);
+    comparerthread->start();
 }
 
 void MainWindow::dBusToggleWindowState(QString event)
@@ -75,8 +82,21 @@ void MainWindow::dBusToggleWindowState(QString event)
     }
 }
 
+void MainWindow::pagerUpdaterMethod()
+{
+    pager->setApplicationList(ConfigManager.getApplications());
+    pager->updatePager(ConfigManager.getApplications());
+    qDebug() << "application list updated";
+}
+
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
+    // if not in fullscreen, don't bother constructing the pager...
+    if (size().width()<17)
+    {
+        event->accept();
+        return;
+    }
     if (ConfigManager.getVerticalModeSetting())
     {
         verticalpager->setFixedSize(width(),height());
@@ -91,6 +111,13 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         active_indicator->positioning();
         searchfield->positioning();
     }
+
+    setWindowOpacity(0);
+    QPropertyAnimation * animation = new QPropertyAnimation(this,"windowOpacity");
+    animation->setStartValue(0);
+    animation->setEndValue(1);
+    animation->setDuration(150);
+    animation->start();
 }
 
 void MainWindow::leaveEvent(QEvent *event)

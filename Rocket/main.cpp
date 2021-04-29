@@ -29,26 +29,12 @@ int main(int argc, char *argv[])
 
     ConfigManager.setStyleConfig(&styleconfig);
     ConfigManager.checkStyleConfigFile();
+
     ConfigManager.setAppGridConfig(&appgridconfig);
     ConfigManager.checkAppGridConfigFile();
 
     MainWindow w;
-    w.setWindowOpacity(0);
     w.showFullScreen();
-
-
-    QPropertyAnimation * animation = new QPropertyAnimation(&w,"windowOpacity");
-    animation->setStartValue(0);
-    animation->setEndValue(1);
-    animation->setDuration(150);
-    animation->start();
-
-    if(ConfigManager.updateApplicationList())
-    {
-        w.pager->setApplicationList(ConfigManager.getApplications());
-        w.pager->updatePager(ConfigManager.getApplications());
-        qDebug() << "application list updated";
-    }
 
     return a.exec();
 }

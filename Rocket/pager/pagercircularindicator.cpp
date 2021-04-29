@@ -29,11 +29,13 @@ void PagerCircularIndicator::positioning()
     m_spacing = m_radius;
     if (ConfigManager.getVerticalModeSetting())
     {
+        m_elements = m_verticalpager->getNumberOfElements();
         setFixedSize(m_parent_geometry.size().width()*0.05,m_elements*(2*m_radius+m_spacing));
         setGeometry((m_parent_geometry.width()-width()),(m_parent_geometry.height()-height())*0.5,width(),height());
     }
     else
     {
+        m_elements = m_pager->getNumberOfElements();
         setFixedSize(m_elements*(2*m_radius+m_spacing),m_parent_geometry.size().height()*0.1);
         setGeometry((m_parent_geometry.width()-width())*0.5,(m_parent_geometry.height()-height()),width(),height());
     }
