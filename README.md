@@ -29,7 +29,7 @@ Clone the repository or download the zipped file in the folder ```installer```. 
 ## Searching
 ![Alt text](/screenshots/screenshot_search.jpeg?raw=true "")
 
-## Custom Grid with Boxes Disabled in Vertical Grid View
+## Custom Grid (Boxes Disabled, Vertical Grid and more Columns and Rows)
 ![Alt text](/screenshots/screenshot_large_grid_noboxes.jpeg?raw=true "")
 
 ## Rocket Designer, the Customization Tool
