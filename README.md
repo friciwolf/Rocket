@@ -26,15 +26,11 @@ Clone the repository or download the zipped file in the folder ```installer```. 
 ## Dark Theme
 ![Alt text](/screenshots/screenshot_dark.jpeg?raw=true "")
 
-
 ## Searching
 ![Alt text](/screenshots/screenshot_search.jpeg?raw=true "")
 
-## Vertical Grid View
-![Alt text](/screenshots/vertical_scrolling.jpg?raw=true "")
-
-## Custom Grid with increased Font and Keyboard Navigation
-![Alt text](/screenshots/screenshot_large_grid.jpeg?raw=true "")
+## Custom Grid with Boxes Disabled in Vertical Grid View
+![Alt text](/screenshots/screenshot_large_grid_noboxes.jpeg?raw=true "")
 
 ## Rocket Designer, the Customization Tool
 ![Alt text](/screenshots/rocket_designer.png?raw=true "")
