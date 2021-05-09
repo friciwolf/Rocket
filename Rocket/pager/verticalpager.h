@@ -9,6 +9,7 @@
 #include <QScrollArea>
 #include <QPropertyAnimation>
 #include <QTimer>
+#include <QGraphicsView>
 #include "icongrid/kmenuitems.h"
 
 class VerticalPager : public QWidget
@@ -65,6 +66,7 @@ private:
     bool m_icon_dragging_on = false; //true: icons are dragged
     std::vector<KApplication> m_kapplications;
     QTimer * m_scrolltimeouttimer = new QTimer();
+    QGraphicsView * m_backgroundView;
 };
 
 #endif // VERTICALPAGER_H

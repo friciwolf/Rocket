@@ -13,6 +13,7 @@ namespace RocketStyle {
     const QColor SecondaryColour = QColor(0,0,0,100);
     const int fontsize1 = 10;
     const int fontsize2 = 20;
+    const int blurradius = 0;
 
     // A click is recongnized only if the mouse moves 10 pixels
     const int click_tolerance = 100;
@@ -67,6 +68,7 @@ namespace RocketConfig {
         const QString group = QString("background");
         const QString usesystemwallpaper = QString("use_system_wallpaper");
         const QString wallpaperofscreen = QString("wallpaper_of_screen");
+        const QString blurradius = QString("background_blur_radius");
     }
 
     namespace Settings {

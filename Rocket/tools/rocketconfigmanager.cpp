@@ -31,6 +31,7 @@ public:
         map<QString,QVariant> background;
         background[Background::usesystemwallpaper] = RocketStyle::use_system_wallpaper;
         background[Background::wallpaperofscreen] = RocketStyle::use_system_wallpaper_screen;
+        background[Background::blurradius] = RocketStyle::blurradius;
         items[Background::group] = background;
 
         map<QString,QVariant> settigs;
@@ -179,6 +180,16 @@ bool RocketConfigManager::getUsingSystemWallpaper()
 int RocketConfigManager::getWallpaperScreen()
 {
     return getStyleValue(Background::group,Background::wallpaperofscreen,RocketStyle::use_system_wallpaper_screen);
+}
+
+int RocketConfigManager::getBlurRadius()
+{
+    int radius= getStyleValue(Background::group,Background::blurradius,RocketStyle::blurradius);
+    if (radius>=0) return radius;
+    else {
+        qDebug() << "Invalid argument for" << Background::blurradius << "(" << radius << "). Falling back to defaults...";
+        return RocketStyle::blurradius;
+    }
 }
 
 int RocketConfigManager::getInvertedScrollFactorXfromSettings()

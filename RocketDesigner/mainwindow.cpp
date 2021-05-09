@@ -68,6 +68,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_systemWallpaperScreenSpin->setMaximum(wallpaper_candidates.size()-1);
     m_systemWallpaperScreenSpin->setValue(candidate);
 
+    m_systemWallpaperBlurSpin = findChild<QSpinBox*>("systemWallpaperBlurSpin");
+    m_systemWallpaperBlurSpin->setValue(ConfigManager.getBlurRadius());
+
     QString wallpaper_path = wallpaper_candidates[candidate].right(wallpaper_candidates[candidate].size()-1);
     if (!ConfigManager.getUsingSystemWallpaper()) wallpaper_path= QDir::homePath()+"/.config/rocket/wallpaper.jpeg";
     QLabel * wallpaperLabel = findChild<QLabel*>("wallpaperLabel");
@@ -206,6 +209,7 @@ void MainWindow::ResetClicked()
     m_gridOrientationCombo->setCurrentIndex((int)(RocketStyle::pager_vertical_orientation));
     m_systemWallpaperCheckBox->setChecked(RocketStyle::use_system_wallpaper);
     m_systemWallpaperScreenSpin->setValue(RocketStyle::use_system_wallpaper_screen);
+    m_systemWallpaperBlurSpin->setValue(RocketStyle::blurradius);
 
     m_basecolour = RocketStyle::BaseColour;
     m_baseColourPanel->setPalette(QPalette(m_basecolour));
@@ -271,6 +275,7 @@ void MainWindow::ApplyClicked()
     config->group(RocketConfig::Dimensions::group).writeEntry(RocketConfig::Dimensions::verticalorientation,(bool)(m_gridOrientationCombo->currentIndex()));
     config->group(RocketConfig::Background::group).writeEntry(RocketConfig::Background::usesystemwallpaper,m_systemWallpaperCheckBox->isChecked());
     config->group(RocketConfig::Background::group).writeEntry(RocketConfig::Background::wallpaperofscreen,m_systemWallpaperScreenSpin->value());
+    config->group(RocketConfig::Background::group).writeEntry(RocketConfig::Background::blurradius,m_systemWallpaperBlurSpin->value());
 
     // Colours
     config->group(RocketConfig::Color::group).writeEntry(RocketConfig::Color::base,m_basecolour);

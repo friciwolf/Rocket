@@ -8,6 +8,7 @@
 #include <QDropEvent>
 #include <QMimeData>
 #include <QDrag>
+#include <QGraphicsBlurEffect>
 
 #include <KConfig>
 #include <KConfigGroup>
@@ -32,7 +33,7 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     setFixedSize(parent->size());
 
     m_kapplications = ConfigManager.getApplications();
-    //constructPager(m_kapplications);
+    m_backgroundView = new QGraphicsView(this);
 }
 
 void Pager::constructPager(std::vector<KApplication> kapplications)
@@ -128,11 +129,28 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
             }
         }
     }
+    m_backgroundView->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+    m_backgroundView->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+    m_backgroundView->setEnabled(false);
+    m_backgroundView->setFrameShape(QFrame::Shape::NoFrame);
+    m_backgroundView->setAutoFillBackground(true);
+    m_backgroundView->viewport()->setAutoFillBackground(true);
+
+    //this shift is needed due to scroll animation remnants at the widget's border
+    int delta = size().width()*0.1;
+
+    m_backgroundView->setScene(new QGraphicsScene(geometry()));
+    m_backgroundView->setFixedSize(size().width()+delta,size().height());
+    m_backgroundView->setAlignment(Qt::AlignCenter);
     QPixmap bkgnd(backgroundPath);
-    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
-    QPalette palette;
-    palette.setBrush(QPalette::Background, bkgnd);
-    setPalette(palette);
+    bkgnd = bkgnd.scaled(size(), Qt::IgnoreAspectRatio);
+    m_backgroundView->setForegroundBrush(QBrush(bkgnd));
+
+    QGraphicsBlurEffect* p_blur = new QGraphicsBlurEffect;
+    p_blur->setBlurRadius(ConfigManager.getBlurRadius());
+    p_blur->setBlurHints(QGraphicsBlurEffect::BlurHint::QualityHint);
+    m_backgroundView->setGraphicsEffect(p_blur);
+    m_backgroundView->move(-delta/2,0);
 }
 
 void Pager::updatePager(std::vector<KApplication> kapplications)
@@ -296,7 +314,7 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
     // Checking whether outside area is clicked; if it's the case, close the app
     int dx0 = (QCursor::pos()-drag_0).x();
     int dy0 = (QCursor::pos()-drag_0).y();
-    if (!searching && dx0*dx0+dy0*dy0<RocketStyle::click_tolerance && event->button()==Qt::LeftButton)
+    if (dx0*dx0+dy0*dy0<RocketStyle::click_tolerance && event->button()==Qt::LeftButton)
     {
         bool itemclicked = false;
         for (PagerItem * i : pages)

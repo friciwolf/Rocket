@@ -128,6 +128,7 @@ void MainWindow::leaveEvent(QEvent *event)
 
 void MainWindow::navigation(int key)
 {
+    if (key==Qt::Key::Key_Escape) qApp->exit();
     IconGrid * grid;
     if (ConfigManager.getVerticalModeSetting())
     {
@@ -164,11 +165,6 @@ void MainWindow::navigation(int key)
         {
             if (active==-1) grid->setActiveElement(0);
             else grid->setActiveElement(active+grid->getMaxNumberOfColumns());
-            break;
-        }
-        case Qt::Key::Key_Escape:
-        {
-            qApp->exit();
             break;
         }
         case Qt::Key::Key_Tab:

@@ -41,6 +41,7 @@ private:
     QComboBox * m_gridOrientationCombo;
     QCheckBox * m_systemWallpaperCheckBox;
     QSpinBox * m_systemWallpaperScreenSpin;
+    QSpinBox * m_systemWallpaperBlurSpin;
 
     // Colours
     QColor m_basecolour;
