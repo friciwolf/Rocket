@@ -28,12 +28,13 @@ public:
     QBrush getActiveIndicatorBrush();
     int getFontSize1();
     int getFontSize2();
+    int getBlurRadius();
+    bool getBoxSetting();
     int getRowNumber();
     int getColumnNumber();
     bool getVerticalModeSetting();
     bool getUsingSystemWallpaper();
     int getWallpaperScreen();
-    int getBlurRadius();
     int getInvertedScrollFactorXfromSettings();
     int getInvertedScrollFactorYfromSettings();
     std::vector<KApplication> getApplications(){return m_apps;}

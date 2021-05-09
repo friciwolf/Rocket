@@ -144,7 +144,8 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
     m_backgroundView->setAlignment(Qt::AlignCenter);
     QPixmap bkgnd(backgroundPath);
     bkgnd = bkgnd.scaled(size(), Qt::IgnoreAspectRatio);
-    m_backgroundView->setForegroundBrush(QBrush(bkgnd));
+    m_backgroundView->setBackgroundBrush(QBrush(bkgnd));
+    if (!ConfigManager.getBoxSetting()) m_backgroundView->setForegroundBrush(QBrush(ConfigManager.getBaseColour()));
 
     QGraphicsBlurEffect* p_blur = new QGraphicsBlurEffect;
     p_blur->setBlurRadius(ConfigManager.getBlurRadius());

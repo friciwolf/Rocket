@@ -41,6 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_gridOrientationCombo = findChild<QComboBox*>("gridOrientationCombo");
     m_gridOrientationCombo->setCurrentIndex(ConfigManager.getVerticalModeSetting());
 
+    m_enableBoxesCheckBox = findChild<QCheckBox*>("enableBoxesCheckBox");
+    m_enableBoxesCheckBox->setChecked(ConfigManager.getBoxSetting());
+
     m_systemWallpaperCheckBox = findChild<QCheckBox*>("systemWallpaperCheckBox");
     m_systemWallpaperCheckBox->setChecked(ConfigManager.getUsingSystemWallpaper());
 
@@ -207,6 +210,7 @@ void MainWindow::ResetClicked()
     m_horizontalInversionCheckBox->setChecked(RocketStyle::inverted_scrolling_x);
     m_verticalInversionCheckBox->setChecked(RocketStyle::inverted_scrolling_y);
     m_gridOrientationCombo->setCurrentIndex((int)(RocketStyle::pager_vertical_orientation));
+    m_enableBoxesCheckBox->setChecked(RocketStyle::enable_boxes);
     m_systemWallpaperCheckBox->setChecked(RocketStyle::use_system_wallpaper);
     m_systemWallpaperScreenSpin->setValue(RocketStyle::use_system_wallpaper_screen);
     m_systemWallpaperBlurSpin->setValue(RocketStyle::blurradius);
@@ -273,6 +277,7 @@ void MainWindow::ApplyClicked()
     config->group(RocketConfig::Settings::group).writeEntry(RocketConfig::Settings::invertedscrollingx,m_horizontalInversionCheckBox->isChecked());
     config->group(RocketConfig::Settings::group).writeEntry(RocketConfig::Settings::invertedscrollingy,m_verticalInversionCheckBox->isChecked());
     config->group(RocketConfig::Dimensions::group).writeEntry(RocketConfig::Dimensions::verticalorientation,(bool)(m_gridOrientationCombo->currentIndex()));
+    config->group(RocketConfig::Settings::group).writeEntry(RocketConfig::Settings::enable_boxes,m_enableBoxesCheckBox->isChecked());
     config->group(RocketConfig::Background::group).writeEntry(RocketConfig::Background::usesystemwallpaper,m_systemWallpaperCheckBox->isChecked());
     config->group(RocketConfig::Background::group).writeEntry(RocketConfig::Background::wallpaperofscreen,m_systemWallpaperScreenSpin->value());
     config->group(RocketConfig::Background::group).writeEntry(RocketConfig::Background::blurradius,m_systemWallpaperBlurSpin->value());

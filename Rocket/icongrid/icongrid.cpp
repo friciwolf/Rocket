@@ -103,6 +103,7 @@ void IconGrid::resetHighlightAndActiveElement()
 void IconGrid::paintEvent(QPaintEvent *event)
 {
     if (getItems().size()==0) return; // search yielded no results -> no drawing
+    if (!ConfigManager.getBoxSetting()) return; // no boxes -> global blur
     QPainter painter(this);
     QColor color = ConfigManager.getBaseColour();
     painter.setBrush(QBrush(color,Qt::BrushStyle::SolidPattern));

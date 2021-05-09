@@ -34,10 +34,11 @@ public:
         background[Background::blurradius] = RocketStyle::blurradius;
         items[Background::group] = background;
 
-        map<QString,QVariant> settigs;
-        settigs[Settings::invertedscrollingx] = RocketStyle::inverted_scrolling_x;
-        settigs[Settings::invertedscrollingy] = RocketStyle::inverted_scrolling_y;
-        items[Settings::group] = settigs;
+        map<QString,QVariant> settings;
+        settings[Settings::invertedscrollingx] = RocketStyle::inverted_scrolling_x;
+        settings[Settings::invertedscrollingy] = RocketStyle::inverted_scrolling_y;
+        settings[Settings::enable_boxes] = RocketStyle::enable_boxes;
+        items[Settings::group] = settings;
     }
 };
 
@@ -144,6 +145,21 @@ int RocketConfigManager::getFontSize2()
     }
 }
 
+int RocketConfigManager::getBlurRadius()
+{
+    int radius= getStyleValue(Background::group,Background::blurradius,RocketStyle::blurradius);
+    if (radius>=0) return radius;
+    else {
+        qDebug() << "Invalid argument for" << Background::blurradius << "(" << radius << "). Falling back to defaults...";
+        return RocketStyle::blurradius;
+    }
+}
+
+bool RocketConfigManager::getBoxSetting()
+{
+    return getStyleValue(Settings::group,Settings::enable_boxes,RocketStyle::enable_boxes);
+}
+
 int RocketConfigManager::getRowNumber()
 {
     int rows = getStyleValue(Dimensions::group,Dimensions::rows,RocketStyle::m_rows);
@@ -154,6 +170,7 @@ int RocketConfigManager::getRowNumber()
         return RocketStyle::m_rows;
     }
 }
+
 
 int RocketConfigManager::getColumnNumber()
 {
@@ -180,16 +197,6 @@ bool RocketConfigManager::getUsingSystemWallpaper()
 int RocketConfigManager::getWallpaperScreen()
 {
     return getStyleValue(Background::group,Background::wallpaperofscreen,RocketStyle::use_system_wallpaper_screen);
-}
-
-int RocketConfigManager::getBlurRadius()
-{
-    int radius= getStyleValue(Background::group,Background::blurradius,RocketStyle::blurradius);
-    if (radius>=0) return radius;
-    else {
-        qDebug() << "Invalid argument for" << Background::blurradius << "(" << radius << "). Falling back to defaults...";
-        return RocketStyle::blurradius;
-    }
 }
 
 int RocketConfigManager::getInvertedScrollFactorXfromSettings()

@@ -39,6 +39,7 @@ private:
     QCheckBox * m_horizontalInversionCheckBox;
     QCheckBox * m_verticalInversionCheckBox;
     QComboBox * m_gridOrientationCombo;
+    QCheckBox * m_enableBoxesCheckBox;
     QCheckBox * m_systemWallpaperCheckBox;
     QSpinBox * m_systemWallpaperScreenSpin;
     QSpinBox * m_systemWallpaperBlurSpin;

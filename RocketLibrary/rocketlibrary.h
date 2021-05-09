@@ -14,6 +14,7 @@ namespace RocketStyle {
     const int fontsize1 = 10;
     const int fontsize2 = 20;
     const int blurradius = 0;
+    const bool enable_boxes = true;
 
     // A click is recongnized only if the mouse moves 10 pixels
     const int click_tolerance = 100;
@@ -77,6 +78,7 @@ namespace RocketConfig {
         const QString invertedscrollingy = QString("inverted_scrolling_y");
         const QString kwinrcoldmeta = QString("kwinrc_old_meta_value");
         const QString metastart = QString("meta_start");
+        const QString enable_boxes = QString("enable_boxes");
     }
 }
 
