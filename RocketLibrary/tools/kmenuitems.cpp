@@ -1,5 +1,5 @@
 #include "kmenuitems.h"
-#include "../RocketLibrary/tools/kapplication.h"
+#include "kdeapplication.h"
 #include <KServiceGroup>
 #include <QDebug>
 

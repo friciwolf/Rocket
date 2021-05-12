@@ -1,4 +1,4 @@
-#include "../RocketLibrary/rocketlibrary.h"
+#include "../rocketlibrary.h"
 #include "rocketconfigmanager.h"
 #include <KConfigSkeleton>
 #include <QPalette>
