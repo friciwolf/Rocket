@@ -3,7 +3,8 @@
 #include <QColor>
 
 #include "pager/pagercircularactiveindicator.h"
-#include "tools/rocketconfigmanager.h"
+
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 PagerCircularActiveIndicator::PagerCircularActiveIndicator(QWidget *parent, PagerCircularIndicator * indicator) : QWidget(parent)
 {

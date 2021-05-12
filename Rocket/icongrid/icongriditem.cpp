@@ -9,10 +9,11 @@
 
 #include "icongriditem.h"
 #include "icongriditemcanvas.h"
-#include "tools/rocketconfigmanager.h"
+
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 
-IconGridItem::IconGridItem(QWidget *parent, KApplication application, QSize itemsize) : QWidget(parent)
+IconGridItem::IconGridItem(QWidget *parent, KDEApplication application, QSize itemsize) : QWidget(parent)
 {
     m_application = application;
     m_icon = application.icon();

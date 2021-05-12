@@ -13,10 +13,11 @@
 #include <KConfigGroup>
 
 #include "pager/pager.h"
-#include "icongrid/kmenuitems.h"
 #include "icongrid/icongrid.h"
 #include "tools/searchingapps.h"
-#include "tools/rocketconfigmanager.h"
+
+#include "../RocketLibrary/tools/kdeapplication.h"
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 Pager::Pager(QWidget *parent) : QWidget(parent)
 {    
@@ -35,9 +36,9 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     constructPager(m_kapplications);
 }
 
-void Pager::constructPager(std::vector<KApplication> kapplications)
+void Pager::constructPager(std::vector<KDEApplication> kapplications)
 {
-    std::vector<KApplication> applications;
+    std::vector<KDEApplication> applications;
     int maxicons = ConfigManager.getRowNumber()*ConfigManager.getColumnNumber();
 
     // Filling up the grid...
@@ -135,7 +136,7 @@ void Pager::constructPager(std::vector<KApplication> kapplications)
     setPalette(palette);
 }
 
-void Pager::updatePager(std::vector<KApplication> kapplications)
+void Pager::updatePager(std::vector<KDEApplication> kapplications)
 {
     /*
      * Updates the whole pager, including its children (the icongrids), whenever needed (e.g. while searching).
@@ -421,7 +422,7 @@ void Pager::activateSearch(const QString &query)
         }
     }
     searching = (query!="");
-    std::vector<KApplication> found_apps = searchApplication(m_kapplications,query);
+    std::vector<KDEApplication> found_apps = searchApplication(m_kapplications,query);
     updatePager(found_apps);
     updated(searching);
     //qDebug() << "activate search sends enableicondragging with" << !searching;

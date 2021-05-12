@@ -1,5 +1,5 @@
 #include "kmenuitems.h"
-#include "kapplication.h"
+#include "../RocketLibrary/tools/kapplication.h"
 #include <KServiceGroup>
 #include <QDebug>
 
@@ -40,7 +40,7 @@ void KMenuItems::scanElements(QString path,int n)
             categories = service->categories();
             entrypath = service->entryPath();
             bool doubled = false;
-            for (KApplication a : applications)
+            for (KDEApplication a : applications)
             {
                 if (a.name()==name)
                 {
@@ -49,7 +49,7 @@ void KMenuItems::scanElements(QString path,int n)
                 }
             }
             if (doubled) continue;
-            applications.push_back(KApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories,entrypath));
+            applications.push_back(KDEApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories,entrypath));
         }
         else if (p->isType(KST_KServiceGroup)) {
             const KServiceGroup::Ptr serviceGroup(static_cast<KServiceGroup *>(p.data()));
@@ -85,7 +85,7 @@ void KMenuItems::sortElementsAlphabetically()
             b.remove(QRegExp("[^a-zA-Z\\s]"));
             if (a.toLower().toStdString()>b.toLower().toStdString())
             {
-                KApplication temp = applications[i];
+                KDEApplication temp = applications[i];
                 applications[i] = applications[i+1];
                 applications[i+1] = temp;
 

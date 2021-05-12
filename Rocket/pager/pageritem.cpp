@@ -7,19 +7,19 @@
 #include <QMimeData>
 
 #include "pager/pageritem.h"
-
 #include "icongrid/icongrid.h"
 #include "icongrid/icongriditem.h"
-#include "tools/rocketconfigmanager.h"
 
-PagerItem::PagerItem(QWidget *parent, vector<KApplication> applications) : QWidget(parent)
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
+
+PagerItem::PagerItem(QWidget *parent, vector<KDEApplication> applications) : QWidget(parent)
 {
     m_applications = applications;
     m_itemlayout = new QGridLayout();
     setLayout(m_itemlayout);
     m_grid = new IconGrid(this);
     setGridProperties();
-    for (KApplication app : applications)
+    for (KDEApplication app : applications)
     {
         IconGridItem * griditem = new IconGridItem(m_grid,app,m_grid_itemsize);
         m_grid->addItem(griditem);

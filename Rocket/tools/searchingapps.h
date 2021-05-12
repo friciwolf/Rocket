@@ -2,9 +2,9 @@
 #define SEARCHINGAPPS_H
 
 #include <QString>
-#include "icongrid/kapplication.h"
+#include "../RocketLibrary/tools/kdeapplication.h"
 
-std::vector<KApplication> searchApplication(std::vector<KApplication> list, QString query);
+std::vector<KDEApplication> searchApplication(std::vector<KDEApplication> list, QString query);
 
 
 #endif // SEARCHINGAPPS_H

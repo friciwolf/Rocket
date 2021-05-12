@@ -3,9 +3,9 @@
 #include <QDebug>
 #include <QPainter>
 
-#include "tools/rocketconfigmanager.h"
 #include "icongrid.h"
 
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 IconGrid::IconGrid(QWidget * parent) : QWidget (parent)
 {

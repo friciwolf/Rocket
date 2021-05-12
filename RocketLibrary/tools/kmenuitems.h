@@ -4,16 +4,16 @@
 
 #include <QString>
 #include <QIcon>
-#include "kapplication.h"
+#include "kdeapplication.h"
 
 class KMenuItems {
 
 private:
-    std::vector<KApplication> applications;
+    std::vector<KDEApplication> applications;
 
 public:
     void scanElements(QString path=QString("/"),int n=0);
     void sortElementsAlphabetically();
-    std::vector<KApplication> getApplications() {return applications;}
+    std::vector<KDEApplication> getApplications() {return applications;}
 };
 #endif // KMENUITEMS_H

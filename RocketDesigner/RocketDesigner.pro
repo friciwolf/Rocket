@@ -36,13 +36,14 @@ SOURCES += \
         icongrid/icongrid.cpp \
         icongrid/icongriditem.cpp \
         icongrid/icongriditemcanvas.cpp \
-        icongrid/kmenuitems.cpp \
-        icongrid/kapplication.cpp \
         searchfield/searchfield.cpp \
         tools/searchingapps.cpp \
-        tools/rocketconfigmanager.cpp \
         pager/verticalpager.cpp \
-      ../RocketLibrary/rocketlibrary.cpp
+      ../RocketLibrary/rocketlibrary.cpp \
+      ../RocketLibrary/tools/rocketconfigmanager.cpp \
+      ../RocketLibrary/tools/kmenuitems.cpp \
+      ../RocketLibrary/tools/kdeapplication.cpp
+
 
 HEADERS += \
         mainwindow.h \
@@ -53,13 +54,13 @@ HEADERS += \
         icongrid/icongrid.h \
         icongrid/icongriditem.h \
         icongrid/icongriditemcanvas.h \
-        icongrid/kmenuitems.h \
-        icongrid/kapplication.h \
         searchfield/searchfield.h \
         tools/searchingapps.h \
-        tools/rocketconfigmanager.h \
         pager/verticalpager.h \
-      ../RocketLibrary/rocketlibrary.h
+      ../RocketLibrary/rocketlibrary.h \
+      ../RocketLibrary/tools/rocketconfigmanager.h \
+      ../RocketLibrary/tools/kmenuitems.h \
+      ../RocketLibrary/tools/kdeapplication.h
 
 FORMS += \
         mainwindow.ui

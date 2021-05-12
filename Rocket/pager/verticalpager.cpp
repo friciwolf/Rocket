@@ -14,10 +14,11 @@
 #include <KConfigGroup>
 
 #include "pager/verticalpager.h"
-#include "icongrid/kmenuitems.h"
-#include "icongrid/icongrid.h"
 #include "tools/searchingapps.h"
-#include "tools/rocketconfigmanager.h"
+#include "icongrid/icongrid.h"
+
+#include "../RocketLibrary/tools/kmenuitems.h"
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 VerticalPager::VerticalPager(QWidget *parent) : QWidget(parent)
 {    
@@ -36,9 +37,9 @@ VerticalPager::VerticalPager(QWidget *parent) : QWidget(parent)
     m_backgroundView = new QGraphicsView(this);
 }
 
-void VerticalPager::constructPager(std::vector<KApplication> kapplications)
+void VerticalPager::constructPager(std::vector<KDEApplication> kapplications)
 {
-    std::vector<KApplication> applications;
+    std::vector<KDEApplication> applications;
     int maxicons = ConfigManager.getRowNumber()*ConfigManager.getColumnNumber();
 
     // Filling up the grid...
@@ -134,7 +135,7 @@ void VerticalPager::constructPager(std::vector<KApplication> kapplications)
     m_backgroundView->move(0,-delta/2);
 }
 
-void VerticalPager::updatePager(std::vector<KApplication> kapplications)
+void VerticalPager::updatePager(std::vector<KDEApplication> kapplications)
 {
     /*
      * Updates the whole pager, including its children (the icongrids), whenever needed (e.g. while searching).
@@ -419,7 +420,7 @@ void VerticalPager::activateSearch(const QString &query)
         }
     }
     searching = (query!="");
-    std::vector<KApplication> found_apps = searchApplication(m_kapplications,query);
+    std::vector<KDEApplication> found_apps = searchApplication(m_kapplications,query);
     updatePager(found_apps);
     updated(searching);
     enableIconDragging(!searching);

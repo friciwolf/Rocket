@@ -1,11 +1,11 @@
-#include "../RocketLibrary/rocketlibrary.h"
-
-#include "mainwindow.h"
-#include "tools/rocketconfigmanager.h"
-
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
+
+#include "mainwindow.h"
+
+#include "../RocketLibrary/rocketlibrary.h"
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 extern RocketConfigManager ConfigManager = RocketConfigManager();
 

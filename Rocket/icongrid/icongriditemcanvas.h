@@ -6,13 +6,14 @@
 #include <QIcon>
 #include <QDateTime>
 #include <QTimer>
-#include "kapplication.h"
+
+#include "../RocketLibrary/tools/kdeapplication.h"
 
 class IconGridItemCanvas : public QWidget
 {
     Q_OBJECT
 public:
-    explicit IconGridItemCanvas(QWidget *parent, KApplication application);
+    explicit IconGridItemCanvas(QWidget *parent, KDEApplication application);
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
@@ -34,7 +35,7 @@ private:
 
     QIcon m_icon;
     QPixmap pixmap;
-    KApplication m_application;
+    KDEApplication m_application;
 
     bool m_clicked = false;
     bool m_draggable = true;

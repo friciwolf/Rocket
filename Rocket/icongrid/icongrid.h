@@ -6,7 +6,8 @@
 #include <QGridLayout>
 
 #include "icongriditem.h"
-#include "tools/rocketconfigmanager.h"
+
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 class IconGrid : public QWidget
 {

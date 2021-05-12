@@ -1,4 +1,4 @@
-#include "kapplication.h"
+#include "tools/kapplication.h"
 
 KApplication::KApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath)
 {

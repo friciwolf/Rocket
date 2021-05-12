@@ -8,15 +8,16 @@
 #include <QGridLayout>
 #include <QLabel>
 
-#include "../RocketLibrary/rocketlibrary.h"
-#include "kapplication.h"
 #include "icongriditemcanvas.h"
+
+#include "../RocketLibrary/rocketlibrary.h"
+#include "../RocketLibrary/tools/kdeapplication.h"
 
 class IconGridItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit IconGridItem(QWidget *parent, KApplication application, QSize itemsize);
+    explicit IconGridItem(QWidget *parent, KDEApplication application, QSize itemsize);
     void mouseMoveEvent(QMouseEvent * event);
     void paintEvent(QPaintEvent *event);
     void initIconSize();
@@ -30,11 +31,11 @@ public:
     void setHighlighted(bool highlighted){m_highlighted = highlighted;}
     void setItemSize(QSize size) {m_item_size = size;}
     QSize getItemSize(){return  m_item_size;}
-    KApplication getApplication(){return m_application;}
+    KDEApplication getApplication(){return m_application;}
     IconGridItemCanvas * getCanvas(){return m_canvas;}
 
 private:
-    KApplication m_application;
+    KDEApplication m_application;
     IconGridItemCanvas * m_canvas;
     QIcon m_icon = QIcon::fromTheme("file");
     QString m_label = "file";

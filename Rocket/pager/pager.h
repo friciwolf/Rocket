@@ -10,7 +10,8 @@
 #include <QPropertyAnimation>
 #include <QTimer>
 #include <QGraphicsView>
-#include "icongrid/kmenuitems.h"
+
+#include "../RocketLibrary/tools/kmenuitems.h"
 
 class Pager : public QWidget
 {
@@ -38,12 +39,12 @@ public:
     bool scrolled = false;
 
     explicit Pager(QWidget * parent);
-    void constructPager(std::vector<KApplication> kapplications);
+    void constructPager(std::vector<KDEApplication> kapplications);
     void addItem(PagerItem * page);
-    void updatePager(std::vector<KApplication> kapplications);
+    void updatePager(std::vector<KDEApplication> kapplications);
 
     int getNumberOfElements() {return pages.size();}
-    void setApplicationList(std::vector<KApplication> newlist){m_kapplications = newlist;}
+    void setApplicationList(std::vector<KDEApplication> newlist){m_kapplications = newlist;}
 
 
     void resizeEvent(QResizeEvent *event);
@@ -64,7 +65,7 @@ signals:
 
 private:
     bool m_icon_dragging_on = false; //true: icons are dragged
-    std::vector<KApplication> m_kapplications;
+    std::vector<KDEApplication> m_kapplications;
     QTimer * m_scrolltimeouttimer = new QTimer();
     QGraphicsView * m_backgroundView;
 };

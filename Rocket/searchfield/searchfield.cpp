@@ -1,8 +1,10 @@
-#include "searchfield.h"
-#include "tools/rocketconfigmanager.h"
 #include <QIcon>
 #include <QKeyEvent>
 #include <QDebug>
+
+#include "searchfield.h"
+
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 SearchField::SearchField(QWidget *parent) : QLineEdit(parent)
 {

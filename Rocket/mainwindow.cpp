@@ -1,11 +1,3 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "pager/pager.h"
-#include "pager/verticalpager.h"
-#include "pager/pageritem.h"
-#include "pager/pagercircularindicator.h"
-#include "pager/pagercircularactiveindicator.h"
-
 #include <QGridLayout>
 #include <QPainter>
 #include <QKeyEvent>
@@ -16,6 +8,14 @@
 #include <KRun>
 #include <KService>
 #include <KDesktopFile>
+
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "pager/pager.h"
+#include "pager/verticalpager.h"
+#include "pager/pageritem.h"
+#include "pager/pagercircularindicator.h"
+#include "pager/pagercircularactiveindicator.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -202,7 +202,7 @@ void MainWindow::executeSelected()
     }
     int active = grid->getActiveElement();
     if (active==-1) return;
-    KApplication application = grid->getItems()[active]->getApplication();
+    KDEApplication application = grid->getItems()[active]->getApplication();
     QList<QUrl> urls;
     KDesktopFile d(application.entrypath());
     KService s(&d,application.entrypath());

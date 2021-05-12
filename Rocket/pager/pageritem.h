@@ -5,8 +5,10 @@
 #include <QWidget>
 #include <QString>
 
-#include "icongrid/kapplication.h"
 #include "icongrid/icongrid.h"
+
+#include "../RocketLibrary/tools/kdeapplication.h"
+
 
 using namespace std;
 
@@ -14,7 +16,7 @@ class PagerItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PagerItem(QWidget *parent, vector<KApplication> applications);
+    explicit PagerItem(QWidget *parent, vector<KDEApplication> applications);
     void setGridProperties();
     void gridLayoutManagement();
     IconGrid * getIconGrid(){return m_grid;}
@@ -30,7 +32,7 @@ private:
     QGridLayout * m_itemlayout;
     QSize m_grid_maxsize;
     QSize m_grid_itemsize;
-    vector<KApplication> m_applications;
+    vector<KDEApplication> m_applications;
 
 };
 

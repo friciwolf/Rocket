@@ -1,7 +1,6 @@
-#include "kapplication.h"
-#include <QDebug>
+#include "kdeapplication.h"
 
-KApplication::KApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath)
+KDEApplication::KDEApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath)
 {
     m_name = name;
     m_iconname = iconname;
@@ -16,12 +15,12 @@ KApplication::KApplication(QString name, QString iconname, QIcon icon, QString e
     m_entrypath = entrypath;
 }
 
-KApplication::KApplication()
+KDEApplication::KDEApplication()
 {
 
 }
 
-bool operator==(const KApplication& a, const KApplication& b)
+bool operator==(const KDEApplication& a, const KDEApplication& b)
 {
     if (a.m_name!=b.m_name) return false;
     if (a.m_iconname!=b.m_iconname) return false;

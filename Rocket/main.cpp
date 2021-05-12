@@ -1,12 +1,15 @@
-#include "mainwindow.h"
-#include "tools/rocketconfigmanager.h"
 #include <QApplication>
 #include <QPropertyAnimation>
 #include <QDir>
-#include <KConfigGroup>
 #include <QDebug>
 #include <QLockFile>
 #include <QProcess>
+
+#include <KConfigGroup>
+
+#include "mainwindow.h"
+
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 extern RocketConfigManager ConfigManager = RocketConfigManager();
 

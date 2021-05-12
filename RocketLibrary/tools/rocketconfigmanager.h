@@ -5,7 +5,7 @@
 #include <KConfig>
 #include <QDebug>
 #include <QColor>
-#include "icongrid/kmenuitems.h"
+#include "kmenuitems.h"
 
 using namespace std;
 
@@ -37,12 +37,12 @@ public:
     int getWallpaperScreen();
     int getInvertedScrollFactorXfromSettings();
     int getInvertedScrollFactorYfromSettings();
-    std::vector<KApplication> getApplications(){return m_apps;}
+    std::vector<KDEApplication> getApplications(){return m_apps;}
     bool updateApplicationList();
 private:
     KConfig * m_styleconfig;
     KConfig * m_appgridconfig;
-    std::vector<KApplication> m_apps;
+    std::vector<KDEApplication> m_apps;
     void generateAppGridConfigFile(KConfig * config,KMenuItems menuitems);
 };
 

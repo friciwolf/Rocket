@@ -223,7 +223,7 @@ void RocketConfigManager::checkAppGridConfigFile()
     else
     {
         int N = config->groupList().size();
-        KApplication apps[N];
+        KDEApplication apps[N];
         for (QString item : config->groupList())
         {
             QString name = config->group(item).readEntry("name");
@@ -238,9 +238,9 @@ void RocketConfigManager::checkAppGridConfigFile()
             bool terminal = (config->group(item).readEntry("terminal") == "false" ? false : true);
             QString entrypath = config->group(item).readEntry("entrypath");
             int pos = config->group(item).readEntry("pos").toInt();
-            apps[pos] = KApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories,entrypath);
+            apps[pos] = KDEApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories,entrypath);
         }
-        std::vector<KApplication> appvector(apps,apps+N);
+        std::vector<KDEApplication> appvector(apps,apps+N);
         m_apps = appvector;
     }
 }
@@ -248,7 +248,7 @@ void RocketConfigManager::checkAppGridConfigFile()
 void RocketConfigManager::generateAppGridConfigFile(KConfig * config,KMenuItems menuitems)
 {
     int i = 0;
-    for (KApplication app : menuitems.getApplications())
+    for (KDEApplication app : menuitems.getApplications())
     {
         config->group("Entry"+QString::number(i)).writeEntry("name",app.name());
         config->group("Entry"+QString::number(i)).writeEntry("iconname",app.iconname());

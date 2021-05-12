@@ -1,11 +1,10 @@
-#include "icongrid/kapplication.h"
-#include <QString>
+#include "../RocketLibrary/tools/kdeapplication.h"
 
-std::vector<KApplication> searchApplication(std::vector<KApplication> list, QString query)
+std::vector<KDEApplication> searchApplication(std::vector<KDEApplication> list, QString query)
 {
     if (query=="") return list;
-    std::vector<KApplication> res;
-    for (KApplication i : list)
+    std::vector<KDEApplication> res;
+    for (KDEApplication i : list)
     {
         if (i.name().contains(query,Qt::CaseSensitivity::CaseInsensitive))
         {

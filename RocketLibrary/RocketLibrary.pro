@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += gui
+QT       += gui KIOCore KIOFileWidgets KIOWidgets KNTLM KI18n KConfigCore KConfigGui
 
 TARGET = RocketLibrary
 TEMPLATE = lib
@@ -22,10 +22,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        rocketlibrary.cpp
+        rocketlibrary.cpp \
+        tools/kdeapplication.cpp \
+        tools/kmenuitems.cpp \
+        tools/rocketconfigmanager.cpp
 
 HEADERS += \
-        rocketlibrary.h
+        rocketlibrary.h \
+        tools/kdeapplication.h \
+        tools/kmenuitems.h \
+        tools/rocketconfigmanager.h
 unix {
     target.path = /usr/lib
     INSTALLS += target

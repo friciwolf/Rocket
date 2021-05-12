@@ -4,7 +4,8 @@
 #include "pager.h"
 #include "mainwindow.h"
 #include "pager/pagercircularindicator.h"
-#include "tools/rocketconfigmanager.h"
+
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
 
 PagerCircularIndicator::PagerCircularIndicator(QWidget *parent, Pager *pager) : QWidget(parent)
 {

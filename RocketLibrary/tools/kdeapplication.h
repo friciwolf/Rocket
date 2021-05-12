@@ -1,14 +1,14 @@
-#ifndef KAPPLICATION_H
-#define KAPPLICATION_H
+#ifndef KDEAPPLICATION_H
+#define KDEAPPLICATION_H
 
 #include <QString>
 #include <QIcon>
 
-class KApplication
+class KDEApplication
 {
 public:
-    KApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath);
-    KApplication();
+    KDEApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath);
+    KDEApplication();
     QString name(){return m_name;}
     QString iconname(){return m_iconname;}
     QString exec(){return m_exec;}
@@ -20,7 +20,7 @@ public:
     QString untranslatedGenericName() {return m_untranslatedGenericName;}
     QStringList categories() {return m_categories;}
     QString entrypath(){return m_entrypath;}
-    friend bool operator==(const KApplication& a, const KApplication& b);
+    friend bool operator==(const KDEApplication& a, const KDEApplication& b);
 
 private:
     QString m_name;
@@ -36,4 +36,4 @@ private:
     QString m_entrypath;
 };
 
-#endif // KAPPLICATION_H
+#endif // KDEAPPLICATION_H

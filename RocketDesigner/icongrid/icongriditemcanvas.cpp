@@ -12,12 +12,14 @@
 #include <KService>
 #include <KDesktopFile>
 
-#include "../RocketLibrary/rocketlibrary.h"
 #include "icongriditemcanvas.h"
-#include "kapplication.h"
-#include "tools/rocketconfigmanager.h"
 
-IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KApplication application)
+#include "../RocketLibrary/tools/rocketconfigmanager.h"
+#include "../RocketLibrary/tools/kdeapplication.h"
+#include "../RocketLibrary/rocketlibrary.h"
+
+
+IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KDEApplication application)
 {
     m_icon = application.icon();
     m_application = application;
