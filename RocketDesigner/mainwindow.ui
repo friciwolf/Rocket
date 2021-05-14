@@ -875,12 +875,16 @@
   <tabstop>gridOrientationCombo</tabstop>
   <tabstop>horizontalInversionCheckBox</tabstop>
   <tabstop>verticalInversionCheckBox</tabstop>
+  <tabstop>enableBoxesCheckBox</tabstop>
   <tabstop>systemWallpaperCheckBox</tabstop>
   <tabstop>wallpaperSelectorButton</tabstop>
-  <tabstop>baseColourPickerButton</tabstop>
-  <tabstop>secondaryColourPickerButton</tabstop>
+  <tabstop>systemWallpaperScreenSpin</tabstop>
+  <tabstop>systemWallpaperBlurSpin</tabstop>
   <tabstop>font1Spin</tabstop>
   <tabstop>font2Spin</tabstop>
+  <tabstop>baseColourPickerButton</tabstop>
+  <tabstop>secondaryColourPickerButton</tabstop>
+  <tabstop>selectionColourPickerButton</tabstop>
  </tabstops>
  <resources/>
  <connections>
