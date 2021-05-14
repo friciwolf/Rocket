@@ -720,7 +720,7 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string>Color of the Active Page Indicator</string>
+     <string>Color of the Selected Item and of the Page Indicators, if Boxes are Disabled</string>
     </property>
     <property name="title">
      <string>Selection Color</string>
