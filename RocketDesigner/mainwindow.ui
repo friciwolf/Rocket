@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
-    <height>574</height>
+    <width>489</width>
+    <height>659</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>360</y>
+      <y>450</y>
       <width>151</width>
       <height>161</height>
      </rect>
@@ -178,8 +178,8 @@
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>160</x>
-      <y>360</y>
+      <x>170</x>
+      <y>450</y>
       <width>151</width>
       <height>161</height>
      </rect>
@@ -336,7 +336,7 @@
       <x>10</x>
       <y>40</y>
       <width>471</width>
-      <height>311</height>
+      <height>401</height>
      </rect>
     </property>
     <property name="title">
@@ -585,12 +585,107 @@
       <string>Enable Boxes</string>
      </property>
     </widget>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>310</y>
+       <width>451</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Font Size</string>
+     </property>
+     <widget class="QSpinBox" name="font2Spin">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>32</y>
+        <width>52</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Font Size of the &quot;No results found&quot; Message</string>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>20</number>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="font1Spin">
+      <property name="geometry">
+       <rect>
+        <x>130</x>
+        <y>32</y>
+        <width>52</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Font Size of the Icons and of the Search Bar</string>
+      </property>
+      <property name="statusTip">
+       <string/>
+      </property>
+      <property name="whatsThis">
+       <string/>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>10</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_11">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>40</y>
+        <width>71</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Font Size of the &quot;No results found&quot; Message</string>
+      </property>
+      <property name="text">
+       <string>Secondary</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_12">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>40</y>
+        <width>71</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="toolTip">
+       <string>Font Size of the Icons and of the Search Bar</string>
+      </property>
+      <property name="text">
+       <string>Primary</string>
+      </property>
+     </widget>
+    </widget>
    </widget>
    <widget class="QDialogButtonBox" name="buttonBox">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>530</y>
+      <y>620</y>
       <width>471</width>
       <height>34</height>
      </rect>
@@ -601,101 +696,6 @@
     <property name="centerButtons">
      <bool>true</bool>
     </property>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_4">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>360</y>
-      <width>161</width>
-      <height>161</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Font Size</string>
-    </property>
-    <widget class="QSpinBox" name="font2Spin">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>72</y>
-       <width>52</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Font Size of the &quot;No results found&quot; Message</string>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>20</number>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="font1Spin">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>32</y>
-       <width>52</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Font Size of the Icons and of the Search Bar</string>
-     </property>
-     <property name="statusTip">
-      <string/>
-     </property>
-     <property name="whatsThis">
-      <string/>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>10</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_11">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>80</y>
-       <width>71</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Font Size of the &quot;No results found&quot; Message</string>
-     </property>
-     <property name="text">
-      <string>Secondary</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_12">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>40</y>
-       <width>71</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Font Size of the Icons and of the Search Bar</string>
-     </property>
-     <property name="text">
-      <string>Primary</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QCheckBox" name="rocketMetaCheckBox">
     <property name="geometry">
@@ -709,6 +709,161 @@
     <property name="text">
      <string>Open Rocket if the Meta Key is Pressed</string>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_5">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>450</y>
+      <width>151</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Color of the Active Page Indicator</string>
+    </property>
+    <property name="title">
+     <string>Selection Color</string>
+    </property>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>31</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>r</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>31</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>g</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>31</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>b</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="selectionColourPanel" native="true">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>70</y>
+       <width>81</width>
+       <height>71</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="selectionColourPickerButton">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>30</y>
+       <width>81</width>
+       <height>34</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Color Picker</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="selectionColourLabel_r">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>31</y>
+       <width>58</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="selectionColourLabel_g">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>58</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="selectionColourLabel_b">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>58</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="selectionColourLabel_a">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>58</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_18">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>a</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

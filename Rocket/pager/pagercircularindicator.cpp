@@ -45,7 +45,10 @@ void PagerCircularIndicator::positioning()
 void PagerCircularIndicator::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    painter.setBrush(QBrush(ConfigManager.getBaseColour(),Qt::BrushStyle::SolidPattern));
+    if (ConfigManager.getBoxSetting())
+            painter.setBrush(QBrush(ConfigManager.getBaseColour(),Qt::BrushStyle::SolidPattern));
+    else
+            painter.setBrush(QBrush(ConfigManager.getSelectionColour(),Qt::BrushStyle::SolidPattern));
     painter.setPen(Qt::transparent);
     //painter.drawRoundedRect(0,0,width,height,5,5);
     if (ConfigManager.getVerticalModeSetting())

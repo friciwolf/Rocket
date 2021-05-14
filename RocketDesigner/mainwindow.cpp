@@ -113,6 +113,16 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     /*
+     * Font Size Box
+     * */
+
+    m_font1Spin = findChild<QSpinBox*>("font1Spin");
+    m_font1Spin->setValue(ConfigManager.getFontSize1());
+
+    m_font2Spin = findChild<QSpinBox*>("font2Spin");
+    m_font2Spin->setValue(ConfigManager.getFontSize2());
+
+    /*
      * Base Colour Box
      * */
     m_basecolour = ConfigManager.getBaseColour();
@@ -179,14 +189,41 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     /*
-     * Font Size Box
+     * Selection Colour Box
      * */
+    m_selectioncolour = ConfigManager.getSelectionColour();
 
-    m_font1Spin = findChild<QSpinBox*>("font1Spin");
-    m_font1Spin->setValue(ConfigManager.getFontSize1());
+    m_selectionLabel_r = findChild<QLabel*>("selectionColourLabel_r");
+    m_selectionLabel_r->setText(QString::number(m_selectioncolour.red()));
+    m_selectionLabel_g = findChild<QLabel*>("selectionColourLabel_g");
+    m_selectionLabel_g->setText(QString::number(m_selectioncolour.green()));
+    m_selectionLabel_b = findChild<QLabel*>("selectionColourLabel_b");
+    m_selectionLabel_b->setText(QString::number(m_selectioncolour.blue()));
+    m_selectionLabel_a = findChild<QLabel*>("selectionColourLabel_a");
+    m_selectionLabel_a->setText(QString::number(m_selectioncolour.alpha()));
 
-    m_font2Spin = findChild<QSpinBox*>("font2Spin");
-    m_font2Spin->setValue(ConfigManager.getFontSize2());
+    m_selectionColourPanel = findChild<QWidget*>("selectionColourPanel");
+    m_selectionColourPanel->setAutoFillBackground(true);
+    m_selectionColourPanel->setPalette(QPalette(QColor(m_selectioncolour)));
+
+    QPushButton * selectionColourPickerButton = findChild<QPushButton*>("selectionColourPickerButton");
+    QColorDialog * selectionColourDialog = new QColorDialog(nullptr);
+    connect(selectionColourPickerButton,&QPushButton::clicked,selectionColourDialog,[=](){
+        QColor newcolor = selectionColourDialog->getColor(QColor(m_selectionLabel_r->text().toInt(),m_selectionLabel_g->text().toInt(),m_selectionLabel_b->text().toInt(),m_selectionLabel_a->text().toInt()),nullptr,"Selection Color",QColorDialog::ColorDialogOption::ShowAlphaChannel);
+        if (newcolor.isValid())
+        {
+            m_selectionColourPanel->setPalette(QPalette(newcolor));
+            m_selectionLabel_r->setText(QString::number(newcolor.red()));
+            m_selectionLabel_g->setText(QString::number(newcolor.green()));
+            m_selectionLabel_b->setText(QString::number(newcolor.blue()));
+            m_selectionLabel_a->setText(QString::number(newcolor.alpha()));
+            m_selectioncolour = newcolor;
+        }
+    });
+
+    /*
+     * Buttons
+     * */
 
     QDialogButtonBox * buttonBox = findChild<QDialogButtonBox*>("buttonBox");
     connect(buttonBox->button(QDialogButtonBox::Ok),&QPushButton::clicked,this,&MainWindow::OkClicked);
@@ -215,6 +252,9 @@ void MainWindow::ResetClicked()
     m_systemWallpaperScreenSpin->setValue(RocketStyle::use_system_wallpaper_screen);
     m_systemWallpaperBlurSpin->setValue(RocketStyle::blurradius);
 
+    m_font1Spin->setValue(RocketStyle::fontsize1);
+    m_font2Spin->setValue(RocketStyle::fontsize2);
+
     m_basecolour = RocketStyle::BaseColour;
     m_baseColourPanel->setPalette(QPalette(m_basecolour));
     m_baseLabel_r->setText(QString::number(m_basecolour.red()));
@@ -229,8 +269,12 @@ void MainWindow::ResetClicked()
     m_secondaryLabel_b->setText(QString::number(m_secondarycolour.blue()));
     m_secondaryLabel_a->setText(QString::number(m_secondarycolour.alpha()));
 
-    m_font1Spin->setValue(RocketStyle::fontsize1);
-    m_font2Spin->setValue(RocketStyle::fontsize2);
+    m_selectioncolour = RocketStyle::SelectionColour;
+    m_selectionColourPanel->setPalette(QPalette(m_selectioncolour));
+    m_selectionLabel_r->setText(QString::number(m_selectioncolour.red()));
+    m_selectionLabel_g->setText(QString::number(m_selectioncolour.green()));
+    m_selectionLabel_b->setText(QString::number(m_selectioncolour.blue()));
+    m_selectionLabel_a->setText(QString::number(m_selectioncolour.alpha()));
 }
 
 void MainWindow::ApplyClicked()
@@ -282,13 +326,14 @@ void MainWindow::ApplyClicked()
     config->group(RocketConfig::Background::group).writeEntry(RocketConfig::Background::wallpaperofscreen,m_systemWallpaperScreenSpin->value());
     config->group(RocketConfig::Background::group).writeEntry(RocketConfig::Background::blurradius,m_systemWallpaperBlurSpin->value());
 
-    // Colours
-    config->group(RocketConfig::Color::group).writeEntry(RocketConfig::Color::base,m_basecolour);
-    config->group(RocketConfig::Color::group).writeEntry(RocketConfig::Color::secondary,m_secondarycolour);
-
     // Font
     config->group(RocketConfig::Font::group).writeEntry(RocketConfig::Font::size1,m_font1Spin->value());
     config->group(RocketConfig::Font::group).writeEntry(RocketConfig::Font::size2,m_font2Spin->value());
+
+    // Colours
+    config->group(RocketConfig::Color::group).writeEntry(RocketConfig::Color::base,m_basecolour);
+    config->group(RocketConfig::Color::group).writeEntry(RocketConfig::Color::secondary,m_secondarycolour);
+    config->group(RocketConfig::Color::group).writeEntry(RocketConfig::Color::selection,m_selectioncolour);
 
     config->sync();
 }

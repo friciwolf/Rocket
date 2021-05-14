@@ -29,16 +29,6 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        pager/pager.cpp \
-        pager/pageritem.cpp \
-        pager/pagercircularindicator.cpp \
-        pager/pagercircularactiveindicator.cpp \
-        icongrid/icongrid.cpp \
-        icongrid/icongriditem.cpp \
-        icongrid/icongriditemcanvas.cpp \
-        searchfield/searchfield.cpp \
-        tools/searchingapps.cpp \
-        pager/verticalpager.cpp \
       ../RocketLibrary/rocketlibrary.cpp \
       ../RocketLibrary/tools/rocketconfigmanager.cpp \
       ../RocketLibrary/tools/kmenuitems.cpp \
@@ -47,16 +37,6 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-        pager/pager.h \
-        pager/pageritem.h \
-        pager/pagercircularindicator.h \
-        pager/pagercircularactiveindicator.h \
-        icongrid/icongrid.h \
-        icongrid/icongriditem.h \
-        icongrid/icongriditemcanvas.h \
-        searchfield/searchfield.h \
-        tools/searchingapps.h \
-        pager/verticalpager.h \
       ../RocketLibrary/rocketlibrary.h \
       ../RocketLibrary/tools/rocketconfigmanager.h \
       ../RocketLibrary/tools/kmenuitems.h \

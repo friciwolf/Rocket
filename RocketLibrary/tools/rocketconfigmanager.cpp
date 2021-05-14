@@ -15,6 +15,7 @@ public:
         map<QString,QVariant> colors;
         colors[Color::base] = RocketStyle::BaseColour;
         colors[Color::secondary] = RocketStyle::SecondaryColour;
+        colors[Color::selection] = RocketStyle::SelectionColour;
         items[Color::group] = colors;
 
         map<QString,QVariant> font;
@@ -113,6 +114,11 @@ QColor RocketConfigManager::getSecondaryColour()
     return getStyleValue(Color::group,Color::secondary,RocketStyle::SecondaryColour);
 }
 
+QColor RocketConfigManager::getSelectionColour()
+{
+    return getStyleValue(Color::group,Color::selection,RocketStyle::SelectionColour);
+}
+
 QPalette RocketConfigManager::getBaseColourBackgroundPalette()
 {
     QPalette p;
@@ -120,9 +126,11 @@ QPalette RocketConfigManager::getBaseColourBackgroundPalette()
     return p;
 }
 
-QBrush RocketConfigManager::getActiveIndicatorBrush()
+QPalette RocketConfigManager::getSelectionColourBackgroundPalette()
 {
-    return QBrush(getSecondaryColour(),Qt::BrushStyle::SolidPattern);
+    QPalette p;
+    p.setColor(QPalette::ColorRole::Background,getSelectionColour());
+    return p;
 }
 
 int RocketConfigManager::getFontSize1()

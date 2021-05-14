@@ -11,6 +11,7 @@ namespace RocketStyle {
     */
     const QColor BaseColour = QColor(255,255,255,200);
     const QColor SecondaryColour = QColor(0,0,0,100);
+    const QColor SelectionColour = QColor(255,255,255,200);
     const int fontsize1 = 10;
     const int fontsize2 = 20;
     const int blurradius = 0;
@@ -50,6 +51,7 @@ namespace RocketConfig {
         const QString group = QString("color");
         const QString base = QString("base");
         const QString secondary = QString("secondary");
+        const QString selection = QString("selection");
     }
 
     namespace Font {

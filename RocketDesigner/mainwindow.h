@@ -44,6 +44,10 @@ private:
     QSpinBox * m_systemWallpaperScreenSpin;
     QSpinBox * m_systemWallpaperBlurSpin;
 
+    // Font
+    QSpinBox * m_font1Spin;
+    QSpinBox * m_font2Spin;
+
     // Colours
     QColor m_basecolour;
     QLabel * m_baseLabel_r;
@@ -59,9 +63,12 @@ private:
     QLabel * m_secondaryLabel_a;
     QWidget * m_secondaryColourPanel;
 
-    // Font
-    QSpinBox * m_font1Spin;
-    QSpinBox * m_font2Spin;
+    QColor m_selectioncolour;
+    QLabel * m_selectionLabel_r;
+    QLabel * m_selectionLabel_g;
+    QLabel * m_selectionLabel_b;
+    QLabel * m_selectionLabel_a;
+    QWidget * m_selectionColourPanel;
 };
 
 #endif // MAINWINDOW_H

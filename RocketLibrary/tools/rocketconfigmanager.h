@@ -24,8 +24,9 @@ public:
     bool getStyleValue(QString group, QString key, bool defaultvalue);
     QColor getBaseColour();
     QColor getSecondaryColour();
+    QColor getSelectionColour();
     QPalette getBaseColourBackgroundPalette();
-    QBrush getActiveIndicatorBrush();
+    QPalette getSelectionColourBackgroundPalette();
     int getFontSize1();
     int getFontSize2();
     int getBlurRadius();

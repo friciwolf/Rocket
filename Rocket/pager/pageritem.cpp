@@ -51,7 +51,10 @@ void PagerItem::gridLayoutManagement()
     {
         QLabel * label = new QLabel(ki18n("No results found").toString(),m_grid);
         label->setAutoFillBackground(true);
-        label->setPalette(ConfigManager.getBaseColourBackgroundPalette());
+        if (ConfigManager.getBoxSetting())
+            label->setPalette(ConfigManager.getBaseColourBackgroundPalette());
+        else
+            label->setPalette(ConfigManager.getSelectionColourBackgroundPalette());
         label->setAlignment(Qt::AlignCenter);
         label->setFixedHeight(m_grid_itemsize.height());
         QFont label_font = label->font();

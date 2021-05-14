@@ -107,7 +107,7 @@ void IconGrid::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QColor color = ConfigManager.getBaseColour();
     painter.setBrush(QBrush(color,Qt::BrushStyle::SolidPattern));
-    painter.setPen(color);
+    painter.setPen(Qt::transparent);
     painter.drawRoundedRect(0,0,width(),height(),30,30);
 }
 
