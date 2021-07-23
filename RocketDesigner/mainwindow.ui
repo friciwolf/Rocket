@@ -575,7 +575,7 @@
        <x>20</x>
        <y>154</y>
        <width>221</width>
-       <height>20</height>
+       <height>22</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -686,7 +686,7 @@
        <x>250</x>
        <y>154</y>
        <width>211</width>
-       <height>20</height>
+       <height>22</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -892,6 +892,7 @@
   <tabstop>horizontalInversionCheckBox</tabstop>
   <tabstop>verticalInversionCheckBox</tabstop>
   <tabstop>enableBoxesCheckBox</tabstop>
+  <tabstop>tightLayoutCheckBox</tabstop>
   <tabstop>systemWallpaperCheckBox</tabstop>
   <tabstop>wallpaperSelectorButton</tabstop>
   <tabstop>systemWallpaperScreenSpin</tabstop>
