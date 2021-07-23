@@ -16,7 +16,7 @@ For more information check out the **wiki** and the **release notes**.
 
 Rocket has been tested on Kubuntu and on Debian, but it should also work on any platform with KDE installed.
 
-Clone the repository or download the zipped file in the folder ```installer```. Then make the bash script ```installer.sh``` executable via ```chmod +x installer.sh``` and run it with ```./installer.sh```.
+You can either clone the repository and compile the code yourself or download the zipped file containing all the binaries and icons from the [KDE Store](https://store.kde.org/p/1507169/) and install Rocket by making the bash script ```installer.sh``` executable via ```chmod +x installer.sh``` and by running it with ```./installer.sh```.
 
 # Screenshot Gallery
 
