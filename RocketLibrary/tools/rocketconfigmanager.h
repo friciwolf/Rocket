@@ -31,6 +31,7 @@ public:
     int getFontSize2();
     int getBlurRadius();
     bool getBoxSetting();
+    bool getTightLayoutSetting();
     int getRowNumber();
     int getColumnNumber();
     bool getVerticalModeSetting();

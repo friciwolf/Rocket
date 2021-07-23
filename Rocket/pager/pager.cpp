@@ -52,11 +52,11 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
         else
         {
             PagerItem * page = new PagerItem(this,applications);
-            if (!searching)
+            if (!searching && ConfigManager.getTightLayoutSetting()==false)
             {
-                //page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
-                //page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-                //page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
+                page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
+                page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+                page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
             }
             connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
 
@@ -69,11 +69,11 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
 
     // Adding the rest..
     PagerItem * page = new PagerItem(this,applications);
-    if (!searching)
+    if (!searching && ConfigManager.getTightLayoutSetting()==false)
     {
-        //page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
-        //page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-        //page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
+        page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
+        page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+        page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
     }
     connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
     addItem(page);

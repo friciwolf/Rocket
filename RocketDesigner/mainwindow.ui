@@ -680,6 +680,22 @@
       </property>
      </widget>
     </widget>
+    <widget class="QCheckBox" name="tightLayoutCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>154</y>
+       <width>211</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>If enabled, the grid occupies minimal space, without empty rows.</string>
+     </property>
+     <property name="text">
+      <string>Tight Layout</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QDialogButtonBox" name="buttonBox">
     <property name="geometry">

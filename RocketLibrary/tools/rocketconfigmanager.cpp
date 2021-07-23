@@ -39,6 +39,7 @@ public:
         settings[Settings::invertedscrollingx] = RocketStyle::inverted_scrolling_x;
         settings[Settings::invertedscrollingy] = RocketStyle::inverted_scrolling_y;
         settings[Settings::enable_boxes] = RocketStyle::enable_boxes;
+        settings[Settings::tightlayout] = RocketStyle::tightlayout;
         items[Settings::group] = settings;
     }
 };
@@ -166,6 +167,11 @@ int RocketConfigManager::getBlurRadius()
 bool RocketConfigManager::getBoxSetting()
 {
     return getStyleValue(Settings::group,Settings::enable_boxes,RocketStyle::enable_boxes);
+}
+
+bool RocketConfigManager::getTightLayoutSetting()
+{
+    return getStyleValue(Settings::group,Settings::tightlayout,RocketStyle::tightlayout);
 }
 
 int RocketConfigManager::getRowNumber()
