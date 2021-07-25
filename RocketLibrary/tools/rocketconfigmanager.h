@@ -18,6 +18,9 @@ public:
     void setAppGridConfig(KConfig * config){m_appgridconfig = config;}
     KConfig * getAppGridConfig(){return m_appgridconfig;}
     void checkAppGridConfigFile();
+    int getNumberOfElementsOfAGroup(KConfigGroup group);
+    map<int,KDEApplication> getApplicationsFromAGroup(KConfigGroup group, int depth=0);
+
     QString getStyleValue(QString group, QString key);
     QColor getStyleValue(QString group, QString key, QColor defaultvalue);
     int getStyleValue(QString group, QString key, int defaultvalue);
@@ -32,6 +35,7 @@ public:
     int getBlurRadius();
     bool getBoxSetting();
     bool getTightLayoutSetting();
+    bool getFolderSetting();
     int getRowNumber();
     int getColumnNumber();
     bool getVerticalModeSetting();

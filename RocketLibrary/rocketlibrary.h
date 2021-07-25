@@ -17,6 +17,7 @@ namespace RocketStyle {
     const int blurradius = 0;
     const bool enable_boxes = true;
     const bool tightlayout = true;
+    const bool enable_folders = true;
 
     // A click is recongnized only if the mouse moves 10 pixels
     const int click_tolerance = 100;
@@ -83,6 +84,7 @@ namespace RocketConfig {
         const QString metastart = QString("meta_start");
         const QString enable_boxes = QString("enable_boxes");
         const QString tightlayout = QString("tight_layout");
+        const QString enable_folders = QString("enable_folders");
     }
 }
 

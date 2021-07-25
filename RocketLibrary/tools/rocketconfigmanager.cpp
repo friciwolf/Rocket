@@ -40,6 +40,7 @@ public:
         settings[Settings::invertedscrollingy] = RocketStyle::inverted_scrolling_y;
         settings[Settings::enable_boxes] = RocketStyle::enable_boxes;
         settings[Settings::tightlayout] = RocketStyle::tightlayout;
+        settings[Settings::enable_folders] = RocketStyle::enable_folders;
         items[Settings::group] = settings;
     }
 };
@@ -174,6 +175,11 @@ bool RocketConfigManager::getTightLayoutSetting()
     return getStyleValue(Settings::group,Settings::tightlayout,RocketStyle::tightlayout);
 }
 
+bool RocketConfigManager::getFolderSetting()
+{
+    return getStyleValue(Settings::group,Settings::enable_folders,RocketStyle::enable_folders);
+}
+
 int RocketConfigManager::getRowNumber()
 {
     int rows = getStyleValue(Dimensions::group,Dimensions::rows,RocketStyle::m_rows);
@@ -224,6 +230,58 @@ int RocketConfigManager::getInvertedScrollFactorYfromSettings()
     return (inverted ? -1 : 1);
 }
 
+int RocketConfigManager::getNumberOfElementsOfAGroup(KConfigGroup group)
+{
+    int i=0;
+    if (group.groupList().size()>1)
+    {
+        for (int j=0; j<group.groupList().size();j++)
+            i+=getNumberOfElementsOfAGroup(group.group(group.groupList()[j]));
+    }
+    else {
+        i=1;
+    }
+    return i;
+}
+
+
+map<int,KDEApplication> RocketConfigManager::getApplicationsFromAGroup(KConfigGroup group, int depth)
+{
+    map<int,KDEApplication> apps;
+    int i=0;
+    if (group.groupList().size()>1)
+    {
+        for (int j=0; j<group.groupList().size();j++)
+        {
+            map<int,KDEApplication> apps2 = getApplicationsFromAGroup(group.group(group.groupList()[j]),depth+1);
+            apps.insert(apps2.begin(),apps2.end());
+        }
+    }
+    else {
+        if (depth==0) //App
+        {
+            QString name = group.readEntry("name");
+            QString iconname = group.readEntry("iconname");
+            QString exec = group.readEntry("exec");
+            QString comment = group.readEntry("comment");
+            QIcon icon = QIcon::fromTheme(iconname);
+            QStringList keywords = group.readEntry("keywords").split(",");
+            QString genericname = group.readEntry("genericname");
+            QString untranslatedGenericName = group.readEntry("untranslatedgenericname");
+            QStringList categories = group.readEntry("categories").split(",");
+            bool terminal = (group.readEntry("terminal") == "false" ? false : true);
+            QString entrypath = group.readEntry("entrypath");
+            int pos = group.readEntry("pos").toInt();
+            apps[pos] = KDEApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories,entrypath);
+        }
+        else //Folder
+        {
+            qDebug() << "folder found!";
+        }
+    }
+    return apps;
+}
+
 void RocketConfigManager::checkAppGridConfigFile()
 {
     KConfig * config = m_appgridconfig;
@@ -236,23 +294,17 @@ void RocketConfigManager::checkAppGridConfigFile()
     }
     else
     {
-        int N = config->groupList().size();
+        int N=0; //Number of applications stored in the config file
+        for (QString s : config->groupList())
+        {
+            N+=getNumberOfElementsOfAGroup(config->group(s));
+        }
         KDEApplication apps[N];
         for (QString item : config->groupList())
         {
-            QString name = config->group(item).readEntry("name");
-            QString iconname = config->group(item).readEntry("iconname");
-            QString exec = config->group(item).readEntry("exec");
-            QString comment = config->group(item).readEntry("comment");
-            QIcon icon = QIcon::fromTheme(iconname);
-            QStringList keywords = config->group(item).readEntry("keywords").split(",");
-            QString genericname = config->group(item).readEntry("genericname");
-            QString untranslatedGenericName = config->group(item).readEntry("untranslatedgenericname");
-            QStringList categories = config->group(item).readEntry("categories").split(",");
-            bool terminal = (config->group(item).readEntry("terminal") == "false" ? false : true);
-            QString entrypath = config->group(item).readEntry("entrypath");
-            int pos = config->group(item).readEntry("pos").toInt();
-            apps[pos] = KDEApplication(name,iconname,icon,exec,comment,terminal,keywords,genericname,untranslatedGenericName,categories,entrypath);
+            map<int,KDEApplication> apps_found = getApplicationsFromAGroup(config->group(item));
+            for (auto const& i : apps_found)
+                apps[i.first] = i.second;
         }
         std::vector<KDEApplication> appvector(apps,apps+N);
         m_apps = appvector;
@@ -291,11 +343,20 @@ bool RocketConfigManager::updateApplicationList()
     {
         for (int i=0;i<m_apps.size(); i++)
         {
-            if (!(menuitems.getApplications()[i]==m_apps[i]))
+            for (int j=0;j<m_apps.size();j++)
             {
-                changes = true;
-                break;
+                if (menuitems.getApplications()[i]==m_apps[j])
+                {
+                    break;
+                }
+                if (j+1==m_apps.size())
+                {
+                    qDebug() << m_apps[i].name();
+                    changes = true;
+                }
             }
+            if (changes)
+                break;
         }
     }
     if (changes)
