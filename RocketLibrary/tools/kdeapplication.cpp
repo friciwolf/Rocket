@@ -13,6 +13,16 @@ KDEApplication::KDEApplication(QString name, QString iconname, QIcon icon, QStri
     m_untranslatedGenericName = untranslatedGenericName;
     m_categories = (categories.size()==1 ? (categories[0].contains(",") ? categories[0].split(",") : categories) : categories);
     m_entrypath = entrypath;
+    m_isfolder = false;
+}
+
+KDEApplication::KDEApplication(QString name, QString iconname, QIcon icon, QString comment)
+{
+    m_name = name;
+    m_iconname = iconname;
+    m_icon = icon;
+    m_comment = comment;
+    m_isfolder = true;
 }
 
 KDEApplication::KDEApplication()

@@ -8,6 +8,7 @@ class KDEApplication
 {
 public:
     KDEApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath);
+    KDEApplication(QString name, QString iconname, QIcon icon, QString comment);
     KDEApplication();
     QString name(){return m_name;}
     QString iconname(){return m_iconname;}
@@ -19,8 +20,13 @@ public:
     QString genericname() {return m_genericname;}
     QString untranslatedGenericName() {return m_untranslatedGenericName;}
     QStringList categories() {return m_categories;}
-    QString entrypath(){return m_entrypath;}
+    QString entrypath() {return m_entrypath;}
+    bool isFolder() {return m_isfolder;}
     friend bool operator==(const KDEApplication& a, const KDEApplication& b);
+
+    void setChild(int index,KDEApplication child) {m_children[index] = child;}
+    std::vector<KDEApplication> getChildren() {return m_children;}
+    void setChildren(std::vector<KDEApplication> children){m_children=children;}
 
 private:
     QString m_name;
@@ -34,6 +40,8 @@ private:
     QString m_untranslatedGenericName;
     QStringList m_categories;
     QString m_entrypath;
+    bool m_isfolder;
+    std::vector<KDEApplication> m_children;
 };
 
 #endif // KDEAPPLICATION_H

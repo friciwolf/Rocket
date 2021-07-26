@@ -18,8 +18,7 @@ public:
     void setAppGridConfig(KConfig * config){m_appgridconfig = config;}
     KConfig * getAppGridConfig(){return m_appgridconfig;}
     void checkAppGridConfigFile();
-    int getNumberOfElementsOfAGroup(KConfigGroup group);
-    map<int,KDEApplication> getApplicationsFromAGroup(KConfigGroup group, int depth=0);
+    map<int,KDEApplication> getApplicationTree(KConfigGroup group, KDEApplication * folder=nullptr);
 
     QString getStyleValue(QString group, QString key);
     QColor getStyleValue(QString group, QString key, QColor defaultvalue);
@@ -49,6 +48,7 @@ private:
     KConfig * m_styleconfig;
     KConfig * m_appgridconfig;
     std::vector<KDEApplication> m_apps;
+    std::vector<KDEApplication> m_app_tree;
     void generateAppGridConfigFile(KConfig * config,KMenuItems menuitems);
 };
 
