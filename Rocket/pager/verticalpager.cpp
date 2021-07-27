@@ -248,12 +248,13 @@ void VerticalPager::resizeEvent(QResizeEvent *event)
 
 void VerticalPager::mousePressEvent(QMouseEvent *e)
 {
+    if (isIconDraggingOn()) iconDraggingOn(false);
     if (e->button() == Qt::LeftButton)
     {
         pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
         drag_start_position = QCursor::pos();
         drag_0 = QCursor::pos();
-        dragging = true;
+        if (!searching) dragging = true;
     }
     e->accept();
     //qDebug() << "pager: mouse press!";
@@ -261,14 +262,6 @@ void VerticalPager::mousePressEvent(QMouseEvent *e)
 
 void VerticalPager::mouseMoveEvent(QMouseEvent * event)
 {
-    //qDebug() << "Pagermousemove with dragging:" << dragging;
-    if (m_icon_dragging_on)
-    {
-        dragging = false;
-        qDebug() << "    icondragging on, thus dragging:" << dragging;
-        event->accept();
-        return;
-    }
     if (scrolled) // pages have been scrolled
     {
         if (mouse_pos_scroll_0!=QCursor::pos())
@@ -303,6 +296,7 @@ void VerticalPager::mouseReleaseEvent(QMouseEvent * event)
 {
     if (m_icon_dragging_on)
     {
+        iconDraggingOn(false);
         event->ignore();
         return;
     }

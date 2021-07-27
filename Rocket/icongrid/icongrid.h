@@ -42,6 +42,10 @@ public:
 signals:
     void goToPage(int deltaPage);
 
+public slots:
+    void drawSeparator(IconGridItemCanvas * gridItemCanvas, bool left);
+    void eraseSeparator();
+
 private:
     // Vector of all items
     std::vector<IconGridItem*> m_items;
@@ -50,6 +54,7 @@ private:
     int m_rows = ConfigManager.getRowNumber();
     int m_cols = ConfigManager.getColumnNumber();
     int m_active_element = -1;
+    QPoint m_draw_separator_at = QPoint(-1,-1);
 
     QGridLayout * m_layout;
 };

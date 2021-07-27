@@ -29,6 +29,8 @@ public slots:
 
 signals:
     void iconDraggingOn(bool on);
+    void drawSeparator(IconGridItemCanvas * gridItemCanvas, bool left);
+    void eraseSeparator();
 
 private:
     void m_starticondragging();

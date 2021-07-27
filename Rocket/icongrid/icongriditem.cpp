@@ -21,7 +21,6 @@ IconGridItem::IconGridItem(QWidget *parent, KDEApplication application, QSize it
     m_item_size = itemsize;
     setFixedSize(m_item_size);
     setMouseTracking(true);
-    setAcceptDrops(true);
 
     //QPalette p;
     //setAutoFillBackground(true);

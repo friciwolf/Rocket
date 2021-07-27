@@ -255,12 +255,13 @@ void Pager::resizeEvent(QResizeEvent *event)
 
 void Pager::mousePressEvent(QMouseEvent *e)
 {
+    if (isIconDraggingOn()) iconDraggingOn(false);
     if (e->button() == Qt::LeftButton)
     {
         pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
         drag_start_position = QCursor::pos();
         drag_0 = QCursor::pos();
-        dragging = true;
+        if (!searching) dragging = true;
     }
     e->accept();
     //qDebug() << "pager: mouse press!";
@@ -268,14 +269,6 @@ void Pager::mousePressEvent(QMouseEvent *e)
 
 void Pager::mouseMoveEvent(QMouseEvent * event)
 {
-    //qDebug() << "Pagermousemove with dragging:" << dragging;
-    if (m_icon_dragging_on)
-    {
-        dragging = false;
-        qDebug() << "    icondragging on, thus dragging:" << dragging;
-        event->accept();
-        return;
-    }
     if (scrolled) // pages have been scrolled
     {
         if (mouse_pos_scroll_0!=QCursor::pos())
@@ -310,6 +303,7 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
 {
     if (m_icon_dragging_on)
     {
+        iconDraggingOn(false);
         event->ignore();
         return;
     }
@@ -453,6 +447,5 @@ void Pager::activateSearch(const QString &query)
     else found_apps = m_kapplication_tree;
     updatePager(found_apps);
     updated(searching);
-    //qDebug() << "activate search sends enableicondragging with" << !searching;
     enableIconDragging(!searching);
 }

@@ -34,6 +34,10 @@ public:
 
     void resizeEvent(QResizeEvent *event);
     void leaveEvent(QEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dropEvent(QDropEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
     void setStarupArgs(QStringList * args){m_startupargs = args;}
     QStringList * getStarupArgs(){return m_startupargs;}
 

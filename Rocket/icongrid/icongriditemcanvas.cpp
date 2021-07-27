@@ -6,7 +6,7 @@
 #include <QGridLayout>
 #include <QDrag>
 #include <QMimeData>
-#include <QMimeData>
+#include <QCursor>
 
 #include <KRun>
 #include <KService>
@@ -118,7 +118,7 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
 
 void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 {
-    qDebug() << "dragging into" << m_application.name();
+    //qDebug() << "dragging into" << m_application.name();
     event->acceptProposedAction();
 }
 
@@ -126,23 +126,24 @@ void IconGridItemCanvas::dropEvent(QDropEvent *event)
 {
     qDebug() << "dropped" << event->mimeData()->text() << "on"<< m_application.name();
     iconDraggingOn(false);
+    eraseSeparator();
     event->acceptProposedAction();
 }
 
 void IconGridItemCanvas::dragMoveEvent(QDragMoveEvent *event)
 {
     //qDebug() << "dragMoveIconGriditem";
-    if (event->source()!=this)
-    {
-        //move(pos().x()+(width()/2-event->pos().x())*0.1,pos().y());
-    }
+    if (mapToGlobal(rect().topLeft()).x()+width()/2 - QCursor::pos().x() > 0)
+        drawSeparator(this,true);
+    else
+        drawSeparator(this,false);
     event->accept();
 }
 
 void IconGridItemCanvas::dragLeaveEvent(QDragLeaveEvent *event)
 {
-    qDebug() << "dragging left" << m_application.name();
-    event->ignore();
+    //qDebug() << "dragging left" << m_application.name();
+    event->accept();
 }
 
 void IconGridItemCanvas::resizeEvent(QResizeEvent *event)

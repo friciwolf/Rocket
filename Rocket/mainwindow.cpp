@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setMouseTracking(true);
     setWindowOpacity(0);
+    setAcceptDrops(true);
 
     if (ConfigManager.getVerticalModeSetting())
     {
@@ -122,11 +123,51 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
 void MainWindow::leaveEvent(QEvent *event)
 {
-    if (!pager->isIconDraggingOn())
+    if (ConfigManager.getVerticalModeSetting())
     {
-        qApp->exit();
-        event->accept();
+        if (!verticalpager->isIconDraggingOn())
+        {
+            qApp->exit();
+        }
     }
+    else {
+        if (!pager->isIconDraggingOn())
+        {
+            qApp->exit();
+        }
+    }
+    event->accept();
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->accept();
+}
+
+void MainWindow::dragMoveEvent(QDragMoveEvent *event)
+{
+    event->accept();
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    if (ConfigManager.getVerticalModeSetting())
+    {
+        verticalpager->iconDraggingOn(false);
+        verticalpager->pages[verticalpager->current_element]->getIconGrid()->eraseSeparator();
+
+    }
+    else
+    {
+        pager->iconDraggingOn(false);
+        pager->pages[pager->current_element]->getIconGrid()->eraseSeparator();
+    }
+    event->accept();
+}
+
+void MainWindow::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    event->accept();
 }
 
 void MainWindow::navigation(int key)

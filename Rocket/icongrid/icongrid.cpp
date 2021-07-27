@@ -11,7 +11,8 @@ IconGrid::IconGrid(QWidget * parent) : QWidget (parent)
 {
     m_layout = new QGridLayout();
     m_layout->setAlignment(Qt::AlignCenter);
-    m_layout->setSpacing(1);
+    m_layout->setMargin(10);
+    m_layout->setSpacing(0);
     setLayout(m_layout);
     setMouseTracking(true);
 }
@@ -22,6 +23,8 @@ void IconGrid::addItem(IconGridItem * item)
     int row_position = (int)getNumberOfItems()/getMaxNumberOfColumns();
     m_layout->addWidget(item,row_position,column_position,Qt::AlignCenter);
     m_items.push_back(item);
+    connect(item->getCanvas(),&IconGridItemCanvas::drawSeparator,this,&IconGrid::drawSeparator);
+    connect(item->getCanvas(),&IconGridItemCanvas::eraseSeparator,this,&IconGrid::eraseSeparator);
 }
 
 
@@ -100,6 +103,46 @@ void IconGrid::resetHighlightAndActiveElement()
     m_active_element = -1;
 }
 
+void IconGrid::drawSeparator(IconGridItemCanvas * gridItemCanvas, bool left)
+{
+    int pos=-1;
+    for (int i=0;i<getItems().size();i++)
+    {
+        if (getItems()[i]->getCanvas()==gridItemCanvas)
+        {
+            pos = i;
+            break;
+        }
+    }
+    if (pos==-1) return;
+    if (left)
+    {
+        if (pos>0)
+            if(pos%ConfigManager.getColumnNumber()==0)
+                m_draw_separator_at = getItems()[pos]->pos();
+            else
+                m_draw_separator_at = (getItems()[pos]->pos()+getItems()[pos-1]->pos()+QPoint(getItems()[pos-1]->width(),0))*0.5;
+        else
+            m_draw_separator_at = getItems()[0]->pos();
+    }
+    else
+    {
+        if (pos<getItems().size()-1)
+            if((pos+1)%ConfigManager.getColumnNumber()==0)
+                m_draw_separator_at = getItems()[pos]->pos()+QPoint(getItems()[pos]->width(),0);
+            else
+                m_draw_separator_at = (getItems()[pos]->pos()+getItems()[pos+1]->pos()+QPoint(getItems()[pos]->width(),0))*0.5;
+        else
+            m_draw_separator_at = getItems()[pos]->pos()+QPoint(getItems()[pos]->width(),0);
+    }
+    update();
+}
+
+void IconGrid::eraseSeparator()
+{
+    update();
+}
+
 void IconGrid::paintEvent(QPaintEvent *event)
 {
     if (getItems().size()==0) return; // search yielded no results -> no drawing
@@ -109,13 +152,21 @@ void IconGrid::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(color,Qt::BrushStyle::SolidPattern));
     painter.setPen(Qt::transparent);
     painter.drawRoundedRect(0,0,width(),height(),30,30);
+    if (m_draw_separator_at!=QPoint(-1,-1))
+    {
+        int maxheight = -1;
+        for (IconGridItem * i : getItems())
+            if (i->getNameLabel()->pos().y()>maxheight) maxheight = i->getNameLabel()->pos().y();
+        painter.setPen(ConfigManager.getSecondaryColour());
+        painter.drawLine(m_draw_separator_at.x(),m_draw_separator_at.y(),m_draw_separator_at.x(),maxheight+m_draw_separator_at.y());
+        m_draw_separator_at = QPoint(-1,-1);
+    }
 }
 
 void IconGrid::mouseMoveEvent(QMouseEvent *event)
 {
     event->ignore();
 }
-
 
 IconGrid::~IconGrid()
 {
