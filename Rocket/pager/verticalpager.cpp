@@ -34,6 +34,7 @@ VerticalPager::VerticalPager(QWidget *parent) : QWidget(parent)
     setFixedSize(parent->size());
 
     m_kapplications = ConfigManager.getApplications();
+    m_kapplication_tree = ConfigManager.getApplicationTree();
     m_backgroundView = new QGraphicsView(this);
 }
 
@@ -76,11 +77,19 @@ void VerticalPager::constructPager(std::vector<KDEApplication> kapplications)
         page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
     }
     connect(page->getIconGrid(),&IconGrid::goToPage,this,&VerticalPager::goToPage);
-
     addItem(page);
     if (kapplications.size()==1) // only 1 item found after searching
     {
         page->getIconGrid()->highlight(0);
+    }
+
+    for (PagerItem * i : pages)
+    {
+        for (IconGridItem * i2 : i->getIconGrid()->getItems())
+        {
+            connect(i2->getCanvas(),&IconGridItemCanvas::iconDraggingOn,this,&VerticalPager::iconDraggingOn);
+            connect(this,&VerticalPager::enableIconDragging,i2->getCanvas(),&IconGridItemCanvas::setDraggable);
+        }
     }
 
     QString backgroundPath = QDir::homePath()+"/.config/rocket/wallpaper.jpeg";
@@ -139,7 +148,6 @@ void VerticalPager::constructPager(std::vector<KDEApplication> kapplications)
     m_backgroundView->setBackgroundBrush(QBrush(bkgnd));
     if (!ConfigManager.getBoxSetting()) m_backgroundView->setForegroundBrush(QBrush(ConfigManager.getBaseColour()));
 
-
     QGraphicsBlurEffect* p_blur = new QGraphicsBlurEffect;
     p_blur->setBlurRadius(ConfigManager.getBlurRadius());
     p_blur->setBlurHints(QGraphicsBlurEffect::BlurHint::QualityHint);
@@ -159,7 +167,7 @@ void VerticalPager::updatePager(std::vector<KDEApplication> kapplications)
     }
     pages.clear();
 
-    if (kapplications == m_kapplications)
+    if (kapplications == m_kapplication_tree)
     {
         current_element = element_before_searching;
     }
@@ -231,7 +239,7 @@ void VerticalPager::resizeEvent(QResizeEvent *event)
         event->accept();
         return;
     }
-    updatePager(m_kapplications);
+    updatePager(m_kapplication_tree);
     for (int i=0;i<pages.size();i++)
     {
         pages[i]->resizeEvent(event);
@@ -432,7 +440,10 @@ void VerticalPager::activateSearch(const QString &query)
         }
     }
     searching = (query!="");
-    std::vector<KDEApplication> found_apps = searchApplication(m_kapplications,query);
+    std::vector<KDEApplication> found_apps;
+    if (searching)
+       found_apps = searchApplication(m_kapplications,query);
+    else found_apps = m_kapplication_tree;
     updatePager(found_apps);
     updated(searching);
     enableIconDragging(!searching);

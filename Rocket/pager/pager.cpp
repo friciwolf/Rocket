@@ -34,6 +34,7 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     setFixedSize(parent->size());
 
     m_kapplications = ConfigManager.getApplications();
+    m_kapplication_tree = ConfigManager.getApplicationTree();
     m_backgroundView = new QGraphicsView(this);
 }
 
@@ -81,7 +82,7 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
     {
         page->getIconGrid()->highlight(0);
     }
-    /*
+
     for (PagerItem * i : pages)
     {
         for (IconGridItem * i2 : i->getIconGrid()->getItems())
@@ -90,7 +91,6 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
             connect(this,&Pager::enableIconDragging,i2->getCanvas(),&IconGridItemCanvas::setDraggable);
         }
     }
-    */
 
     QString backgroundPath = QDir::homePath()+"/.config/rocket/wallpaper.jpeg";
     if (ConfigManager.getUsingSystemWallpaper())
@@ -167,7 +167,7 @@ void Pager::updatePager(std::vector<KDEApplication> kapplications)
     }
     pages.clear();
 
-    if (kapplications == m_kapplications)
+    if (kapplications == m_kapplication_tree)
     {
         current_element = element_before_searching;
     }
@@ -246,7 +246,7 @@ void Pager::resizeEvent(QResizeEvent *event)
         event->accept();
         return;
     }
-    updatePager(m_kapplications);
+    updatePager(m_kapplication_tree);
     for (int i=0;i<pages.size();i++)
     {
         pages[i]->resizeEvent(event);
@@ -447,7 +447,10 @@ void Pager::activateSearch(const QString &query)
         }
     }
     searching = (query!="");
-    std::vector<KDEApplication> found_apps = searchApplication(m_kapplications,query);
+    std::vector<KDEApplication> found_apps;
+    if (searching)
+        found_apps = searchApplication(m_kapplications,query);
+    else found_apps = m_kapplication_tree;
     updatePager(found_apps);
     updated(searching);
     //qDebug() << "activate search sends enableicondragging with" << !searching;

@@ -32,7 +32,6 @@ IconGridItem::IconGridItem(QWidget *parent, KDEApplication application, QSize it
 
     m_canvas = new IconGridItemCanvas(this,application);
 
-
     //QPalette p2;
     //name_label->setAutoFillBackground(true);
     //p2.setColor(QPalette::ColorRole::Background,Qt::green);
@@ -58,15 +57,6 @@ IconGridItem::IconGridItem(QWidget *parent, KDEApplication application, QSize it
 void IconGridItem::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
-    /*if (m_hoveredover_during_drag_and_drop)
-    {
-        QPen pen = painter.pen();
-        pen.setWidth(3);
-        pen.setColor(ConfigManager.getSecondaryColour());
-        painter.setPen(pen);
-        //painter.drawLine(0,0,0,height());
-        painter.drawRoundedRect(0,0,width()*0.99,height()*0.99,15,15);
-    }*/
     if(m_highlighted)
     {
         painter.setBrush(QBrush(ConfigManager.getSelectionColour(),Qt::BrushStyle::SolidPattern));
@@ -75,38 +65,6 @@ void IconGridItem::paintEvent(QPaintEvent *event)
     }
 }
 
-/*
-void IconGridItem::dragEnterEvent(QDragEnterEvent *event)
-{
-    qDebug() << "griditem: dragging into " << m_application.name();
-    //m_hoveredover_during_drag_and_drop = true;
-    update();
-    event->ignore();
-}
-
-/*
-void IconGridItem::dropEvent(QDropEvent *event)
-{
-    qDebug() << "griditem: dropped" << event->mimeData()->text() << "on"<< m_application.name();
-    event->ignore();
-}
-
-
-void IconGridItem::dragMoveEvent(QDragMoveEvent *event)
-{
-    qDebug() << "griditem: dragMoveIconGriditem";
-    event->accept();
-}
-
-
-void IconGridItem::dragLeaveEvent(QDragLeaveEvent *event)
-{
-    qDebug() << "griditem: dragging left";
-    m_hoveredover_during_drag_and_drop = false;
-    update();
-    event->ignore();
-}
-*/
 void IconGridItem::resizeEvent(QResizeEvent *event)
 {
     m_canvas->update();

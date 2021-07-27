@@ -37,6 +37,7 @@ public:
     bool searching = false;
     bool page_turned = false;
     bool scrolled = false;
+    bool isIconDraggingOn(){return m_icon_dragging_on;}
 
     explicit VerticalPager(QWidget * parent);
     void constructPager(std::vector<KDEApplication> kapplications);
@@ -66,6 +67,7 @@ signals:
 private:
     bool m_icon_dragging_on = false; //true: icons are dragged
     std::vector<KDEApplication> m_kapplications;
+    std::vector<KDEApplication> m_kapplication_tree;
     QTimer * m_scrolltimeouttimer = new QTimer();
     QGraphicsView * m_backgroundView;
 };

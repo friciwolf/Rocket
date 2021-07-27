@@ -51,7 +51,7 @@ void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)
         m_longclicktimer = new QTimer();
         connect(m_longclicktimer,&QTimer::timeout,this,&IconGridItemCanvas::m_starticondragging);
         m_longclicktimer->setSingleShot(true);
-        //m_longclicktimer->start(1000);
+        m_longclicktimer->start(1000);
     }
     event->ignore();
 }
@@ -115,7 +115,7 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
         event->ignore();
     }
 }
-/*
+
 void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 {
     qDebug() << "dragging into" << m_application.name();
@@ -134,19 +134,17 @@ void IconGridItemCanvas::dragMoveEvent(QDragMoveEvent *event)
     //qDebug() << "dragMoveIconGriditem";
     if (event->source()!=this)
     {
-        move(pos().x()+(width()/2-event->pos().x())*0.1,pos().y());
+        //move(pos().x()+(width()/2-event->pos().x())*0.1,pos().y());
     }
     event->accept();
 }
 
 void IconGridItemCanvas::dragLeaveEvent(QDragLeaveEvent *event)
 {
-    qDebug() << "dragging left";
-    iconDraggingOn(false);
-    update();
+    qDebug() << "dragging left" << m_application.name();
     event->ignore();
 }
-*/
+
 void IconGridItemCanvas::resizeEvent(QResizeEvent *event)
 {
 

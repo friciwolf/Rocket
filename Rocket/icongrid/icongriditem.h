@@ -21,10 +21,6 @@ public:
     void mouseMoveEvent(QMouseEvent * event);
     void paintEvent(QPaintEvent *event);
     void initIconSize();
-    //void dragEnterEvent(QDragEnterEvent *event);
-    //void dragMoveEvent(QDragMoveEvent *event);
-    //void dropEvent(QDropEvent *event);
-    //void dragLeaveEvent(QDragLeaveEvent *event);
     void resizeEvent(QResizeEvent *event);
     ~IconGridItem();
 
@@ -42,7 +38,6 @@ private:
     QGridLayout * m_layout = new QGridLayout(this);
     QLabel * m_name_label;
     QPixmap map;
-    bool m_hoveredover_during_drag_and_drop = false;
 
     QSize m_item_size;
     std::vector<int> m_ratio_rows = RocketStyle::icongrid_ratio_rows;

@@ -43,6 +43,7 @@ public:
     int getInvertedScrollFactorXfromSettings();
     int getInvertedScrollFactorYfromSettings();
     std::vector<KDEApplication> getApplications(){return m_apps;}
+    std::vector<KDEApplication> getApplicationTree(){return m_app_tree;}
     bool updateApplicationList();
 private:
     KConfig * m_styleconfig;
