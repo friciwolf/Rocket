@@ -51,7 +51,7 @@ void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)
         m_longclicktimer = new QTimer();
         connect(m_longclicktimer,&QTimer::timeout,this,&IconGridItemCanvas::m_starticondragging);
         m_longclicktimer->setSingleShot(true);
-        m_longclicktimer->start(1000);
+        m_longclicktimer->start(500);
     }
     event->ignore();
 }

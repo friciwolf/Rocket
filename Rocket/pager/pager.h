@@ -53,6 +53,10 @@ public:
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
     void wheelEvent(QWheelEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dragMoveEvent(QDragMoveEvent *event);
+    void dropEvent(QDropEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
 
 public slots:
     void activateSearch(const QString & query);
@@ -66,6 +70,10 @@ signals:
 
 private:
     bool m_icon_dragging_on = false; //true: icons are dragged
+    QTimer * m_timer_drag_switch = new QTimer(); //if running, the user is moving elements bw. pages
+    int m_timer_drag_delta = 0; // +1 or -1 if paging is needed
+    QPoint m_timer_drag_mouse_pos;
+
     std::vector<KDEApplication> m_kapplications;
     std::vector<KDEApplication> m_kapplication_tree;
     QTimer * m_scrolltimeouttimer = new QTimer();

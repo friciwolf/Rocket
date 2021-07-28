@@ -29,6 +29,7 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     //setPalette(palette);
 
     setMouseTracking(true);
+    setAcceptDrops(true);
 
     // Setting the sizes
     setFixedSize(parent->size());
@@ -36,6 +37,39 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     m_kapplications = ConfigManager.getApplications();
     m_kapplication_tree = ConfigManager.getApplicationTree();
     m_backgroundView = new QGraphicsView(this);
+
+    m_timer_drag_switch->setSingleShot(true);
+    connect(m_timer_drag_switch,&QTimer::timeout,this,[=]{
+        m_timer_drag_mouse_pos = QCursor::pos();
+        pages[current_element]->getIconGrid()->eraseSeparator();
+
+        current_element = current_element + m_timer_drag_delta;
+        element_before_searching = current_element;
+        new_element = current_element;
+        scrolled = false;
+        touchpad = false;
+        QParallelAnimationGroup * animationgroup = new QParallelAnimationGroup;
+        for (int i=0;i<pages.size(); i++)
+        {
+            QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
+            animation->setStartValue(pages[i]->pos());
+            animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
+            animation->setDuration(100);
+            animationgroup->addAnimation(animation);
+        }
+        connect(animationgroup,&QParallelAnimationGroup::finished,this,[=]{
+            int dx0 = (QCursor::pos()-m_timer_drag_mouse_pos).x();
+            int dy0 = (QCursor::pos()-m_timer_drag_mouse_pos).y();
+            if (dx0*dx0+dy0*dy0<RocketStyle::click_tolerance && current_element+m_timer_drag_delta>=0 && current_element+m_timer_drag_delta<this->getNumberOfElements())
+            {
+                m_timer_drag_switch->start(750);
+            }
+            else {
+                m_timer_drag_delta = 0;
+            }
+        });
+        animationgroup->start();
+    });
 }
 
 void Pager::constructPager(std::vector<KDEApplication> kapplications)
@@ -400,6 +434,60 @@ void Pager::wheelEvent(QWheelEvent *event)
                 }
             }
         }
+    }
+    event->accept();
+}
+
+void Pager::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->accept();
+}
+
+void Pager::dragMoveEvent(QDragMoveEvent *event)
+{
+    if (!m_timer_drag_switch->isActive())
+    {
+        if (event->pos().x()>pages[current_element]->getIconGrid()->geometry().right()
+                && current_element+1<getNumberOfElements())
+        {
+            m_timer_drag_delta = 1;
+        }
+        else if (event->pos().x()<pages[current_element]->getIconGrid()->geometry().left()
+                             && current_element-1>=0)
+        {
+             m_timer_drag_delta = -1;
+        }
+        if (m_timer_drag_delta!=0)
+        {
+            m_timer_drag_mouse_pos = QCursor::pos();
+            m_timer_drag_switch->start(750);
+        }
+    }
+    if (m_timer_drag_switch->isActive() && pages[current_element]->getIconGrid()->geometry().contains(event->pos()))
+    {
+        m_timer_drag_switch->stop();
+        m_timer_drag_delta = 0;
+    }
+    event->accept();
+}
+
+void Pager::dropEvent(QDropEvent *event)
+{
+    iconDraggingOn(false);
+    pages[current_element]->getIconGrid()->eraseSeparator();
+    event->accept();
+}
+
+void Pager::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    if (m_timer_drag_switch->isActive())
+    {
+        m_timer_drag_switch->stop();
+        m_timer_drag_delta = 0;
+    }
+    if (QCursor::pos().x()<mapToGlobal(geometry().topLeft()).x() || QCursor::pos().x()>mapToGlobal(geometry().topRight()).x())
+    {
+        qApp->exit();
     }
     event->accept();
 }

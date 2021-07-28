@@ -140,18 +140,21 @@ void IconGrid::drawSeparator(IconGridItemCanvas * gridItemCanvas, bool left)
 
 void IconGrid::eraseSeparator()
 {
+    m_draw_separator_at = QPoint(-1,-1);
     update();
 }
 
 void IconGrid::paintEvent(QPaintEvent *event)
 {
     if (getItems().size()==0) return; // search yielded no results -> no drawing
-    if (!ConfigManager.getBoxSetting()) return; // no boxes -> global blur
     QPainter painter(this);
-    QColor color = ConfigManager.getBaseColour();
-    painter.setBrush(QBrush(color,Qt::BrushStyle::SolidPattern));
-    painter.setPen(Qt::transparent);
-    painter.drawRoundedRect(0,0,width(),height(),30,30);
+    if (ConfigManager.getBoxSetting()) // no boxes -> global blur
+    {
+        QColor color = ConfigManager.getBaseColour();
+        painter.setBrush(QBrush(color,Qt::BrushStyle::SolidPattern));
+        painter.setPen(Qt::transparent);
+        painter.drawRoundedRect(0,0,width(),height(),30,30);
+    }
     if (m_draw_separator_at!=QPoint(-1,-1))
     {
         int maxheight = -1;
@@ -159,7 +162,6 @@ void IconGrid::paintEvent(QPaintEvent *event)
             if (i->getNameLabel()->pos().y()>maxheight) maxheight = i->getNameLabel()->pos().y();
         painter.setPen(ConfigManager.getSecondaryColour());
         painter.drawLine(m_draw_separator_at.x(),m_draw_separator_at.y(),m_draw_separator_at.x(),maxheight+m_draw_separator_at.y());
-        m_draw_separator_at = QPoint(-1,-1);
     }
 }
 
