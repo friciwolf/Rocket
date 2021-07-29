@@ -58,6 +58,9 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
             animationgroup->addAnimation(animation);
         }
         connect(animationgroup,&QParallelAnimationGroup::finished,this,[=]{
+            IconGridItem * minimum_distance = findGridItemOfMinimumDistance(QCursor::pos());
+            pages[current_element]->getIconGrid()->drawSeparator(minimum_distance->getCanvas(),(minimum_distance->mapToGlobal(minimum_distance->getCanvas()->geometry().center()).x()-QCursor::pos().x() > 0));
+
             int dx0 = (QCursor::pos()-m_timer_drag_mouse_pos).x();
             int dy0 = (QCursor::pos()-m_timer_drag_mouse_pos).y();
             if (dx0*dx0+dy0*dy0<RocketStyle::click_tolerance && current_element+m_timer_drag_delta>=0 && current_element+m_timer_drag_delta<this->getNumberOfElements())
@@ -224,6 +227,22 @@ void Pager::addItem(PagerItem * page)
     pages.push_back(page);
 }
 
+IconGridItem * Pager::findGridItemOfMinimumDistance(QPoint referencePoint)
+{
+    IconGridItem * item;
+    int dist = -1;
+    for (IconGridItem * i : pages[current_element]->getIconGrid()->getItems())
+    {
+        QPoint delta = i->mapToGlobal(i->getCanvas()->geometry().center())-referencePoint;
+        int d = delta.x()*delta.x() + delta.y() * delta.y();
+        if (dist == -1 || d<dist)
+        {
+            dist = d;
+            item = i;
+        }
+    }
+    return item;
+}
 
 void Pager::goToPage(int deltaPage)
 {
@@ -445,6 +464,9 @@ void Pager::dragEnterEvent(QDragEnterEvent *event)
 
 void Pager::dragMoveEvent(QDragMoveEvent *event)
 {
+    IconGridItem * minimum_distance = findGridItemOfMinimumDistance(mapToGlobal(event->pos()));
+    pages[current_element]->getIconGrid()->drawSeparator(minimum_distance->getCanvas(),(minimum_distance->mapToGlobal(minimum_distance->getCanvas()->geometry().center()).x()-mapToGlobal(event->pos()).x() > 0));
+
     if (!m_timer_drag_switch->isActive())
     {
         if (event->pos().x()>pages[current_element]->getIconGrid()->geometry().right()

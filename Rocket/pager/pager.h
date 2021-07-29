@@ -30,8 +30,11 @@ public:
 
     // indicates whether the user is currently dragging
     bool dragging = false;
+    // Mouse position previously to compare new mouse movements to and to adjust the layout during dragging
     QPoint drag_start_position;
+    // Mouse position at the time of the start of dragging procedure with the mouse
     QPoint drag_0;
+    // Mouse position for touchpad scrolling
     QPoint mouse_pos_scroll_0;
     bool touchpad = false;
     bool searching = false;
@@ -43,6 +46,7 @@ public:
     void constructPager(std::vector<KDEApplication> kapplications);
     void addItem(PagerItem * page);
     void updatePager(std::vector<KDEApplication> kapplications);
+    IconGridItem * findGridItemOfMinimumDistance(QPoint referencePoint);
 
     int getNumberOfElements() {return pages.size();}
     void setApplicationList(std::vector<KDEApplication> newlist){m_kapplications = newlist;}
