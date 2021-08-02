@@ -84,8 +84,18 @@ void MainWindow::dBusToggleWindowState(QString event)
 
 void MainWindow::pagerUpdaterMethod()
 {
-    pager->setApplicationList(ConfigManager.getApplications());
-    pager->updatePager(ConfigManager.getApplications());
+    if (ConfigManager.getVerticalModeSetting())
+    {
+        verticalpager->setApplicationList(ConfigManager.getApplications());
+        verticalpager->setApplicationTree(ConfigManager.getApplicationTree());
+        verticalpager->updatePager(ConfigManager.getApplicationTree());
+    }
+    else
+    {
+        pager->setApplicationList(ConfigManager.getApplications());
+        pager->setApplicationTree(ConfigManager.getApplicationTree());
+        pager->updatePager(ConfigManager.getApplicationTree());
+    }
     qDebug() << "application list updated";
 }
 

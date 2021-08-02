@@ -27,6 +27,7 @@ public:
     void setChild(int index,KDEApplication child) {m_children[index] = child;}
     std::vector<KDEApplication> getChildren() {return m_children;}
     void setChildren(std::vector<KDEApplication> children){m_children=children;}
+    void setToFolder(bool isFolder){m_isfolder = isFolder;}
 
 private:
     QString m_name;

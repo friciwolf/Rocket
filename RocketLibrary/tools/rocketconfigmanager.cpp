@@ -377,30 +377,74 @@ bool RocketConfigManager::updateApplicationList()
     menuitems.scanElements();
 
     bool changes = false;
-    if (menuitems.getApplications().size()!=m_apps.size()) changes = true;
-    else
+    for (int i=0;i<menuitems.getApplications().size(); i++)
     {
-        for (int i=0;i<m_apps.size(); i++)
+        for (int j=0;j<m_apps.size();j++)
         {
-            for (int j=0;j<m_apps.size();j++)
+            if (menuitems.getApplications()[i]==m_apps[j])
             {
-                if (menuitems.getApplications()[i]==m_apps[j])
-                {
-                    break;
-                }
-                if (j+1==m_apps.size())
-                {
-                    changes = true;
-                }
-            }
-            if (changes)
                 break;
+            }
+            if (j+1==m_apps.size())
+            {
+                m_apps.push_back(menuitems.getApplications()[i]);
+                m_app_tree.push_back(menuitems.getApplications()[i]);
+                changes = true;
+            }
         }
     }
+
+    for (int i=0;i<m_apps.size(); i++)
+    {
+        for (int j=0;j<menuitems.getApplications().size();j++)
+        {
+            if (menuitems.getApplications()[j]==m_apps[i])
+            {
+                break;
+            }
+            if (j+1==menuitems.getApplications().size())
+            {
+                bool done=false;
+                for (int k=0;k<m_app_tree.size();k++)
+                {
+                    if (m_app_tree[k].isFolder())
+                    {
+                        for (int k2=0;k2<m_app_tree[k].getChildren().size();k2++)
+                        {
+                            if (m_app_tree[k].getChildren()[k2]==m_apps[i])
+                            {
+                                m_app_tree[k].getChildren().erase(m_app_tree[k].getChildren().begin()+k2);
+                                done = true;
+                                break;
+                            }
+                        }
+                        if (m_app_tree[k].getChildren().size()==1)
+                        {
+                            m_app_tree[k] = m_app_tree[k].getChildren()[0];
+                            m_app_tree[k].setToFolder(false);
+                        }
+                    }
+                    else
+                    {
+                        if (m_app_tree[k]==m_apps[i])
+                        {
+                            m_app_tree.erase(m_app_tree.begin()+k);
+                            done = true;
+                            break;
+                        }
+                    }
+                    if (done) break;
+                }
+                m_apps.erase(m_apps.begin()+i);
+                changes = true;
+            }
+        }
+    }
+
     if (changes)
     {
         qDebug() << "Appgrid configuration changed. Generating new configuration file...";
-        generateAppGridConfigFile(m_appgridconfig,menuitems.getApplications());
+        generateAppGridConfigFile(m_appgridconfig,m_app_tree);
         m_appgridconfig->reparseConfiguration();
         return true;
     }
