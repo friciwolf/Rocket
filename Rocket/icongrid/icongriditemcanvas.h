@@ -14,13 +14,14 @@ class IconGridItemCanvas : public QWidget
     Q_OBJECT
 public:
     explicit IconGridItemCanvas(QWidget *parent, KDEApplication application);
+    KDEApplication getApplication(){return m_application;}
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
+    /*void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);*/
     void resizeEvent(QResizeEvent *event);
     ~IconGridItemCanvas();
 
@@ -28,9 +29,7 @@ public slots:
     void setDraggable(bool draggable);
 
 signals:
-    void iconDraggingOn(bool on);
-    void drawSeparator(IconGridItemCanvas * gridItemCanvas, bool left);
-    void eraseSeparator();
+    void enterIconDraggingMode(bool on, IconGridItemCanvas * canvas = nullptr);
 
 private:
     void m_starticondragging();

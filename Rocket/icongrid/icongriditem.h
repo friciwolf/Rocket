@@ -29,6 +29,7 @@ public:
     QSize getItemSize(){return  m_item_size;}
     KDEApplication getApplication(){return m_application;}
     IconGridItemCanvas * getCanvas(){return m_canvas;}
+    void setCanvas(IconGridItemCanvas * canvas){m_canvas = canvas;}
     QLabel * getNameLabel() {return m_name_label;}
 
 private:

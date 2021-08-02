@@ -23,7 +23,7 @@ IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KDEApplication applicati
     m_icon = application.icon();
     m_application = application;
     setMouseTracking(true);
-    setAcceptDrops(true);
+    //setAcceptDrops(true);
 
     //QPalette p;
     //setAutoFillBackground(true);
@@ -69,7 +69,7 @@ void IconGridItemCanvas::m_starticondragging()
     }
     if (m_clicked) //i.e. cursor has not moved a lot
     {
-        iconDraggingOn(true);
+        enterIconDraggingMode(true, this);
         QDrag *drag = new QDrag(this);
         QMimeData *mime = new QMimeData;
         mime->setText(m_application.name());
@@ -79,7 +79,7 @@ void IconGridItemCanvas::m_starticondragging()
         Qt::DropAction dropAction = drag->exec();
     }
     else {
-        iconDraggingOn(false);
+        enterIconDraggingMode(false);
     }
     m_clicked = false;
 }
@@ -116,6 +116,7 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+/*
 void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 {
     //qDebug() << "dragging into" << m_application.name();
@@ -125,7 +126,7 @@ void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 void IconGridItemCanvas::dropEvent(QDropEvent *event)
 {
     qDebug() << "dropped" << event->mimeData()->text() << "on"<< m_application.name();
-    iconDraggingOn(false);
+    enterIconDraggingMode(false);
     eraseSeparator();
     event->acceptProposedAction();
 }
@@ -133,11 +134,12 @@ void IconGridItemCanvas::dropEvent(QDropEvent *event)
 void IconGridItemCanvas::dragMoveEvent(QDragMoveEvent *event)
 {
     //qDebug() << "dragMoveIconGriditem";
+    /*
     if (mapToGlobal(rect().topLeft()).x()+width()/2 - QCursor::pos().x() > 0)
         drawSeparator(this,true);
     else
         drawSeparator(this,false);
-    event->accept();
+    event->ignore();
 }
 
 void IconGridItemCanvas::dragLeaveEvent(QDragLeaveEvent *event)
@@ -145,6 +147,7 @@ void IconGridItemCanvas::dragLeaveEvent(QDragLeaveEvent *event)
     //qDebug() << "dragging left" << m_application.name();
     event->accept();
 }
+*/
 
 void IconGridItemCanvas::resizeEvent(QResizeEvent *event)
 {

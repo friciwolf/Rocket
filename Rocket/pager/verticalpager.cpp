@@ -41,7 +41,6 @@ VerticalPager::VerticalPager(QWidget *parent) : QWidget(parent)
     m_timer_drag_switch->setSingleShot(true);
     connect(m_timer_drag_switch,&QTimer::timeout,this,[=]{
         m_timer_drag_mouse_pos = QCursor::pos();
-        pages[current_element]->getIconGrid()->eraseSeparator();
 
         current_element = current_element + m_timer_drag_delta;
         element_before_searching = current_element;
@@ -59,7 +58,6 @@ VerticalPager::VerticalPager(QWidget *parent) : QWidget(parent)
         }
         connect(animationgroup,&QParallelAnimationGroup::finished,this,[=]{
             IconGridItem * minimum_distance = findGridItemOfMinimumDistance(QCursor::pos());
-            pages[current_element]->getIconGrid()->drawSeparator(minimum_distance->getCanvas(),(minimum_distance->mapToGlobal(minimum_distance->getCanvas()->geometry().center()).x()-QCursor::pos().x() > 0));
 
             int dx0 = (QCursor::pos()-m_timer_drag_mouse_pos).x();
             int dy0 = (QCursor::pos()-m_timer_drag_mouse_pos).y();
@@ -124,7 +122,7 @@ void VerticalPager::constructPager(std::vector<KDEApplication> kapplications)
     {
         for (IconGridItem * i2 : i->getIconGrid()->getItems())
         {
-            connect(i2->getCanvas(),&IconGridItemCanvas::iconDraggingOn,this,&VerticalPager::iconDraggingOn);
+            connect(i2->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&VerticalPager::enterIconDraggingMode);
             connect(this,&VerticalPager::enableIconDragging,i2->getCanvas(),&IconGridItemCanvas::setDraggable);
         }
     }
@@ -291,6 +289,15 @@ void VerticalPager::goToPage(int deltaPage)
     page_turned = true;
 }
 
+std::vector<IconGridItem*> VerticalPager::getAllIconGridItems()
+{
+    std::vector<IconGridItem*> res;
+    for (PagerItem * page : pages)
+        for (IconGridItem * i : page->getIconGrid()->getItems())
+            res.push_back(i);
+    return res;
+}
+
 void VerticalPager::resizeEvent(QResizeEvent *event)
 {
     // if not in fullscreen, don't bother constructing the pager...
@@ -308,7 +315,7 @@ void VerticalPager::resizeEvent(QResizeEvent *event)
 
 void VerticalPager::mousePressEvent(QMouseEvent *e)
 {
-    if (isIconDraggingOn()) iconDraggingOn(false);
+    if (isIconDraggingOn()) enterIconDraggingMode(false);
     if (e->button() == Qt::LeftButton)
     {
         pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
@@ -356,7 +363,7 @@ void VerticalPager::mouseReleaseEvent(QMouseEvent * event)
 {
     if (m_icon_dragging_on)
     {
-        iconDraggingOn(false);
+        enterIconDraggingMode(false);
         event->ignore();
         return;
     }
@@ -464,39 +471,136 @@ void VerticalPager::dragEnterEvent(QDragEnterEvent *event)
 
 void VerticalPager::dragMoveEvent(QDragMoveEvent *event)
 {
+    if (pages[current_element]->getIconGrid()->geometry().contains(event->pos())) m_timer_drag_switch->stop();
     IconGridItem * minimum_distance = findGridItemOfMinimumDistance(mapToGlobal(event->pos()));
-    pages[current_element]->getIconGrid()->drawSeparator(minimum_distance->getCanvas(),(minimum_distance->mapToGlobal(minimum_distance->getCanvas()->geometry().center()).x()-mapToGlobal(event->pos()).x() > 0));
 
-    if (!m_timer_drag_switch->isActive())
+    if(!(minimum_distance->getApplication()==m_item_dragged->getApplication()) && m_drag_animation->currentTime()==m_drag_animation->duration())
     {
-        if (event->pos().y()>pages[current_element]->getIconGrid()->geometry().bottom()
-                && current_element+1<getNumberOfElements())
+        bool left = (minimum_distance->mapToGlobal(minimum_distance->getCanvas()->geometry().center()).x()-mapToGlobal(event->pos()).x() > 0);
+        m_drag_animation = new QParallelAnimationGroup;
+
+        std::vector<KDEApplication> newtree;
+        std::vector<QPoint> item_positions;
+        for (PagerItem * page : pages)
         {
-            m_timer_drag_delta = 1;
+            for (IconGridItem * i : page->getIconGrid()->getItems())
+            {
+                item_positions.push_back(i->pos());
+                if (i->getCanvas()==m_item_dragged) continue;
+                if (i->getApplication()==minimum_distance->getApplication() && left)
+                {
+                    newtree.push_back(m_item_dragged->getApplication());
+                    newtree.push_back(minimum_distance->getApplication());
+                    continue;
+                }
+                if (i->getApplication()==minimum_distance->getApplication() && !left)
+                {
+                    newtree.push_back(minimum_distance->getApplication());
+                    newtree.push_back(m_item_dragged->getApplication());
+                    continue;
+                }
+                newtree.push_back(i->getApplication());
+            }
         }
-        else if (event->pos().y()<pages[current_element]->getIconGrid()->geometry().top()
-                             && current_element-1>=0)
+        if (newtree!=m_kapplication_tree)
         {
-             m_timer_drag_delta = -1;
-        }
-        if (m_timer_drag_delta!=0)
-        {
-            m_timer_drag_mouse_pos = QCursor::pos();
-            m_timer_drag_switch->start(750);
+            std::vector<IconGridItem*> items = getAllIconGridItems();
+            int maxicons = ConfigManager.getRowNumber()*ConfigManager.getColumnNumber();
+            std::vector<IconGridItem*> newitems_in_row;
+
+            QPropertyAnimation * panim;
+
+            for (int i=0;i<newtree.size();i++)
+            {
+                for (IconGridItem * item : items)
+                {
+                    if (newtree[i] == item->getApplication())
+                    {
+                        newitems_in_row.push_back(item);
+
+                        item->setParent(pages[i/maxicons]->getIconGrid());
+                        pages[i/maxicons]->getIconGrid()->getItems()[i/maxicons] = item;
+                        pages[i/maxicons]->getIconGrid()->getLayout()->addWidget(item,i/ConfigManager.getColumnNumber(),i%ConfigManager.getColumnNumber());
+
+                        panim = new QPropertyAnimation(item,"pos");
+                        panim->setStartValue(item->pos());
+                        panim->setEndValue(item_positions[i]);
+                        panim->setDuration(200);
+                        m_drag_animation->addAnimation(panim);
+                        break;
+                    }
+                }
+            }
+
+            m_kapplication_tree = newtree;
+
+            int i=0;
+            for (PagerItem * page : pages)
+            {
+                std::vector<IconGridItem*> vector;
+                if ((i+1)*maxicons<newitems_in_row.size())
+                {
+                    vector = std::vector<IconGridItem*>(newitems_in_row.begin()+i*maxicons,newitems_in_row.begin()+(i+1)*maxicons);
+                    page->getIconGrid()->setItems(vector);
+                }
+                else {
+                    vector = std::vector<IconGridItem*>(newitems_in_row.begin()+i*maxicons,newitems_in_row.end());
+                    page->getIconGrid()->setItems(vector);
+                }
+                i++;
+            }
+
+            m_drag_animation->start();
         }
     }
-    if (m_timer_drag_switch->isActive() && pages[current_element]->getIconGrid()->geometry().contains(event->pos()))
+    else
     {
-        m_timer_drag_switch->stop();
-        m_timer_drag_delta = 0;
+        if (!m_timer_drag_switch->isActive())
+        {
+            if (event->pos().y()>pages[current_element]->getIconGrid()->geometry().bottom()
+                    && current_element+1<getNumberOfElements())
+            {
+                m_timer_drag_delta = 1;
+            }
+            else if (event->pos().y()<pages[current_element]->getIconGrid()->geometry().top()
+                                 && current_element-1>=0)
+            {
+                 m_timer_drag_delta = -1;
+            }
+            if (m_timer_drag_delta!=0)
+            {
+                m_timer_drag_mouse_pos = QCursor::pos();
+                m_timer_drag_switch->start(750);
+            }
+        }
+        if (m_timer_drag_switch->isActive() && pages[current_element]->getIconGrid()->geometry().contains(event->pos()))
+        {
+            m_timer_drag_switch->stop();
+            m_timer_drag_delta = 0;
+        }
     }
     event->accept();
 }
 
 void VerticalPager::dropEvent(QDropEvent *event)
 {
-    iconDraggingOn(false);
-    pages[current_element]->getIconGrid()->eraseSeparator();
+    enterIconDraggingMode(false);
+    bool applistChanged = false;
+    if (m_kapplication_tree.size()!=ConfigManager.getApplicationTree().size()) applistChanged = true;
+    else {
+        for (int i = 0;i<m_kapplication_tree.size();i++)
+        {
+            if (!(m_kapplication_tree[i] == ConfigManager.getApplicationTree()[i]))
+            {
+                applistChanged = true;
+                break;
+            }
+        }
+    }
+    if (applistChanged)
+    {
+        ConfigManager.generateAppGridConfigFile(ConfigManager.getAppGridConfig(),m_kapplication_tree);
+    }
     event->accept();
 }
 
@@ -507,7 +611,8 @@ void VerticalPager::dragLeaveEvent(QDragLeaveEvent *event)
         m_timer_drag_switch->stop();
         m_timer_drag_delta = 0;
     }
-    if (QCursor::pos().x()<mapToGlobal(geometry().topLeft()).x() || QCursor::pos().x()>mapToGlobal(geometry().topRight()).x())
+    if (QCursor::pos().x()<mapToGlobal(geometry().topLeft()).x() || QCursor::pos().x()>mapToGlobal(geometry().topRight()).x() ||
+            QCursor::pos().y()>mapToGlobal(geometry().bottomLeft()).y() || QCursor::pos().y()<mapToGlobal(geometry().topRight()).y())
     {
         qApp->exit();
     }
@@ -558,4 +663,14 @@ void VerticalPager::activateSearch(const QString &query)
     updatePager(found_apps);
     updated(searching);
     enableIconDragging(!searching);
+}
+
+void VerticalPager::enterIconDraggingMode(bool on, IconGridItemCanvas * canvas)
+{
+    m_icon_dragging_on=on;
+    dragging=false;
+    if (on && m_drag_animation->currentTime()==m_drag_animation->duration())
+    {
+        m_item_dragged = canvas;
+    }
 }

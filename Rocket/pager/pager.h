@@ -7,7 +7,7 @@
 #include <QWidget>
 #include <QGridLayout>
 #include <QScrollArea>
-#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 #include <QTimer>
 #include <QGraphicsView>
 
@@ -50,7 +50,10 @@ public:
 
     int getNumberOfElements() {return pages.size();}
     void setApplicationList(std::vector<KDEApplication> newlist){m_kapplications = newlist;}
+    std::vector<KDEApplication> getApplicationTree() {return m_kapplication_tree;}
+    void setApplicationTree(std::vector<KDEApplication> tree){m_kapplication_tree = tree;}
 
+    std::vector<IconGridItem*> getAllIconGridItems();
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent * e);
@@ -66,7 +69,7 @@ public slots:
     void activateSearch(const QString & query);
     void goToPage(int deltaPage);
     void finishScrolling();
-    void iconDraggingOn(bool on){m_icon_dragging_on=on;dragging=false;}
+    void enterIconDraggingMode(bool on, IconGridItemCanvas * canvas = nullptr);
 
 signals:
     void updated(bool indicator_visibility);
@@ -77,6 +80,8 @@ private:
     QTimer * m_timer_drag_switch = new QTimer(); //if running, the user is moving elements bw. pages
     int m_timer_drag_delta = 0; // +1 or -1 if paging is needed
     QPoint m_timer_drag_mouse_pos;
+    IconGridItemCanvas * m_item_dragged;
+    QParallelAnimationGroup * m_drag_animation = new QParallelAnimationGroup;
 
     std::vector<KDEApplication> m_kapplications;
     std::vector<KDEApplication> m_kapplication_tree;

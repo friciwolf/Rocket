@@ -19,6 +19,7 @@ public:
     KConfig * getAppGridConfig(){return m_appgridconfig;}
     void checkAppGridConfigFile();
     map<int,KDEApplication> getApplicationTree(KConfigGroup group, KDEApplication * folder=nullptr);
+    void generateAppGridConfigFile(KConfig * config,std::vector<KDEApplication> menuitems);
 
     QString getStyleValue(QString group, QString key);
     QColor getStyleValue(QString group, QString key, QColor defaultvalue);
@@ -50,7 +51,6 @@ private:
     KConfig * m_appgridconfig;
     std::vector<KDEApplication> m_apps;
     std::vector<KDEApplication> m_app_tree;
-    void generateAppGridConfigFile(KConfig * config,KMenuItems menuitems);
 };
 
 extern RocketConfigManager ConfigManager;

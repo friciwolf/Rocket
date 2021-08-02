@@ -280,7 +280,8 @@ void RocketConfigManager::checkAppGridConfigFile()
         qDebug() << "Appgrid configuration not found. Generating one...";
         KMenuItems menuitems;
         menuitems.scanElements();
-        generateAppGridConfigFile(config,menuitems);
+        generateAppGridConfigFile(config,menuitems.getApplications());
+        m_app_tree = m_apps;
     }
     else
     {
@@ -306,25 +307,68 @@ void RocketConfigManager::checkAppGridConfigFile()
     }
 }
 
-void RocketConfigManager::generateAppGridConfigFile(KConfig * config,KMenuItems menuitems)
+void RocketConfigManager::generateAppGridConfigFile(KConfig * config, std::vector<KDEApplication> apps)
 {
-    int i = 0;
-    for (KDEApplication app : menuitems.getApplications())
+    for (QString group : config->groupList())
     {
-        config->group("Entry"+QString::number(i)).writeEntry("name",app.name());
-        config->group("Entry"+QString::number(i)).writeEntry("iconname",app.iconname());
-        config->group("Entry"+QString::number(i)).writeEntry("exec",app.exec());
-        config->group("Entry"+QString::number(i)).writeEntry("comment",app.comment());
-        config->group("Entry"+QString::number(i)).writeEntry("terminal",app.terminal());
-        config->group("Entry"+QString::number(i)).writeEntry("keywords",app.keywords());
-        config->group("Entry"+QString::number(i)).writeEntry("genericname",app.genericname());
-        config->group("Entry"+QString::number(i)).writeEntry("untranslatedgenericname",app.untranslatedGenericName());
-        config->group("Entry"+QString::number(i)).writeEntry("categories",app.categories());
-        config->group("Entry"+QString::number(i)).writeEntry("entrypath",app.entrypath());
-        config->group("Entry"+QString::number(i)).writeEntry("pos",QString::number(i));
+        config->deleteGroup(group);
+    }
+
+    int i = 0;
+    for (KDEApplication app : apps)
+    {
+        if (app.isFolder())
+        {
+            config->group("Entry"+QString::number(i)).writeEntry("name",app.name());
+            config->group("Entry"+QString::number(i)).writeEntry("iconname",app.iconname());
+            config->group("Entry"+QString::number(i)).writeEntry("comment",app.comment());
+            config->group("Entry"+QString::number(i)).writeEntry("pos",QString::number(i));
+            int j=0;
+            for (KDEApplication a : app.getChildren())
+            {
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("name",a.name());
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("iconname",a.iconname());
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("exec",a.exec());
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("comment",a.comment());
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("terminal",a.terminal());
+                if (a.keywords()==QStringList(""))
+                    config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("keywords",QStringList());
+                else
+                    config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("keywords",a.keywords());
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("genericname",a.genericname());
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("untranslatedgenericname",a.untranslatedGenericName());
+                if (a.categories()==QStringList(""))
+                    config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("categories",QStringList());
+                else
+                    config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("categories",a.categories());
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("entrypath",a.entrypath());
+                config->group("Entry"+QString::number(i)).group("Entry"+QString::number(j)).writeEntry("pos",QString::number(j));
+                j++;
+            }
+        }
+        else
+        {
+            config->group("Entry"+QString::number(i)).writeEntry("name",app.name());
+            config->group("Entry"+QString::number(i)).writeEntry("iconname",app.iconname());
+            config->group("Entry"+QString::number(i)).writeEntry("exec",app.exec());
+            config->group("Entry"+QString::number(i)).writeEntry("comment",app.comment());
+            config->group("Entry"+QString::number(i)).writeEntry("terminal",app.terminal());
+            if (app.keywords()==QStringList(""))
+                config->group("Entry"+QString::number(i)).writeEntry("keywords",QStringList());
+            else
+                config->group("Entry"+QString::number(i)).writeEntry("keywords",app.keywords());
+            config->group("Entry"+QString::number(i)).writeEntry("genericname",app.genericname());
+            config->group("Entry"+QString::number(i)).writeEntry("untranslatedgenericname",app.untranslatedGenericName());
+            if (app.categories()==QStringList(""))
+                config->group("Entry"+QString::number(i)).writeEntry("categories",QStringList());
+            else
+                config->group("Entry"+QString::number(i)).writeEntry("categories",app.categories());
+            config->group("Entry"+QString::number(i)).writeEntry("entrypath",app.entrypath());
+            config->group("Entry"+QString::number(i)).writeEntry("pos",QString::number(i));
+        }
         i++;
     }
-    m_apps = menuitems.getApplications();
+    m_apps = apps;
 }
 
 bool RocketConfigManager::updateApplicationList()
@@ -356,11 +400,7 @@ bool RocketConfigManager::updateApplicationList()
     if (changes)
     {
         qDebug() << "Appgrid configuration changed. Generating new configuration file...";
-        for (QString group : m_appgridconfig->groupList())
-        {
-            m_appgridconfig->deleteGroup(group);
-        }
-        generateAppGridConfigFile(m_appgridconfig,menuitems);
+        generateAppGridConfigFile(m_appgridconfig,menuitems.getApplications());
         m_appgridconfig->reparseConfiguration();
         return true;
     }
