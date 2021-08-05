@@ -434,7 +434,12 @@ void Pager::wheelEvent(QWheelEvent *event)
         else // scrolling with a touchpad
         {
             touchpad = true; // touchpads need to build up some momentum, thus this switch
-            int delta = (event->angleDelta().y()==0 ? -(event->angleDelta().x())*ConfigManager.getInvertedScrollFactorXfromSettings() : event->angleDelta().y()*ConfigManager.getInvertedScrollFactorYfromSettings() );
+            bool horizontal_now = (std::abs(event->angleDelta().x())>std::abs(event->angleDelta().y()));
+            if (m_horizontal_scrolling==0)
+                    m_horizontal_scrolling = (horizontal_now ? 1 : -1);
+            int delta = (horizontal_now ? -(event->angleDelta().x())*ConfigManager.getInvertedScrollFactorXfromSettings() : event->angleDelta().y()*ConfigManager.getInvertedScrollFactorYfromSettings() );
+            bool orig_horizontal = (m_horizontal_scrolling==1 ? true : false);
+            if (orig_horizontal!=horizontal_now) return;
             if (pages[0]->pos().x()-delta<=0 && pages[0]->pos().x()-delta>=-width()*(getNumberOfElements()-1))
             {
                 m_scrolltimeouttimer->stop();
@@ -471,33 +476,48 @@ void Pager::dragEnterEvent(QDragEnterEvent *event)
 
 void Pager::dragMoveEvent(QDragMoveEvent *event)
 {
-    if (pages[current_element]->getIconGrid()->geometry().contains(event->pos())) m_timer_drag_switch->stop();
+    if (pages[current_element]->getIconGrid()->geometry().contains(event->pos()))
+    {
+        m_timer_drag_switch->stop();
+        m_timer_drag_delta = 0;
+    }
+    // the item the cursor has minimum distance to
     IconGridItem * minimum_distance = findGridItemOfMinimumDistance(mapToGlobal(event->pos()));
 
     if(!(minimum_distance->getApplication()==m_item_dragged->getApplication()) && m_drag_animation->currentTime()==m_drag_animation->duration())
     {
-        bool left = (minimum_distance->mapToGlobal(minimum_distance->getCanvas()->geometry().center()).x()-mapToGlobal(event->pos()).x() > 0);
         m_drag_animation = new QParallelAnimationGroup;
 
         std::vector<KDEApplication> newtree;
         std::vector<QPoint> item_positions;
+        int maxicons = ConfigManager.getRowNumber()*ConfigManager.getColumnNumber();
         for (PagerItem * page : pages)
         {
+            // this one fixes the size of the grids, so they don't "collapse" while being rearranged
+            page->getIconGrid()->setFixedSize(page->getIconGrid()->size());
             for (IconGridItem * i : page->getIconGrid()->getItems())
             {
+                // first, save each item's old positions for the animation...
                 item_positions.push_back(i->pos());
+
+                // then, construct the new application tree
                 if (i->getCanvas()==m_item_dragged) continue;
-                if (i->getApplication()==minimum_distance->getApplication() && left)
+                if (i->getApplication()==minimum_distance->getApplication())
                 {
-                    newtree.push_back(m_item_dragged->getApplication());
-                    newtree.push_back(minimum_distance->getApplication());
-                    continue;
-                }
-                if (i->getApplication()==minimum_distance->getApplication() && !left)
-                {
-                    newtree.push_back(minimum_distance->getApplication());
-                    newtree.push_back(m_item_dragged->getApplication());
-                    continue;
+                    std::vector<QPoint> subvector(item_positions.begin()+maxicons*current_element,item_positions.end());
+                    if (std::find(subvector.begin(),subvector.end(),m_item_dragged->parentWidget()->pos())
+                            !=subvector.end())
+                    {
+                        newtree.push_back(minimum_distance->getApplication());
+                        newtree.push_back(m_item_dragged->getApplication());
+                        continue;
+                    }
+                    else
+                    {
+                        newtree.push_back(m_item_dragged->getApplication());
+                        newtree.push_back(minimum_distance->getApplication());
+                        continue;
+                    }
                 }
                 newtree.push_back(i->getApplication());
             }
@@ -505,7 +525,6 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
         if (newtree!=m_kapplication_tree)
         {
             std::vector<IconGridItem*> items = getAllIconGridItems();
-            int maxicons = ConfigManager.getRowNumber()*ConfigManager.getColumnNumber();
             std::vector<IconGridItem*> newitems_in_row;
 
             QPropertyAnimation * panim;
@@ -519,13 +538,14 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
                         newitems_in_row.push_back(item);
 
                         item->setParent(pages[i/maxicons]->getIconGrid());
-                        pages[i/maxicons]->getIconGrid()->getItems()[i/maxicons] = item;
-                        pages[i/maxicons]->getIconGrid()->getLayout()->addWidget(item,i/ConfigManager.getColumnNumber(),i%ConfigManager.getColumnNumber());
 
                         panim = new QPropertyAnimation(item,"pos");
                         panim->setStartValue(item->pos());
                         panim->setEndValue(item_positions[i]);
                         panim->setDuration(200);
+                        connect(panim,&QPropertyAnimation::finished,item,[=]{
+                            pages[i/maxicons]->getIconGrid()->getLayout()->addWidget(item,i/ConfigManager.getColumnNumber(),i%ConfigManager.getColumnNumber());
+                        });
                         m_drag_animation->addAnimation(panim);
                         break;
                     }
@@ -573,11 +593,6 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
                 m_timer_drag_switch->start(750);
             }
         }
-        if (m_timer_drag_switch->isActive() && pages[current_element]->getIconGrid()->geometry().contains(event->pos()))
-        {
-            m_timer_drag_switch->stop();
-            m_timer_drag_delta = 0;
-        }
     }
     event->accept();
 }
@@ -606,7 +621,6 @@ void Pager::dropEvent(QDropEvent *event)
 
 void Pager::dragLeaveEvent(QDragLeaveEvent *event)
 {
-    qDebug() << "dragLeft";
     if (m_timer_drag_switch->isActive())
     {
         m_timer_drag_switch->stop();
@@ -640,6 +654,7 @@ void Pager::finishScrolling()
         }
         animationgroup->start();
     }
+    m_horizontal_scrolling = 0;
 }
 
 

@@ -37,6 +37,7 @@ public:
     // Mouse position for touchpad scrolling
     QPoint mouse_pos_scroll_0;
     bool touchpad = false;
+    int m_horizontal_scrolling = 0;
     bool searching = false;
     bool page_turned = false;
     bool scrolled = false;
