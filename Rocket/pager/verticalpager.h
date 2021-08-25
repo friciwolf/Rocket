@@ -79,6 +79,7 @@ signals:
 private:
     bool m_icon_dragging_on = false; //true: icons are dragged
     QTimer * m_timer_drag_switch = new QTimer(); //if running, the user is moving elements bw. pages
+    QTimer * m_timer_hovering_above_elements = new QTimer(); // delays rearangement animation
     int m_timer_drag_delta = 0; // +1 or -1 if paging is needed
     QPoint m_timer_drag_mouse_pos;
     IconGridItemCanvas * m_item_dragged;

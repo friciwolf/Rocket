@@ -18,10 +18,10 @@ public:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
-    /*void dragEnterEvent(QDragEnterEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
     void dropEvent(QDropEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);*/
+    void dragLeaveEvent(QDragLeaveEvent *event);
     void resizeEvent(QResizeEvent *event);
     ~IconGridItemCanvas();
 

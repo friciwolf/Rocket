@@ -23,7 +23,7 @@ IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KDEApplication applicati
     m_icon = application.icon();
     m_application = application;
     setMouseTracking(true);
-    //setAcceptDrops(true);
+    setAcceptDrops(true);
 
     //QPalette p;
     //setAutoFillBackground(true);
@@ -34,12 +34,16 @@ IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KDEApplication applicati
 void IconGridItemCanvas::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    painter.setBrush(QBrush(Qt::red,Qt::BrushStyle::SolidPattern));
+    //painter.setBrush(QBrush(Qt::red,Qt::BrushStyle::SolidPattern));
+    painter.setPen(Qt::transparent);
     int size = std::min({width(),height()});
     int pos_x = (width()-size)/2;
     int pos_y = (height()-size)/2;
-    //painter.drawRect(pos_x,pos_y,m_icon_size,m_icon_size);
+    painter.drawRect(0,0,width(),height());
     m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
+    //manual adjustment to the middle
+    QSize parentsize = parentWidget()->geometry().size();
+    setGeometry((parentsize.width()-size)*0.5,geometry().y(),size,size);
 }
 
 void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)
@@ -116,7 +120,7 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
-/*
+
 void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 {
     //qDebug() << "dragging into" << m_application.name();
@@ -125,20 +129,14 @@ void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 
 void IconGridItemCanvas::dropEvent(QDropEvent *event)
 {
-    qDebug() << "dropped" << event->mimeData()->text() << "on"<< m_application.name();
+    //qDebug() << "dropped" << event->mimeData()->text() << "on"<< m_application.name();
     enterIconDraggingMode(false);
-    eraseSeparator();
     event->acceptProposedAction();
 }
 
 void IconGridItemCanvas::dragMoveEvent(QDragMoveEvent *event)
 {
     //qDebug() << "dragMoveIconGriditem";
-    /*
-    if (mapToGlobal(rect().topLeft()).x()+width()/2 - QCursor::pos().x() > 0)
-        drawSeparator(this,true);
-    else
-        drawSeparator(this,false);
     event->ignore();
 }
 
@@ -147,11 +145,11 @@ void IconGridItemCanvas::dragLeaveEvent(QDragLeaveEvent *event)
     //qDebug() << "dragging left" << m_application.name();
     event->accept();
 }
-*/
+
 
 void IconGridItemCanvas::resizeEvent(QResizeEvent *event)
 {
-
+    update();
 }
 
 

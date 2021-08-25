@@ -22,19 +22,14 @@ IconGridItem::IconGridItem(QWidget *parent, KDEApplication application, QSize it
     setFixedSize(m_item_size);
     setMouseTracking(true);
 
-    //QPalette p;
-    //setAutoFillBackground(true);
-    //p.setColor(QPalette::ColorRole::Background,Qt::green);
-    //setPalette(p);
+//    QPalette p;
+//    setAutoFillBackground(true);
+//    p.setColor(QPalette::ColorRole::Background,Qt::green);
+//    setPalette(p);
 
     setLayout(m_layout);
 
     m_canvas = new IconGridItemCanvas(this,application);
-
-    //QPalette p2;
-    //name_label->setAutoFillBackground(true);
-    //p2.setColor(QPalette::ColorRole::Background,Qt::green);
-    //name_label->setPalette(p2);
 
     m_name_label = new QLabel(m_label,this);
     QFont label_font = m_name_label->font();
@@ -50,6 +45,11 @@ IconGridItem::IconGridItem(QWidget *parent, KDEApplication application, QSize it
     m_layout->addWidget(m_canvas,0,0);
     m_layout->setRowStretch(1,m_ratio_rows[1]);
     m_layout->setRowStretch(0,m_ratio_rows[0]);
+
+//    QPalette p2;
+//    m_name_label->setAutoFillBackground(true);
+//    p2.setColor(QPalette::ColorRole::Background,Qt::cyan);
+//    m_name_label->setPalette(p2);
 }
 
 
@@ -66,7 +66,7 @@ void IconGridItem::paintEvent(QPaintEvent *event)
 
 void IconGridItem::resizeEvent(QResizeEvent *event)
 {
-    m_canvas->update();
+
 }
 
 void IconGridItem::mouseMoveEvent(QMouseEvent *event)

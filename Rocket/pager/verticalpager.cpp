@@ -38,6 +38,9 @@ VerticalPager::VerticalPager(QWidget *parent) : QWidget(parent)
     m_kapplication_tree = ConfigManager.getApplicationTree();
     m_backgroundView = new QGraphicsView(this);
 
+    m_timer_hovering_above_elements->setSingleShot(true);
+    m_timer_hovering_above_elements->setInterval(250);
+
     m_timer_drag_switch->setSingleShot(true);
     connect(m_timer_drag_switch,&QTimer::timeout,this,[=]{
         m_timer_drag_mouse_pos = QCursor::pos();
@@ -471,6 +474,7 @@ void VerticalPager::wheelEvent(QWheelEvent *event)
 
 void VerticalPager::dragEnterEvent(QDragEnterEvent *event)
 {
+    m_timer_hovering_above_elements->start();
     event->accept();
 }
 
@@ -484,7 +488,7 @@ void VerticalPager::dragMoveEvent(QDragMoveEvent *event)
     // the item the cursor has minimum distance to
     IconGridItem * minimum_distance = findGridItemOfMinimumDistance(mapToGlobal(event->pos()));
 
-    if(!(minimum_distance->getApplication()==m_item_dragged->getApplication()) && m_drag_animation->currentTime()==m_drag_animation->duration())
+    if(!(minimum_distance->getApplication()==m_item_dragged->getApplication()) && m_drag_animation->currentTime()==m_drag_animation->duration() && !m_timer_hovering_above_elements->isActive())
     {
         m_drag_animation = new QParallelAnimationGroup;
 
@@ -631,6 +635,7 @@ void VerticalPager::dragLeaveEvent(QDragLeaveEvent *event)
     {
         qApp->exit();
     }
+    m_timer_hovering_above_elements->stop();
     event->accept();
 }
 
