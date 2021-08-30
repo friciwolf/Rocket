@@ -25,25 +25,44 @@ IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KDEApplication applicati
     setMouseTracking(true);
     setAcceptDrops(true);
 
-    //QPalette p;
-    //setAutoFillBackground(true);
-    //p.setColor(QPalette::ColorRole::Background,Qt::cyan);
-    //setPalette(p);
+//    QPalette p;
+//    setAutoFillBackground(true);
+//    p.setColor(QPalette::ColorRole::Background,Qt::cyan);
+//    setPalette(p);
 }
 
 void IconGridItemCanvas::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
-    //painter.setBrush(QBrush(Qt::red,Qt::BrushStyle::SolidPattern));
-    painter.setPen(Qt::transparent);
     int size = std::min({width(),height()});
-    int pos_x = (width()-size)/2;
-    int pos_y = (height()-size)/2;
-    painter.drawRect(0,0,width(),height());
-    m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
-    //manual adjustment to the middle
-    QSize parentsize = parentWidget()->geometry().size();
-    setGeometry((parentsize.width()-size)*0.5,geometry().y(),size,size);
+    if(m_draw_folder)
+    {
+        // Custom folder icon code...
+        /*painter.setBrush(QBrush(ConfigManager.getSecondaryColour(),Qt::BrushStyle::SolidPattern));
+        painter.setPen(Qt::transparent);
+        painter.drawRoundedRect(0.05*size,0.05*size,size*0.95,size*0.95,15,15);
+        m_icon.paint(&painter,size*0.1,size*0.1,size/2.5,size/2.5,Qt::AlignCenter);*/
+        painter.setPen(Qt::transparent);
+        int pos_x = (width()-size)/2;
+        int pos_y = (height()-size)/2;
+        painter.drawRect(0,0,width(),height());
+        m_icon = QIcon::fromTheme("folder");
+        m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
+        //manual adjustment to the middle
+        QSize parentsize = parentWidget()->geometry().size();
+        setGeometry((parentsize.width()-size)*0.5,geometry().y(),size,size);
+    }
+    else {
+        painter.setPen(Qt::transparent);
+        int pos_x = (width()-size)/2;
+        int pos_y = (height()-size)/2;
+        painter.drawRect(0,0,width(),height());
+        m_icon = m_application.icon();
+        m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
+        //manual adjustment to the middle
+        QSize parentsize = parentWidget()->geometry().size();
+        setGeometry((parentsize.width()-size)*0.5,geometry().y(),size,size);
+    }
 }
 
 void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)
@@ -105,12 +124,19 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
     if (m_clicked)
     {
         m_clicked = false;
-        QList<QUrl> urls;
-        KDesktopFile d(m_application.entrypath());
-        KService s(&d,m_application.entrypath());
-        if (KRun::run(s,urls,nullptr))
+        if (!m_application.isFolder())
         {
-            qApp->exit();
+            QList<QUrl> urls;
+            KDesktopFile d(m_application.entrypath());
+            KService s(&d,m_application.entrypath());
+            if (KRun::run(s,urls,nullptr))
+            {
+                qApp->exit();
+            }
+        }
+        else
+        {
+            folderClickEvent(m_application);
         }
         event->accept();
     }
@@ -124,25 +150,34 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
 void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 {
     //qDebug() << "dragging into" << m_application.name();
+    if (event->mimeData()->text()!=m_application.name())
+    {
+        m_draw_folder = true;
+        update();
+    }
     event->acceptProposedAction();
 }
 
 void IconGridItemCanvas::dropEvent(QDropEvent *event)
 {
-    //qDebug() << "dropped" << event->mimeData()->text() << "on"<< m_application.name();
+    qDebug() << "dropped" << event->mimeData()->text() << "on"<< m_application.name();
+    m_draw_folder = false;
+    update();
     enterIconDraggingMode(false);
-    event->acceptProposedAction();
+    event->ignore();
 }
 
 void IconGridItemCanvas::dragMoveEvent(QDragMoveEvent *event)
 {
     //qDebug() << "dragMoveIconGriditem";
-    event->ignore();
+    event->acceptProposedAction();
 }
 
 void IconGridItemCanvas::dragLeaveEvent(QDragLeaveEvent *event)
 {
     //qDebug() << "dragging left" << m_application.name();
+    m_draw_folder = false;
+    update();
     event->accept();
 }
 

@@ -46,7 +46,7 @@ VerticalPager::VerticalPager(QWidget *parent) : QWidget(parent)
         m_timer_drag_mouse_pos = QCursor::pos();
 
         current_element = current_element + m_timer_drag_delta;
-        element_before_searching = current_element;
+        element_before_entering_submenu = current_element;
         new_element = current_element;
         scrolled = false;
         touchpad = false;
@@ -121,13 +121,11 @@ void VerticalPager::constructPager(std::vector<KDEApplication> kapplications)
         page->getIconGrid()->highlight(0);
     }
 
-    for (PagerItem * i : pages)
+    for (IconGridItem * i : getAllIconGridItems())
     {
-        for (IconGridItem * i2 : i->getIconGrid()->getItems())
-        {
-            connect(i2->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&VerticalPager::enterIconDraggingMode);
-            connect(this,&VerticalPager::enableIconDragging,i2->getCanvas(),&IconGridItemCanvas::setDraggable);
-        }
+        connect(i->getCanvas(),&IconGridItemCanvas::folderClickEvent,this,&VerticalPager::folderClickEvent);
+        connect(i->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&VerticalPager::enterIconDraggingMode);
+        connect(this,&VerticalPager::enableIconDragging,i->getCanvas(),&IconGridItemCanvas::setDraggable);
     }
 
     QString backgroundPath = QDir::homePath()+"/.config/rocket/wallpaper.jpeg";
@@ -207,7 +205,7 @@ void VerticalPager::updatePager(std::vector<KDEApplication> kapplications)
 
     if (kapplications == m_kapplication_tree)
     {
-        current_element = element_before_searching;
+        current_element = element_before_entering_submenu;
     }
     else
     {
@@ -288,7 +286,7 @@ void VerticalPager::goToPage(int deltaPage)
 
     current_element = newpage;
     new_element = current_element;
-    element_before_searching = current_element;
+    element_before_entering_submenu = current_element;
     page_turned = true;
 }
 
@@ -324,7 +322,7 @@ void VerticalPager::mousePressEvent(QMouseEvent *e)
         pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
         drag_start_position = QCursor::pos();
         drag_0 = QCursor::pos();
-        if (!searching) dragging = true;
+        if (!searching && !in_subfolder) dragging = true;
     }
     e->accept();
     //qDebug() << "pager: mouse press!";
@@ -342,7 +340,7 @@ void VerticalPager::mouseMoveEvent(QMouseEvent * event)
     else // pages have been dragged manually
     {
         int dy0 = (QCursor::pos()-drag_0).y();
-        if (dragging && !searching)
+        if (dragging && !searching && !in_subfolder)
         {
             if ((current_element==0 && dy0>RocketStyle::pager_deadzone_threshold) || (current_element==pages.size()-1 && dy0<-RocketStyle::pager_deadzone_threshold))
             {
@@ -387,11 +385,20 @@ void VerticalPager::mouseReleaseEvent(QMouseEvent * event)
         if (!itemclicked)
         {
             event->accept();
-            qApp->exit();
+            if (in_subfolder)
+            {
+                updatePager(m_kapplication_tree);
+                updated(false);
+                enableIconDragging(true);
+                setSearchbarVisibility(true);
+                in_subfolder = false;
+            }
+            else
+                qApp->exit();
         }
     }
-    // Don't allow scrolling while searching
-    if (searching)
+    // Don't allow scrolling while searching or while in a subfolder
+    if (searching || in_subfolder)
     {
         event->ignore();
         return;
@@ -417,7 +424,7 @@ void VerticalPager::mouseReleaseEvent(QMouseEvent * event)
 
     pages[new_element]->getIconGrid()->resetHighlightAndActiveElement();
     current_element = new_element;
-    element_before_searching = current_element;
+    element_before_entering_submenu = current_element;
     dragging = false;
     event->accept();
     //qDebug() << "pager: mouse up!";
@@ -426,7 +433,7 @@ void VerticalPager::mouseReleaseEvent(QMouseEvent * event)
 void VerticalPager::wheelEvent(QWheelEvent *event)
 {
     pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
-    if (!searching)
+    if (!searching && !in_subfolder)
     {
         if (event->angleDelta().y() % 120 == 0 && event->angleDelta().y()!=0 && !touchpad) //scrolling with a mouse
         {
@@ -460,7 +467,7 @@ void VerticalPager::wheelEvent(QWheelEvent *event)
             else {
                 // we've reached the last/first page, don't do anything anymore
                 current_element = (-pages[0]->pos().y()+height()/2)/height();
-                element_before_searching = current_element;
+                element_before_entering_submenu = current_element;
                 new_element = current_element;
                 for (int i=0;i<pages.size(); i++)
                 {
@@ -642,7 +649,7 @@ void VerticalPager::dragLeaveEvent(QDragLeaveEvent *event)
 void VerticalPager::finishScrolling()
 {
     current_element = (-pages[0]->pos().y()+height()/2)/height();
-    element_before_searching = current_element;
+    element_before_entering_submenu = current_element;
     new_element = current_element;
     scrolled = false;
     touchpad = false;
@@ -662,7 +669,6 @@ void VerticalPager::finishScrolling()
     m_horizontal_scrolling = 0;
 }
 
-
 void VerticalPager::activateSearch(const QString &query)
 {
     if (scrolled) // pages have been scrolled
@@ -671,7 +677,7 @@ void VerticalPager::activateSearch(const QString &query)
         if (mouse_pos_scroll_0!=QCursor::pos())
         {
             current_element = (-pages[0]->pos().y()+height()/2)/height();
-            element_before_searching = current_element;
+            element_before_entering_submenu = current_element;
             new_element = current_element;
             scrolled = false;
         }
@@ -694,4 +700,21 @@ void VerticalPager::enterIconDraggingMode(bool on, IconGridItemCanvas * canvas)
     {
         m_item_dragged = canvas;
     }
+    if (on==false && canvas==nullptr)
+    {
+        // an item has been dropped on canvas, or the mouse has moved a lot during a long a click
+        ConfigManager.generateAppGridConfigFile(ConfigManager.getAppGridConfig(),m_kapplication_tree);
+    }
+}
+
+void VerticalPager::folderClickEvent(KDEApplication folder)
+{
+    element_before_entering_submenu = current_element;
+    in_subfolder = true;
+    in_subfolder_app = folder;
+    dragging=false;
+    updatePager(folder.getChildren());
+    updated(true);
+    enableIconDragging(false);
+    setSearchbarVisibility(false);
 }

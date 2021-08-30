@@ -30,6 +30,7 @@ public slots:
 
 signals:
     void enterIconDraggingMode(bool on, IconGridItemCanvas * canvas = nullptr);
+    void folderClickEvent(KDEApplication folder);
 
 private:
     void m_starticondragging();
@@ -42,7 +43,7 @@ private:
     bool m_draggable = true;
     QPoint m_pressPos;
     QTimer * m_longclicktimer = new QTimer();
-
+    bool m_draw_folder = false; // draws folder
 
 protected:
     void paintEvent(QPaintEvent *);

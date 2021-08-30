@@ -23,7 +23,7 @@ public:
     // indicates the currently selected element, and the new one, if the user swipes
     int current_element = 0;
     int new_element = 0;
-    int element_before_searching = 0;
+    int element_before_entering_submenu = 0; // submenu = searching or subfolder
 
     // below this threshold, the user cannot swipe to the next page
     int swipe_decision_threshold = RocketStyle::pager_swpipe_threshold;
@@ -39,6 +39,8 @@ public:
     bool touchpad = false;
     int m_horizontal_scrolling = 0;
     bool searching = false;
+    bool in_subfolder = false; //true if we are in a subfolder
+    KDEApplication in_subfolder_app; //stores in which subfolder we are currently
     bool page_turned = false;
     bool scrolled = false;
     bool isIconDraggingOn(){return m_icon_dragging_on;}
@@ -71,10 +73,12 @@ public slots:
     void goToPage(int deltaPage);
     void finishScrolling();
     void enterIconDraggingMode(bool on, IconGridItemCanvas * canvas = nullptr);
+    void folderClickEvent(KDEApplication folder);
 
 signals:
     void updated(bool indicator_visibility);
     void enableIconDragging(bool enable);
+    void setSearchbarVisibility(bool visibility);
 
 private:
     bool m_icon_dragging_on = false; //true: icons are dragged

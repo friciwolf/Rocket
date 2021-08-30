@@ -19,4 +19,11 @@ signals:
     void navigate(int key);
 };
 
+class keyEnterReceiver : public QObject
+{
+    Q_OBJECT
+protected:
+    bool eventFilter(QObject* obj, QEvent* event);
+};
+
 #endif // SEARCHFIELD_H

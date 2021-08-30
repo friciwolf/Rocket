@@ -8,7 +8,8 @@
 
 SearchField::SearchField(QWidget *parent) : QLineEdit(parent)
 {
-
+    keyEnterReceiver* key = new keyEnterReceiver();
+    installEventFilter(key);
 }
 
 void SearchField::positioning()
@@ -45,8 +46,25 @@ void SearchField::keyPressEvent(QKeyEvent *event)
         event->accept();
     }
     else {
-        QLineEdit::keyPressEvent(event);
+        if (isVisible())
+            QLineEdit::keyPressEvent(event);
         event->accept();
     }
 }
 
+bool keyEnterReceiver::eventFilter(QObject* obj, QEvent* event)
+{
+    if (event->type()==QEvent::KeyPress) {
+        QKeyEvent* key = static_cast<QKeyEvent*>(event);
+        if ( (key->key()==Qt::Key_Enter) || (key->key()==Qt::Key_Return) ) {
+            //Enter or return was pressed
+            ((SearchField*)obj)->returnPressed();
+        } else {
+            return QObject::eventFilter(obj, event);
+        }
+        return true;
+    } else {
+        return QObject::eventFilter(obj, event);
+    }
+    return false;
+}

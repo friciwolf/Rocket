@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(verticalpager,&VerticalPager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
 
         searchfield = new SearchField(this);
+        connect(verticalpager,&VerticalPager::setSearchbarVisibility,searchfield,&QLineEdit::setVisible);
         connect(searchfield,&QLineEdit::textEdited,verticalpager,&VerticalPager::activateSearch);
         connect(searchfield,&SearchField::navigate,this,&MainWindow::navigation);
         connect(searchfield,&QLineEdit::returnPressed,this,&MainWindow::executeSelected);
@@ -58,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(pager,&Pager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
 
         searchfield = new SearchField(this);
+        connect(pager,&Pager::setSearchbarVisibility,searchfield,&QLineEdit::setVisible);
         connect(searchfield,&QLineEdit::textEdited,pager,&Pager::activateSearch);
         connect(searchfield,&SearchField::navigate,this,&MainWindow::navigation);
         connect(searchfield,&QLineEdit::returnPressed,this,&MainWindow::executeSelected);
@@ -152,7 +154,57 @@ void MainWindow::leaveEvent(QEvent *event)
 
 void MainWindow::navigation(int key)
 {
-    if (key==Qt::Key::Key_Escape) qApp->exit();
+    if (key==Qt::Key::Key_Escape)
+    {
+        if (ConfigManager.getVerticalModeSetting())
+        {
+            if (verticalpager->in_subfolder == false)
+                qApp->exit();
+            else
+            {
+                verticalpager->updatePager(verticalpager->getApplicationTree());
+                verticalpager->updated(false);
+                verticalpager->enableIconDragging(true);
+                verticalpager->setSearchbarVisibility(true);
+                int index = 0;
+                int i = 0;
+                for (KDEApplication app : verticalpager->getApplicationTree())
+                    if (app==verticalpager->in_subfolder_app)
+                    {
+                        index=i;
+                        break;
+                    }
+                    else i++;
+                verticalpager->pages[verticalpager->current_element]->getIconGrid()->highlight((index%verticalpager->pages[0]->getIconGrid()->getItems().size()));
+                verticalpager->in_subfolder = false;
+                return;
+            }
+        }
+        else
+        {
+            if (pager->in_subfolder==false)
+                qApp->exit();
+            else
+            {
+                pager->updatePager(pager->getApplicationTree());
+                pager->updated(false);
+                pager->enableIconDragging(true);
+                pager->setSearchbarVisibility(true);
+                int index = 0;
+                int i = 0;
+                for (KDEApplication app : pager->getApplicationTree())
+                    if (app==pager->in_subfolder_app)
+                    {
+                        index=i;
+                        break;
+                    }
+                    else i++;
+                pager->pages[pager->current_element]->getIconGrid()->highlight((index%pager->pages[0]->getIconGrid()->getItems().size()));
+                pager->in_subfolder = false;
+                return;
+            }
+        }
+    }
     IconGrid * grid;
     if (ConfigManager.getVerticalModeSetting())
     {
@@ -227,12 +279,27 @@ void MainWindow::executeSelected()
     int active = grid->getActiveElement();
     if (active==-1) return;
     KDEApplication application = grid->getItems()[active]->getApplication();
-    QList<QUrl> urls;
-    KDesktopFile d(application.entrypath());
-    KService s(&d,application.entrypath());
-    if (KRun::run(s,urls,nullptr))
+    if (!application.isFolder())
     {
-        qApp->exit();
+        QList<QUrl> urls;
+        KDesktopFile d(application.entrypath());
+        KService s(&d,application.entrypath());
+        if (KRun::run(s,urls,nullptr))
+        {
+            qApp->exit();
+        }
+    }
+    else
+    {
+        if (ConfigManager.getVerticalModeSetting())
+        {
+            verticalpager->folderClickEvent(application);
+            verticalpager->pages[verticalpager->current_element]->getIconGrid()->highlight(0);
+        }
+        else {
+            pager->folderClickEvent(application);
+            pager->pages[pager->current_element]->getIconGrid()->highlight(0);
+        }
     }
 }
 

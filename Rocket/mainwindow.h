@@ -37,7 +37,6 @@ public:
     void setStarupArgs(QStringList * args){m_startupargs = args;}
     QStringList * getStarupArgs(){return m_startupargs;}
 
-
     ~MainWindow();
 
 public slots:
