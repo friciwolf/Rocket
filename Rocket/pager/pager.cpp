@@ -123,6 +123,7 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
 
     for (IconGridItem * i : getAllIconGridItems())
     {
+        connect(i->getCanvas(),&IconGridItemCanvas::makeFolder,this,&Pager::makeFolder);
         connect(i->getCanvas(),&IconGridItemCanvas::folderClickEvent,this,&Pager::folderClickEvent);
         connect(i->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&Pager::enterIconDraggingMode);
         connect(this,&Pager::enableIconDragging,i->getCanvas(),&IconGridItemCanvas::setDraggable);
@@ -717,4 +718,89 @@ void Pager::folderClickEvent(KDEApplication folder)
     updated(true);
     enableIconDragging(false);
     setSearchbarVisibility(false);
+}
+
+void Pager::makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged)
+{
+    QParallelAnimationGroup * paranim = new QParallelAnimationGroup;
+
+    KDEApplication newfolder = app_dropped_on;
+    std::vector<KDEApplication> newtree;
+    std::vector<QPoint> item_positions;
+    std::vector<IconGridItem*> items = getAllIconGridItems();
+    int maxicons = ConfigManager.getRowNumber()*ConfigManager.getColumnNumber();
+    for (IconGridItem * i : items)
+    {
+        // first, save each item's old positions for the animation...
+        item_positions.push_back(i->pos());
+
+        // then, construct the new application tree
+        if (i->getCanvas()->getApplication()==app_dragged)
+        {
+            i->setVisible(false);
+            continue;
+        }
+        if (i->getApplication()==app_dropped_on)
+        {
+            newfolder.setChildren(std::vector<KDEApplication>({app_dropped_on,app_dragged}));
+            newfolder.setToFolder(true);
+            newtree.push_back(newfolder);
+            continue;
+        }
+        newtree.push_back(i->getApplication());
+    }
+
+    std::vector<IconGridItem*> newitems_in_row;
+    QPropertyAnimation * panim;
+
+    // Adding new positions to the animation group
+    for (int i=0;i<newtree.size();i++)
+    {
+        for (IconGridItem * item : items)
+        {
+            if (newtree[i] == item->getApplication() || (newtree[i] == newfolder && item->getApplication() == app_dropped_on))
+            {
+                newitems_in_row.push_back(item);
+
+                item->setParent(pages[i/maxicons]->getIconGrid());
+
+                panim = new QPropertyAnimation(item,"pos");
+                panim->setStartValue(item->pos());
+                panim->setEndValue(item_positions[i]);
+                panim->setDuration(200);
+                connect(panim,&QPropertyAnimation::finished,item,[=]{
+                    pages[i/maxicons]->getIconGrid()->getLayout()->addWidget(item,i/ConfigManager.getColumnNumber(),i%ConfigManager.getColumnNumber());
+                });
+                paranim->addAnimation(panim);
+                break;
+            }
+        }
+    }
+
+    // updating the app tree
+    m_kapplication_tree = newtree;
+
+    connect(paranim,&QParallelAnimationGroup::finished,this,[=]{
+        int numberofelementsbefore = this->getNumberOfElements();
+        this->updatePager(m_kapplication_tree);
+        // move pager to the right position if there is one page less, and we are on the last page
+        if (this->getNumberOfElements() != numberofelementsbefore && this->element_before_entering_submenu==numberofelementsbefore-1)
+        {
+            this->current_element = this->getNumberOfElements()-1;
+            this->element_before_entering_submenu = this->current_element;
+            this->new_element = this->current_element;
+            QParallelAnimationGroup * animationgroup = new QParallelAnimationGroup;
+            for (int i=0;i<this->pages.size(); i++)
+            {
+                QPropertyAnimation * animation = new QPropertyAnimation(this->pages[i],"pos");
+                animation->setStartValue(this->pages[i]->pos());
+                animation->setEndValue(QPoint((i-this->new_element)*width(),this->pages[i]->pos().y()));
+                animation->setDuration(100);
+                animationgroup->addAnimation(animation);
+            }
+            animationgroup->start();
+        }
+    });
+    paranim->start();
+    enterIconDraggingMode(false);
 }

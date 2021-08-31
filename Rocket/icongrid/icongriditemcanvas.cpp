@@ -13,6 +13,7 @@
 #include <KDesktopFile>
 
 #include "icongriditemcanvas.h"
+#include "tools/searchingapps.h"
 
 #include "../RocketLibrary/rocketlibrary.h"
 #include "../RocketLibrary/tools/kdeapplication.h"
@@ -95,7 +96,8 @@ void IconGridItemCanvas::m_starticondragging()
         enterIconDraggingMode(true, this);
         QDrag *drag = new QDrag(this);
         QMimeData *mime = new QMimeData;
-        mime->setText(m_application.name());
+        std::vector<int> i = searchApplicationTree(ConfigManager.getApplicationTree(),m_application);
+        mime->setText(QString::number(i[0])+";"+QString::number(i[1]));
         drag->setMimeData(mime);
         drag->setPixmap(m_application.icon().pixmap(size()));
         drag->setHotSpot(QPoint(drag->pixmap().width()/2,drag->pixmap().height()/2));
@@ -150,7 +152,12 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
 void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 {
     //qDebug() << "dragging into" << m_application.name();
-    if (event->mimeData()->text()!=m_application.name())
+    std::vector<KDEApplication> apptree = ConfigManager.getApplicationTree();
+    QStringList indices = event->mimeData()->text().split(";");
+    int index1 = indices[0].toInt();
+    int index2 = indices[1].toInt();
+    KDEApplication dragged_item = (index2 == -1 ? apptree[index1] : apptree[index1].getChildren()[index2]);
+    if (!(dragged_item==m_application) && !dragged_item.isFolder())
     {
         m_draw_folder = true;
         update();
@@ -160,10 +167,23 @@ void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
 
 void IconGridItemCanvas::dropEvent(QDropEvent *event)
 {
-    qDebug() << "dropped" << event->mimeData()->text() << "on"<< m_application.name();
-    m_draw_folder = false;
-    update();
-    enterIconDraggingMode(false);
+    std::vector<KDEApplication> apptree = ConfigManager.getApplicationTree();
+    QStringList indices = event->mimeData()->text().split(";");
+    int index1 = indices[0].toInt();
+    int index2 = indices[1].toInt();
+    KDEApplication dragged_item = (index2 == -1 ? apptree[index1] : apptree[index1].getChildren()[index2]);
+    if (!dragged_item.isFolder() && !(dragged_item==m_application))
+    {
+        if (m_application.isFolder())
+        {
+            qDebug() << "dropped" << dragged_item.name() << "on folder"<< m_application.name();
+        }
+        else
+        {
+            qDebug() << "dropped" << dragged_item.name() << "on"<< m_application.name();
+            makeFolder(m_application,dragged_item);
+        }
+    }
     event->ignore();
 }
 

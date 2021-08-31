@@ -56,3 +56,38 @@ std::vector<KDEApplication> searchApplication(std::vector<KDEApplication> list, 
     }
     return res;
 }
+
+std::vector<int> searchApplicationTree(std::vector<KDEApplication> apptree, KDEApplication item)
+{
+    int index1 = 0;
+    int index2 = -1;
+    bool found = false;
+    for (int i=0;i<apptree.size();i++)
+    {
+        if (apptree[i].isFolder())
+            if (!(item==apptree[i]))
+                for (int j=0;j<apptree[i].getChildren().size();j++)
+                {
+                    if (item==apptree[i].getChildren()[j])
+                    {
+                        index1 = i;
+                        index2 = j;
+                        found = true;
+                        break;
+                    }
+                }
+            else {
+                index1 = i;
+                found = true;
+            }
+        else {
+            if (item==apptree[i])
+            {
+                index1 = i;
+                found = true;
+            }
+        }
+        if (found) break;
+    }
+    return std::vector<int>({index1,index2});
+}

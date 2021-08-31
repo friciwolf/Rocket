@@ -281,7 +281,7 @@ void RocketConfigManager::checkAppGridConfigFile()
         KMenuItems menuitems;
         menuitems.scanElements();
         generateAppGridConfigFile(config,menuitems.getApplications());
-        m_app_tree = m_apps;
+        m_apps = m_app_tree;
     }
     else
     {
@@ -307,7 +307,7 @@ void RocketConfigManager::checkAppGridConfigFile()
     }
 }
 
-void RocketConfigManager::generateAppGridConfigFile(KConfig * config, std::vector<KDEApplication> apps)
+void RocketConfigManager::generateAppGridConfigFile(KConfig * config, std::vector<KDEApplication> app_tree)
 {
     for (QString group : config->groupList())
     {
@@ -315,12 +315,12 @@ void RocketConfigManager::generateAppGridConfigFile(KConfig * config, std::vecto
     }
 
     int i = 0;
-    for (KDEApplication app : apps)
+    for (KDEApplication app : app_tree)
     {
         if (app.isFolder())
         {
             config->group("Entry"+QString::number(i)).writeEntry("name",app.name());
-            config->group("Entry"+QString::number(i)).writeEntry("iconname",app.iconname());
+            config->group("Entry"+QString::number(i)).writeEntry("iconname","folder");
             config->group("Entry"+QString::number(i)).writeEntry("comment",app.comment());
             config->group("Entry"+QString::number(i)).writeEntry("pos",QString::number(i));
             int j=0;
@@ -368,7 +368,7 @@ void RocketConfigManager::generateAppGridConfigFile(KConfig * config, std::vecto
         }
         i++;
     }
-    m_apps = apps;
+    m_app_tree = app_tree;
 }
 
 bool RocketConfigManager::updateApplicationList()

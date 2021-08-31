@@ -31,6 +31,7 @@ public slots:
 signals:
     void enterIconDraggingMode(bool on, IconGridItemCanvas * canvas = nullptr);
     void folderClickEvent(KDEApplication folder);
+    void makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged);
 
 private:
     void m_starticondragging();
