@@ -21,11 +21,13 @@ public:
     int getRadius() {return m_radius;}
     Pager * getPager() {return m_pager;}
     VerticalPager * getVerticalPager() {return m_verticalpager;}
+    void setPager(Pager* newPager) {m_pager=newPager;}
+    void setVerticalPager(VerticalPager* newPager) {m_verticalpager=newPager;}
 
 private:
     QPixmap pixmap;
-    Pager * m_pager;
-    VerticalPager * m_verticalpager;
+    Pager * m_pager = nullptr;
+    VerticalPager * m_verticalpager = nullptr;
     QRect m_parent_geometry;
 
     int m_elements;

@@ -27,7 +27,7 @@ void PagerCircularActiveIndicator::paintEvent(QPaintEvent *event)
     painter.setBrush(QBrush(ConfigManager.getSecondaryColour(),Qt::BrushStyle::SolidPattern));
     painter.setPen(Qt::transparent);
     //painter.drawEllipse(spacing*0.5+current_item*(radius*2+spacing)+correction,height/2-radius,radius*2,radius*2);
-    if (ConfigManager.getVerticalModeSetting())
+    if (pager==nullptr)
     {
         int position = -(float)verticalpager->pages[0]->pos().y()/verticalpager->height() * (2*radius+spacing);
         painter.drawEllipse(width()/2-radius,spacing*0.5+position,radius*2,radius*2);

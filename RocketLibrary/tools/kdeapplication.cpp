@@ -66,5 +66,9 @@ bool operator==(const KDEApplication& a, const KDEApplication& b)
         }
     }
     if (a.m_entrypath!=b.m_entrypath) return false;
+    if (a.m_isfolder!=b.m_isfolder) return false;
+    if (a.m_isfolder && b.m_isfolder)
+        if (a.m_children!=b.m_children)
+            return false;
     return true;
 }

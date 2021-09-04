@@ -7,6 +7,7 @@
 class KDEApplication
 {
 public:
+    ~KDEApplication() {}
     KDEApplication(QString name, QString iconname, QIcon icon, QString exec, QString comment, bool terminal, QStringList keywords, QString genericname, QString untranslatedGenericName, QStringList categories, QString entrypath);
     KDEApplication(QString name, QString iconname, QIcon icon, QString comment);
     KDEApplication();
@@ -28,6 +29,7 @@ public:
     std::vector<KDEApplication> getChildren() {return m_children;}
     void setChildren(std::vector<KDEApplication> children){m_children=children;}
     void setToFolder(bool isFolder){m_isfolder = isFolder; m_iconname="folder"; m_icon=QIcon::fromTheme(m_iconname);}
+    void setName(QString newname){m_name=newname;}
 
 private:
     QString m_name;

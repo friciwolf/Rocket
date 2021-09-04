@@ -40,7 +40,8 @@ SOURCES += \
       ../RocketLibrary/rocketlibrary.cpp \
       ../RocketLibrary/tools/rocketconfigmanager.cpp \
       ../RocketLibrary/tools/kmenuitems.cpp \
-      ../RocketLibrary/tools/kdeapplication.cpp
+      ../RocketLibrary/tools/kdeapplication.cpp \
+    pager/pagerfolderview.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -57,7 +58,8 @@ HEADERS += \
       ../RocketLibrary/rocketlibrary.h \
       ../RocketLibrary/tools/rocketconfigmanager.h \
       ../RocketLibrary/tools/kmenuitems.h \
-      ../RocketLibrary/tools/kdeapplication.h
+      ../RocketLibrary/tools/kdeapplication.h \
+    pager/pagerfolderview.h
 
 FORMS += \
         mainwindow.ui

@@ -14,13 +14,14 @@
 #include <KConfigGroup>
 
 #include "pager/pager.h"
+#include "pager/pagerfolderview.h"
 #include "icongrid/icongrid.h"
 #include "tools/searchingapps.h"
 
 #include "../RocketLibrary/tools/kmenuitems.h"
 #include "../RocketLibrary/tools/rocketconfigmanager.h"
 
-Pager::Pager(QWidget *parent) : QWidget(parent)
+Pager::Pager(QWidget *parent, std::vector<KDEApplication> appTree, bool withBackgound) : QWidget(parent)
 {    
     // Colouring the background...
     //QPalette palette;
@@ -32,11 +33,13 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
     setAcceptDrops(true);
 
     // Setting the sizes
-    setFixedSize(parent->size());
+    setGeometry(x(),y(),parent->width(),parent->height());
 
     m_kapplications = ConfigManager.getApplications();
-    m_kapplication_tree = ConfigManager.getApplicationTree();
-    m_backgroundView = new QGraphicsView(this);
+    m_kapplication_tree = appTree;
+    m_withbackground = withBackgound;
+    if (withBackgound)
+        m_backgroundView = new QGraphicsView(this);
 
     m_timer_hovering_above_elements->setSingleShot(true);
     m_timer_hovering_above_elements->setInterval(250);
@@ -46,7 +49,7 @@ Pager::Pager(QWidget *parent) : QWidget(parent)
         m_timer_drag_mouse_pos = QCursor::pos();
 
         current_element = current_element + m_timer_drag_delta;
-        element_before_entering_submenu = current_element;
+        element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
         new_element = current_element;
         scrolled = false;
         touchpad = false;
@@ -95,7 +98,7 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
             {
                 page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
                 page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-                page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
+                page->getIconGrid()->setGeometry(page->getIconGrid()->x(),page->getIconGrid()->y(),page->getIconGridMaxSize().width(),page->getIconGridMaxSize().height());
             }
             connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
 
@@ -112,7 +115,7 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
     {
         page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
         page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-        page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
+        page->getIconGrid()->setGeometry(page->getIconGrid()->x(),page->getIconGrid()->y(),page->getIconGridMaxSize().width(),page->getIconGridMaxSize().height());
     }
     connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
     addItem(page);
@@ -129,67 +132,70 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
         connect(this,&Pager::enableIconDragging,i->getCanvas(),&IconGridItemCanvas::setDraggable);
     }
 
-    QString backgroundPath = QDir::homePath()+"/.config/rocket/wallpaper.jpeg";
-    if (ConfigManager.getUsingSystemWallpaper())
+    if (m_withbackground)
     {
-        KConfig config(QDir::homePath()+"/.config/plasma-org.kde.plasma.desktop-appletsrc");
-        QStringList wallpaper_candidates;
-        QStringList list = config.group("Containments").groupList();
-        for (QString l : list)
+        QString backgroundPath = QDir::homePath()+"/.config/rocket/wallpaper.jpeg";
+        if (ConfigManager.getUsingSystemWallpaper())
         {
-            if (config.group("Containments").group(l).groupList().contains("Wallpaper"))
+            KConfig config(QDir::homePath()+"/.config/plasma-org.kde.plasma.desktop-appletsrc");
+            QStringList wallpaper_candidates;
+            QStringList list = config.group("Containments").groupList();
+            for (QString l : list)
             {
-                QString variable = config.group("Containments").group(l).group("Wallpaper").group("org.kde.image").group("General").readEntry("Image");
-                if (variable.split("file://").size()>1)
+                if (config.group("Containments").group(l).groupList().contains("Wallpaper"))
                 {
-                    wallpaper_candidates.push_back(config.group("Containments").group(l).readEntry("lastScreen")+variable.split("file://")[1]);
-                }
-                else
-                {
-                    if (variable.at(variable.size()-1)!="/") wallpaper_candidates.push_back(config.group("Containments").group(l).readEntry("lastScreen")+variable);
-                    else qDebug() << "Wallpaper packages are not supported, please pick the image file manually.";
+                    QString variable = config.group("Containments").group(l).group("Wallpaper").group("org.kde.image").group("General").readEntry("Image");
+                    if (variable.split("file://").size()>1)
+                    {
+                        wallpaper_candidates.push_back(config.group("Containments").group(l).readEntry("lastScreen")+variable.split("file://")[1]);
+                    }
+                    else
+                    {
+                        if (variable.at(variable.size()-1)!="/") wallpaper_candidates.push_back(config.group("Containments").group(l).readEntry("lastScreen")+variable);
+                        else qDebug() << "Wallpaper packages are not supported, please pick the image file manually.";
+                    }
                 }
             }
-        }
-        if (wallpaper_candidates.size()==0)
-        {
-            qDebug() << "No wallpapers found in /.config/plasma-org.kde.plasma.desktop-appletsrc. Falling back the default one ~/.config/rocket/wallpaper.jpeg.";
-        }
-        else
-        {
-            if (ConfigManager.getWallpaperScreen()<wallpaper_candidates.size())
+            if (wallpaper_candidates.size()==0)
             {
-                wallpaper_candidates.sort();
-                backgroundPath = wallpaper_candidates[ConfigManager.getWallpaperScreen()].right(wallpaper_candidates[ConfigManager.getWallpaperScreen()].size()-1);
+                qDebug() << "No wallpapers found in /.config/plasma-org.kde.plasma.desktop-appletsrc. Falling back the default one ~/.config/rocket/wallpaper.jpeg.";
             }
-            else {
-                qDebug() << "No KDE Wallpaper found for screen "<< ConfigManager.getWallpaperScreen() <<". Using the default one ~/.config/rocket/wallpaper.jpeg.";
+            else
+            {
+                if (ConfigManager.getWallpaperScreen()<wallpaper_candidates.size())
+                {
+                    wallpaper_candidates.sort();
+                    backgroundPath = wallpaper_candidates[ConfigManager.getWallpaperScreen()].right(wallpaper_candidates[ConfigManager.getWallpaperScreen()].size()-1);
+                }
+                else {
+                    qDebug() << "No KDE Wallpaper found for screen "<< ConfigManager.getWallpaperScreen() <<". Using the default one ~/.config/rocket/wallpaper.jpeg.";
+                }
             }
         }
+        m_backgroundView->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+        m_backgroundView->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
+        m_backgroundView->setEnabled(false);
+        m_backgroundView->setFrameShape(QFrame::Shape::NoFrame);
+        m_backgroundView->setAutoFillBackground(true);
+        m_backgroundView->viewport()->setAutoFillBackground(true);
+
+        //this shift is needed due to scroll animation remnants at the widget's border
+        int delta = size().width()*0.1;
+
+        m_backgroundView->setScene(new QGraphicsScene(geometry()));
+        m_backgroundView->setFixedSize(size().width()+delta,size().height()+delta);
+        m_backgroundView->setAlignment(Qt::AlignCenter);
+        QPixmap bkgnd(backgroundPath);
+        bkgnd = bkgnd.scaled(size(), Qt::IgnoreAspectRatio);
+        m_backgroundView->setBackgroundBrush(QBrush(bkgnd));;
+        if (!ConfigManager.getBoxSetting()) m_backgroundView->setForegroundBrush(QBrush(ConfigManager.getBaseColour()));
+
+        QGraphicsBlurEffect* p_blur = new QGraphicsBlurEffect;
+        p_blur->setBlurRadius(ConfigManager.getBlurRadius());
+        p_blur->setBlurHints(QGraphicsBlurEffect::BlurHint::QualityHint);
+        m_backgroundView->setGraphicsEffect(p_blur);
+        m_backgroundView->move(-delta/2,-delta/2);
     }
-    m_backgroundView->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-    m_backgroundView->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOff);
-    m_backgroundView->setEnabled(false);
-    m_backgroundView->setFrameShape(QFrame::Shape::NoFrame);
-    m_backgroundView->setAutoFillBackground(true);
-    m_backgroundView->viewport()->setAutoFillBackground(true);
-
-    //this shift is needed due to scroll animation remnants at the widget's border
-    int delta = size().width()*0.1;
-
-    m_backgroundView->setScene(new QGraphicsScene(geometry()));
-    m_backgroundView->setFixedSize(size().width()+delta,size().height());
-    m_backgroundView->setAlignment(Qt::AlignCenter);
-    QPixmap bkgnd(backgroundPath);
-    bkgnd = bkgnd.scaled(size(), Qt::IgnoreAspectRatio);
-    m_backgroundView->setBackgroundBrush(QBrush(bkgnd));
-    if (!ConfigManager.getBoxSetting()) m_backgroundView->setForegroundBrush(QBrush(ConfigManager.getBaseColour()));
-
-    QGraphicsBlurEffect* p_blur = new QGraphicsBlurEffect;
-    p_blur->setBlurRadius(ConfigManager.getBlurRadius());
-    p_blur->setBlurHints(QGraphicsBlurEffect::BlurHint::QualityHint);
-    m_backgroundView->setGraphicsEffect(p_blur);
-    m_backgroundView->move(-delta/2,0);
 }
 
 void Pager::updatePager(std::vector<KDEApplication> kapplications)
@@ -287,7 +293,7 @@ void Pager::goToPage(int deltaPage)
 
     current_element = newpage;
     new_element = current_element;
-    element_before_entering_submenu = current_element;
+    element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
     page_turned = true;
 }
 
@@ -298,6 +304,58 @@ std::vector<IconGridItem*> Pager::getAllIconGridItems()
         for (IconGridItem * i : page->getIconGrid()->getItems())
             res.push_back(i);
     return res;
+}
+
+void Pager::startBlurringEffect()
+{
+    QGraphicsBlurEffect* p_blur = new QGraphicsBlurEffect;
+    p_blur->setBlurRadius(50);
+    p_blur->setBlurHints(QGraphicsBlurEffect::BlurHint::QualityHint);
+    pages[current_element]->setGraphicsEffect(p_blur);
+
+    QGraphicsBlurEffect* p_blur2 = new QGraphicsBlurEffect;
+    p_blur2->setBlurRadius(50);
+    p_blur2->setBlurHints(QGraphicsBlurEffect::BlurHint::QualityHint);
+    m_backgroundView->setGraphicsEffect(p_blur2);
+
+    /* Fancy blurring animation with performace issues
+    QParallelAnimationGroup * paranim = new QParallelAnimationGroup;
+
+    QPropertyAnimation * panim2 = new QPropertyAnimation;
+    panim2->setTargetObject(pages[current_element]->graphicsEffect());
+    panim2->setPropertyName("blurRadius");
+    panim2->setStartValue(0);
+    panim2->setEndValue(50);
+    panim2->setDuration(100);
+    panim2->setEasingCurve(QEasingCurve::InQuart);
+    paranim->addAnimation(panim2);
+
+    QPropertyAnimation * panim1 = new QPropertyAnimation;
+    panim1->setTargetObject(m_backgroundView->graphicsEffect());
+    panim1->setPropertyName("blurRadius");
+    panim1->setStartValue(0);
+    panim1->setEndValue(50);
+    panim1->setDuration(100);
+    panim1->setEasingCurve(QEasingCurve::InQuart);
+    paranim->addAnimation(panim1);
+
+    paranim->start();
+
+    QTimer * timer = new QTimer();
+    timer->setInterval(10);
+    connect(timer,&QTimer::timeout,pages[current_element],[=]{
+       pages[current_element]->update();
+        if (paranim->state()==QPropertyAnimation::State::Stopped)
+        {
+            timer->stop();
+            delete timer;
+            delete panim1;
+            delete panim2;
+            delete paranim;
+        }
+    });
+    timer->start();
+    */
 }
 
 void Pager::resizeEvent(QResizeEvent *event)
@@ -317,13 +375,12 @@ void Pager::resizeEvent(QResizeEvent *event)
 
 void Pager::mousePressEvent(QMouseEvent *e)
 {
-    if (isIconDraggingOn()) enterIconDraggingMode(false);
     if (e->button() == Qt::LeftButton)
     {
         pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
         drag_start_position = QCursor::pos();
         drag_0 = QCursor::pos();
-        if (!searching && !in_subfolder) dragging = true;
+        if (!searching) dragging = true;
     }
     e->accept();
     //qDebug() << "pager: mouse press!";
@@ -341,7 +398,7 @@ void Pager::mouseMoveEvent(QMouseEvent * event)
     else // pages have been dragged manually
     {
         int dx0 = (QCursor::pos()-drag_0).x();
-        if (dragging && !searching && !in_subfolder)
+        if (dragging && !searching)
         {
             if ((current_element==0 && dx0>RocketStyle::pager_deadzone_threshold) || (current_element==pages.size()-1 && dx0<-RocketStyle::pager_deadzone_threshold))
             {
@@ -374,37 +431,22 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
     int dy0 = (QCursor::pos()-drag_0).y();
     if (dx0*dx0+dy0*dy0<RocketStyle::click_tolerance && event->button()==Qt::LeftButton)
     {
-        bool itemclicked = false;
-        for (PagerItem * i : pages)
-        {
-            if (i->getIconGrid()->geometry().contains(event->pos()))
-            {
-                itemclicked = true;
-                break;
-            }
-        }
-        if (!itemclicked)
+        // If the user clicks outside of the icongrid, and not in a subfolder, close the app
+        if (!pages[current_element]->getIconGrid()->geometry().contains(event->pos()))
         {
             event->accept();
-            if (in_subfolder)
-            {
-                updatePager(m_kapplication_tree);
-                updated(false);
-                enableIconDragging(true);
-                setSearchbarVisibility(true);
-                in_subfolder = false;
-            }
-            else
+            if (!in_subfolder)
                 qApp->exit();
         }
     }
-    // Don't allow scrolling while searching or while in a subfolder
-    if (searching || in_subfolder)
+    // Don't allow scrolling while searching
+    if (searching)
     {
         event->ignore();
         return;
     }
     // Scroll if neccessary and update
+    new_element = current_element;
     if (dx0>swipe_decision_threshold && current_element!=0) {
         new_element = current_element-1;
     }
@@ -425,7 +467,7 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
 
     pages[new_element]->getIconGrid()->resetHighlightAndActiveElement();
     current_element = new_element;
-    element_before_entering_submenu = current_element;
+    element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
     dragging = false;
     event->accept();
     //qDebug() << "pager: mouse up!";
@@ -434,7 +476,7 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
 void Pager::wheelEvent(QWheelEvent *event)
 {
     pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
-    if (!searching && !in_subfolder)
+    if (!searching)
     {
         if (event->angleDelta().y() % 120 == 0 && event->angleDelta().y()!=0 && !touchpad) //scrolling with a mouse
         {
@@ -468,7 +510,7 @@ void Pager::wheelEvent(QWheelEvent *event)
             else {
                 // we've reached the last/first page, don't do anything anymore
                 current_element = (-pages[0]->pos().x()+width()/2)/width();
-                element_before_entering_submenu = current_element;
+                element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
                 new_element = current_element;
                 for (int i=0;i<pages.size(); i++)
                 {
@@ -534,56 +576,54 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
                 newtree.push_back(i->getApplication());
             }
         }
-        if (newtree!=m_kapplication_tree)
+
+        std::vector<IconGridItem*> items = getAllIconGridItems();
+        std::vector<IconGridItem*> newitems_in_row;
+
+        QPropertyAnimation * panim;
+
+        for (int i=0;i<newtree.size();i++)
         {
-            std::vector<IconGridItem*> items = getAllIconGridItems();
-            std::vector<IconGridItem*> newitems_in_row;
-
-            QPropertyAnimation * panim;
-
-            for (int i=0;i<newtree.size();i++)
+            for (IconGridItem * item : items)
             {
-                for (IconGridItem * item : items)
+                if (newtree[i] == item->getApplication())
                 {
-                    if (newtree[i] == item->getApplication())
-                    {
-                        newitems_in_row.push_back(item);
+                    newitems_in_row.push_back(item);
 
-                        item->setParent(pages[i/maxicons]->getIconGrid());
+                    item->setParent(pages[i/maxicons]->getIconGrid());
 
-                        panim = new QPropertyAnimation(item,"pos");
-                        panim->setStartValue(item->pos());
-                        panim->setEndValue(item_positions[i]);
-                        panim->setDuration(200);
-                        connect(panim,&QPropertyAnimation::finished,item,[=]{
-                            pages[i/maxicons]->getIconGrid()->getLayout()->addWidget(item,i/ConfigManager.getColumnNumber(),i%ConfigManager.getColumnNumber());
-                        });
-                        m_drag_animation->addAnimation(panim);
-                        break;
-                    }
+                    panim = new QPropertyAnimation(item,"pos");
+                    panim->setStartValue(item->pos());
+                    panim->setEndValue(item_positions[i]);
+                    panim->setDuration(200);
+                    connect(panim,&QPropertyAnimation::finished,item,[=]{
+                        pages[i/maxicons]->getIconGrid()->getLayout()->addWidget(item,i/ConfigManager.getColumnNumber(),i%ConfigManager.getColumnNumber());
+                    });
+                    m_drag_animation->addAnimation(panim);
+                    break;
                 }
             }
-
-            m_kapplication_tree = newtree;
-
-            int i=0;
-            for (PagerItem * page : pages)
-            {
-                std::vector<IconGridItem*> vector;
-                if ((i+1)*maxicons<newitems_in_row.size())
-                {
-                    vector = std::vector<IconGridItem*>(newitems_in_row.begin()+i*maxicons,newitems_in_row.begin()+(i+1)*maxicons);
-                    page->getIconGrid()->setItems(vector);
-                }
-                else {
-                    vector = std::vector<IconGridItem*>(newitems_in_row.begin()+i*maxicons,newitems_in_row.end());
-                    page->getIconGrid()->setItems(vector);
-                }
-                i++;
-            }
-
-            m_drag_animation->start();
         }
+
+        m_kapplication_tree = newtree;
+
+        int i=0;
+        for (PagerItem * page : pages)
+        {
+            std::vector<IconGridItem*> vector;
+            if ((i+1)*maxicons<newitems_in_row.size())
+            {
+                vector = std::vector<IconGridItem*>(newitems_in_row.begin()+i*maxicons,newitems_in_row.begin()+(i+1)*maxicons);
+                page->getIconGrid()->setItems(vector);
+            }
+            else {
+                vector = std::vector<IconGridItem*>(newitems_in_row.begin()+i*maxicons,newitems_in_row.end());
+                page->getIconGrid()->setItems(vector);
+            }
+            i++;
+        }
+
+        m_drag_animation->start();
     }
     else
     {
@@ -604,6 +644,13 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
                 m_timer_drag_mouse_pos = QCursor::pos();
                 m_timer_drag_switch->start(750);
             }
+            else
+            {
+                if (in_subfolder)
+                {
+                    //qDebug() << "closing folder" << in_subfolder_app.name();
+                }
+            }
         }
     }
     event->accept();
@@ -612,21 +659,17 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
 void Pager::dropEvent(QDropEvent *event)
 {
     enterIconDraggingMode(false);
-    bool applistChanged = false;
-    if (m_kapplication_tree.size()!=ConfigManager.getApplicationTree().size()) applistChanged = true;
-    else {
-        for (int i = 0;i<m_kapplication_tree.size();i++)
-        {
-            if (!(m_kapplication_tree[i] == ConfigManager.getApplicationTree()[i]))
-            {
-                applistChanged = true;
-                break;
-            }
-        }
-    }
-    if (applistChanged)
+    if (!in_subfolder)
     {
         ConfigManager.generateAppGridConfigFile(ConfigManager.getAppGridConfig(),m_kapplication_tree);
+    }
+    else
+    {
+        QStringList indices_string = event->mimeData()->text().split(";");
+        std::vector<int> indices({indices_string[0].toInt(),indices_string[1].toInt()});
+        std::vector<KDEApplication> newtree = ConfigManager.getApplicationTree();
+        newtree[indices[0]].setChildren(m_kapplication_tree);
+        ConfigManager.generateAppGridConfigFile(ConfigManager.getAppGridConfig(),newtree);
     }
     event->accept();
 }
@@ -650,7 +693,7 @@ void Pager::dragLeaveEvent(QDragLeaveEvent *event)
 void Pager::finishScrolling()
 {
     current_element = (-pages[0]->pos().x()+width()/2)/width();
-    element_before_entering_submenu = current_element;
+    element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
     new_element = current_element;
     scrolled = false;
     touchpad = false;
@@ -678,7 +721,7 @@ void Pager::activateSearch(const QString &query)
         if (mouse_pos_scroll_0!=QCursor::pos())
         {
             current_element = (-pages[0]->pos().x()+width()/2)/width();
-            element_before_entering_submenu = current_element;
+            element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
             new_element = current_element;
             scrolled = false;
         }
@@ -701,9 +744,9 @@ void Pager::enterIconDraggingMode(bool on, IconGridItemCanvas * canvas)
     {
         m_item_dragged = canvas;
     }
-    if (on==false && canvas==nullptr)
+    if (on==false && canvas==nullptr && !in_subfolder)
     {
-        // an item has been dropped on canvas, or the mouse has moved a lot during a long a click
+        // an item has been dropped on a canvas (folder creation), or the mouse has moved a lot during a long a click
         ConfigManager.generateAppGridConfigFile(ConfigManager.getAppGridConfig(),m_kapplication_tree);
     }
 }
@@ -714,10 +757,23 @@ void Pager::folderClickEvent(KDEApplication folder)
     in_subfolder = true;
     in_subfolder_app = folder;
     dragging=false;
-    updatePager(folder.getChildren());
     updated(true);
-    enableIconDragging(false);
     setSearchbarVisibility(false);
+    startBlurringEffect();
+
+    PagerFolderView * folderview = new PagerFolderView(this,folder.getChildren());
+    connect(folderview,&PagerFolderView::leavingPagerFolderView,this,[=]{
+        folderview->hide();
+        this->updated(false);
+        this->enableIconDragging(true);
+        this->setSearchbarVisibility(true);
+        this->in_subfolder = false;
+        this->dragging = false;
+        // setting the new tree
+        this->m_kapplication_tree = ConfigManager.getApplicationTree();
+        this->updatePager(this->m_kapplication_tree);
+    });
+    folderview->show();
 }
 
 void Pager::makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged)
@@ -742,10 +798,21 @@ void Pager::makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged
         }
         if (i->getApplication()==app_dropped_on)
         {
-            newfolder.setChildren(std::vector<KDEApplication>({app_dropped_on,app_dragged}));
-            newfolder.setToFolder(true);
-            newtree.push_back(newfolder);
-            continue;
+            if(app_dropped_on.isFolder())
+            {
+                std::vector<KDEApplication> children = app_dropped_on.getChildren();
+                children.push_back(app_dragged);
+                newfolder.setChildren(children);
+                newtree.push_back(newfolder);
+                continue;
+            }
+            else
+            {
+                newfolder.setChildren(std::vector<KDEApplication>({app_dropped_on,app_dragged}));
+                newfolder.setToFolder(true);
+                newtree.push_back(newfolder);
+                continue;
+            }
         }
         newtree.push_back(i->getApplication());
     }

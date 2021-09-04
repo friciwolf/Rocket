@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if (ConfigManager.getVerticalModeSetting())
     {
-        verticalpager = new VerticalPager(this);
+        verticalpager = new VerticalPager(this, ConfigManager.getApplicationTree(), true);
 
         indicator = new PagerCircularIndicator(this,verticalpager);
         connect(verticalpager,&VerticalPager::updated,indicator,&PagerCircularIndicator::setHidden);
@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     else
     {
-        pager = new Pager(this);
+        pager = new Pager(this, ConfigManager.getApplicationTree(), true);
 
         indicator = new PagerCircularIndicator(this,pager);
         connect(pager,&Pager::updated,indicator,&PagerCircularIndicator::setHidden);
@@ -136,14 +136,14 @@ void MainWindow::leaveEvent(QEvent *event)
 {
     if (ConfigManager.getVerticalModeSetting())
     {
-        if (!verticalpager->isIconDraggingOn())
+        if (!verticalpager->isIconDraggingOn() && !verticalpager->in_subfolder)
         {
             qDebug() << "exit mainWindow vertical";
             qApp->exit();
         }
     }
     else {
-        if (!pager->isIconDraggingOn())
+        if (!pager->isIconDraggingOn() && !pager->in_subfolder)
         {
             qDebug() << "exit mainWindow horizontal";
             qApp->exit();

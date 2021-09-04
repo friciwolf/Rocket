@@ -17,6 +17,7 @@ class VerticalPager : public QWidget
 {
     Q_OBJECT
 public:
+    ~VerticalPager() {}
     // Number of pages on which applications are displayed
     std::vector<PagerItem*> pages;
 
@@ -45,23 +46,23 @@ public:
     bool scrolled = false;
     bool isIconDraggingOn(){return m_icon_dragging_on;}
 
-    explicit VerticalPager(QWidget * parent);
+    explicit VerticalPager(QWidget * parent, std::vector<KDEApplication> appTree, bool withBackgound);
     void constructPager(std::vector<KDEApplication> kapplications);
     void addItem(PagerItem * page);
     void updatePager(std::vector<KDEApplication> kapplications);
+    void startBlurringEffect();
     IconGridItem * findGridItemOfMinimumDistance(QPoint referencePoint);
 
     int getNumberOfElements() {return pages.size();}
     void setApplicationList(std::vector<KDEApplication> newlist){m_kapplications = newlist;}
     std::vector<KDEApplication> getApplicationTree() {return m_kapplication_tree;}
     void setApplicationTree(std::vector<KDEApplication> tree){m_kapplication_tree = tree;}
-
     std::vector<IconGridItem*> getAllIconGridItems();
 
     void resizeEvent(QResizeEvent *event);
     void mousePressEvent(QMouseEvent * e);
     void mouseMoveEvent(QMouseEvent * event);
-    void mouseReleaseEvent(QMouseEvent * event);
+    virtual void mouseReleaseEvent(QMouseEvent * event);
     void wheelEvent(QWheelEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
@@ -94,6 +95,7 @@ private:
     std::vector<KDEApplication> m_kapplication_tree;
     QTimer * m_scrolltimeouttimer = new QTimer();
     QGraphicsView * m_backgroundView;
+    bool m_withbackground; // true: draw the background; false for folders
 };
 
 #endif // VERTICALPAGER_H

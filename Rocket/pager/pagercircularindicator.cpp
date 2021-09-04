@@ -28,7 +28,7 @@ void PagerCircularIndicator::positioning()
     m_parent_geometry = parentWidget()->geometry();
     m_radius = m_parent_geometry.size().height()*0.01;
     m_spacing = m_radius;
-    if (ConfigManager.getVerticalModeSetting())
+    if (m_pager==nullptr)
     {
         m_elements = m_verticalpager->getNumberOfElements();
         setFixedSize(m_parent_geometry.size().width()*0.05,m_elements*(2*m_radius+m_spacing));
@@ -51,7 +51,7 @@ void PagerCircularIndicator::paintEvent(QPaintEvent *event)
             painter.setBrush(QBrush(ConfigManager.getSelectionColour(),Qt::BrushStyle::SolidPattern));
     painter.setPen(Qt::transparent);
     //painter.drawRoundedRect(0,0,width,height,5,5);
-    if (ConfigManager.getVerticalModeSetting())
+    if (m_pager==nullptr)
     {
         for (int i=0;i<m_verticalpager->getNumberOfElements();i++)
         {

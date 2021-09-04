@@ -14,13 +14,15 @@ public:
     void positioning();
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void setPager(Pager* newPager) {pager=newPager;}
+    void setVerticalPager(VerticalPager* newPager) {verticalpager=newPager;}
 
 private:
     QPixmap pixmap;
     int radius;
     int spacing;
-    Pager * pager;
-    VerticalPager * verticalpager;
+    Pager * pager = nullptr;
+    VerticalPager * verticalpager = nullptr;
     PagerCircularIndicator * indicator;
 };
 

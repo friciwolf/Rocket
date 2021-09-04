@@ -103,9 +103,6 @@ void IconGridItemCanvas::m_starticondragging()
         drag->setHotSpot(QPoint(drag->pixmap().width()/2,drag->pixmap().height()/2));
         Qt::DropAction dropAction = drag->exec();
     }
-    else {
-        enterIconDraggingMode(false);
-    }
     m_clicked = false;
 }
 
@@ -134,6 +131,7 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
             if (KRun::run(s,urls,nullptr))
             {
                 qApp->exit();
+                return;
             }
         }
         else
@@ -157,7 +155,7 @@ void IconGridItemCanvas::dragEnterEvent(QDragEnterEvent *event)
     int index1 = indices[0].toInt();
     int index2 = indices[1].toInt();
     KDEApplication dragged_item = (index2 == -1 ? apptree[index1] : apptree[index1].getChildren()[index2]);
-    if (!(dragged_item==m_application) && !dragged_item.isFolder())
+    if (!(dragged_item==m_application) && !dragged_item.isFolder() && index2==-1)
     {
         m_draw_folder = true;
         update();
@@ -172,19 +170,11 @@ void IconGridItemCanvas::dropEvent(QDropEvent *event)
     int index1 = indices[0].toInt();
     int index2 = indices[1].toInt();
     KDEApplication dragged_item = (index2 == -1 ? apptree[index1] : apptree[index1].getChildren()[index2]);
-    if (!dragged_item.isFolder() && !(dragged_item==m_application))
+    if (!dragged_item.isFolder() && !(dragged_item==m_application) && index2==-1)
     {
-        if (m_application.isFolder())
-        {
-            qDebug() << "dropped" << dragged_item.name() << "on folder"<< m_application.name();
-        }
-        else
-        {
-            qDebug() << "dropped" << dragged_item.name() << "on"<< m_application.name();
-            makeFolder(m_application,dragged_item);
-        }
+        makeFolder(m_application,dragged_item);
     }
-    event->ignore();
+    event->acceptProposedAction();
 }
 
 void IconGridItemCanvas::dragMoveEvent(QDragMoveEvent *event)
