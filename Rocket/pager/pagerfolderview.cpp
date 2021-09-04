@@ -160,3 +160,11 @@ void PagerFolderView::mouseReleaseEvent(QMouseEvent *event)
     }
     Pager::mouseReleaseEvent(event);
 }
+
+void PagerFolderView::mouseMoveEvent(QMouseEvent * event)
+{
+    if (pages.size()==1)
+        return;
+    else
+        Pager::mouseMoveEvent(event);
+}
