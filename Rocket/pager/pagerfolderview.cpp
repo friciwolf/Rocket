@@ -76,7 +76,7 @@ PagerFolderView::PagerFolderView(QWidget *parent, std::vector<KDEApplication> ap
     for (IconGridItem * i : array)
         if (i->getApplication().getChildren()==appTree)
         {
-            QPoint point = i->mapToGlobal(i->getCanvas()->geometry().topLeft());
+            QPoint point = mapFromGlobal(i->mapToGlobal(i->getCanvas()->geometry().topLeft()));
             start=QRect(point.x(),point.y(),i->getCanvas()->width(),i->getCanvas()->height());
             break;
         }
@@ -125,7 +125,7 @@ void PagerFolderView::mouseReleaseEvent(QMouseEvent *event)
             for (IconGridItem * i : ((Pager*)parentWidget())->getAllIconGridItems())
                 if (i->getApplication().getChildren()==m_appTree)
                 {
-                    QPoint point = i->mapToGlobal(i->getCanvas()->geometry().topLeft());
+                    QPoint point = mapFromGlobal(i->mapToGlobal(i->getCanvas()->geometry().topLeft()));
                     end=QRect(point.x(),point.y(),i->getCanvas()->width(),i->getCanvas()->height());
                     break;
                 }
