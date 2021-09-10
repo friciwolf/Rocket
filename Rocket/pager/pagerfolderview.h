@@ -2,6 +2,7 @@
 #define PAGERFOLDERVIEW_H
 
 #include <QLineEdit>
+#include <QMouseEvent>
 
 #include "pager/pager.h"
 #include "pager/verticalpager.h"
