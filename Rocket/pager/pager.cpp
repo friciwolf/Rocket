@@ -392,7 +392,7 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
         }
         bool clickedAboveIconGridItem = false;
         for (IconGridItem * i : pages[current_element]->getIconGrid()->getItems())
-            if (i->geometry().contains(event->pos()))
+            if ((i->geometry().translated(pages[current_element]->getIconGrid()->geometry().topLeft())).contains(event->pos()))
             {
                 clickedAboveIconGridItem = true;
                 break;

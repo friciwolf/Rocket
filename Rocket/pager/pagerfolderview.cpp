@@ -71,12 +71,13 @@ void PagerFolderView::mouseReleaseEvent(QMouseEvent *event)
     {
         bool clickedAboveIconGridItem = false;
         for (IconGridItem * i : pages[current_element]->getIconGrid()->getItems())
-            if (i->geometry().contains(event->pos()))
+        {
+            if ((i->geometry().translated(pages[current_element]->getIconGrid()->geometry().topLeft())).contains(event->pos()))
             {
                 clickedAboveIconGridItem = true;
                 break;
             }
-
+        }
         // If the user has not clicked inside of the grid AND not not on the folderNameField
         // OR if the user has clicked on an empty area within the icongrid
         // close the folder

@@ -7,10 +7,12 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QCursor>
+#include <QWindow>
 
 #include <KRun>
 #include <KService>
 #include <KDesktopFile>
+#include <KIO/JobUiDelegate>
 #include <KIO/ApplicationLauncherJob>
 
 #include "icongriditemcanvas.h"
@@ -130,8 +132,11 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
             KService s(&d,m_application.entrypath());
             KService::Ptr p(&s);
             KIO::ApplicationLauncherJob * job = new KIO::ApplicationLauncherJob(p);
+            job->setUiDelegate(new KIO::JobUiDelegate(KJobUiDelegate::AutoHandlingEnabled, this));
             job->setAutoDelete(true);
             job->start();
+            qDebug() << s.entryPath() << s.exec();
+            event->ignore();
             return;
         }
         else

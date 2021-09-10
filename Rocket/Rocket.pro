@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui KIOCore KIOFileWidgets KIOWidgets KNTLM KI18n KConfigCore KConfigGui KWindowSystem
+QT       += core gui KIOCore KIOFileWidgets KIOWidgets KNTLM KI18n KConfigCore KConfigGui KWindowSystem KCoreAddons KJobWidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
