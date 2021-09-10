@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     setMouseTracking(true);
-    setWindowOpacity(0);
+    setWindowOpacity(1);
 
     setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_NoSystemBackground);
@@ -129,13 +129,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
         active_indicator->positioning();
         searchfield->positioning();
     }
-
-    setWindowOpacity(0);
-    QPropertyAnimation * animation = new QPropertyAnimation(this,"windowOpacity");
-    animation->setStartValue(0);
-    animation->setEndValue(1);
-    animation->setDuration(150);
-    animation->start();
 }
 
 void MainWindow::leaveEvent(QEvent *event)
