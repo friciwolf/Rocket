@@ -36,6 +36,7 @@ signals:
 private:
     void m_starticondragging();
 
+
     QIcon m_icon;
     QPixmap pixmap;
     KDEApplication m_application;

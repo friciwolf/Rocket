@@ -39,5 +39,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.showFullScreen();
 
+    QObject::connect(qApp, &QGuiApplication::applicationStateChanged, &w, [=](Qt::ApplicationState state){
+        if (state==Qt::ApplicationState::ApplicationInactive)
+            qApp->exit();
+    });
+
     return a.exec();
 }

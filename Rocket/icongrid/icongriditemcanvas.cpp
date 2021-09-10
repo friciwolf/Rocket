@@ -11,6 +11,7 @@
 #include <KRun>
 #include <KService>
 #include <KDesktopFile>
+#include <KIO/ApplicationLauncherJob>
 
 #include "icongriditemcanvas.h"
 #include "tools/searchingapps.h"
@@ -125,14 +126,13 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
         m_clicked = false;
         if (!m_application.isFolder())
         {
-            QList<QUrl> urls;
             KDesktopFile d(m_application.entrypath());
             KService s(&d,m_application.entrypath());
-            if (KRun::run(s,urls,nullptr))
-            {
-                qApp->exit();
-                return;
-            }
+            KService::Ptr p(&s);
+            KIO::ApplicationLauncherJob * job = new KIO::ApplicationLauncherJob(p);
+            job->setAutoDelete(true);
+            job->start();
+            return;
         }
         else
         {

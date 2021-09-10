@@ -8,6 +8,8 @@
 #include <KRun>
 #include <KService>
 #include <KDesktopFile>
+#include <KWindowEffects>
+#include <KIO/ApplicationLauncherJob>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -32,9 +34,13 @@ MainWindow::MainWindow(QWidget *parent) :
     setMouseTracking(true);
     setWindowOpacity(0);
 
+    setAttribute(Qt::WA_TranslucentBackground);
+    setAttribute(Qt::WA_NoSystemBackground);
+    KWindowEffects::enableBlurBehind(winId());
+
     if (ConfigManager.getVerticalModeSetting())
     {
-        verticalpager = new VerticalPager(this, ConfigManager.getApplicationTree(), true);
+        verticalpager = new VerticalPager(this, ConfigManager.getApplicationTree(), false);
 
         indicator = new PagerCircularIndicator(this,verticalpager);
         connect(verticalpager,&VerticalPager::updated,indicator,&PagerCircularIndicator::setHidden);
@@ -50,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     else
     {
-        pager = new Pager(this, ConfigManager.getApplicationTree(), true);
+        pager = new Pager(this, ConfigManager.getApplicationTree(), false);
 
         indicator = new PagerCircularIndicator(this,pager);
         connect(pager,&Pager::updated,indicator,&PagerCircularIndicator::setHidden);
@@ -281,13 +287,12 @@ void MainWindow::executeSelected()
     KDEApplication application = grid->getItems()[active]->getApplication();
     if (!application.isFolder())
     {
-        QList<QUrl> urls;
         KDesktopFile d(application.entrypath());
         KService s(&d,application.entrypath());
-        if (KRun::run(s,urls,nullptr))
-        {
-            qApp->exit();
-        }
+        KService::Ptr p(&s);
+        KIO::ApplicationLauncherJob * job = new KIO::ApplicationLauncherJob(p);
+        job->setAutoDelete(true);
+        job->start();
     }
     else
     {

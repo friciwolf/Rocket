@@ -14,6 +14,7 @@ public:
     explicit PagerFolderView(QWidget *parent, std::vector<KDEApplication> appTree, bool withBackgound = false);
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent * event) override;
+    QLineEdit * getNameField() {return m_folderNameField;}
 signals:
     void leavingPagerFolderView();
 

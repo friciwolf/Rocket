@@ -9,9 +9,11 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QGraphicsBlurEffect>
+#include <QMainWindow>
 
 #include <KConfig>
 #include <KConfigGroup>
+#include <KWindowEffects>
 
 #include "pager/pager.h"
 #include "pager/pagerfolderview.h"
@@ -25,7 +27,7 @@ Pager::Pager(QWidget *parent, std::vector<KDEApplication> appTree, bool withBack
 {    
     // Colouring the background...
     //QPalette palette;
-    setAutoFillBackground(true);
+    //setAutoFillBackground(true);
     //palette.setColor(QPalette::ColorRole::Background,QColor(255,255,100,100));
     //setPalette(palette);
 
@@ -115,7 +117,7 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
     {
         page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
         page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-        page->getIconGrid()->setGeometry(page->getIconGrid()->x(),page->getIconGrid()->y(),page->getIconGridMaxSize().width(),page->getIconGridMaxSize().height());
+        page->getIconGrid()->setFixedSize(page->getIconGridMaxSize());
     }
     connect(page->getIconGrid(),&IconGrid::goToPage,this,&Pager::goToPage);
     addItem(page);
@@ -306,58 +308,6 @@ std::vector<IconGridItem*> Pager::getAllIconGridItems()
     return res;
 }
 
-void Pager::startBlurringEffect()
-{
-    QGraphicsBlurEffect* p_blur = new QGraphicsBlurEffect;
-    p_blur->setBlurRadius(50);
-    p_blur->setBlurHints(QGraphicsBlurEffect::BlurHint::QualityHint);
-    pages[current_element]->setGraphicsEffect(p_blur);
-
-    QGraphicsBlurEffect* p_blur2 = new QGraphicsBlurEffect;
-    p_blur2->setBlurRadius(50);
-    p_blur2->setBlurHints(QGraphicsBlurEffect::BlurHint::QualityHint);
-    m_backgroundView->setGraphicsEffect(p_blur2);
-
-    /* Fancy blurring animation with performace issues
-    QParallelAnimationGroup * paranim = new QParallelAnimationGroup;
-
-    QPropertyAnimation * panim2 = new QPropertyAnimation;
-    panim2->setTargetObject(pages[current_element]->graphicsEffect());
-    panim2->setPropertyName("blurRadius");
-    panim2->setStartValue(0);
-    panim2->setEndValue(50);
-    panim2->setDuration(100);
-    panim2->setEasingCurve(QEasingCurve::InQuart);
-    paranim->addAnimation(panim2);
-
-    QPropertyAnimation * panim1 = new QPropertyAnimation;
-    panim1->setTargetObject(m_backgroundView->graphicsEffect());
-    panim1->setPropertyName("blurRadius");
-    panim1->setStartValue(0);
-    panim1->setEndValue(50);
-    panim1->setDuration(100);
-    panim1->setEasingCurve(QEasingCurve::InQuart);
-    paranim->addAnimation(panim1);
-
-    paranim->start();
-
-    QTimer * timer = new QTimer();
-    timer->setInterval(10);
-    connect(timer,&QTimer::timeout,pages[current_element],[=]{
-       pages[current_element]->update();
-        if (paranim->state()==QPropertyAnimation::State::Stopped)
-        {
-            timer->stop();
-            delete timer;
-            delete panim1;
-            delete panim2;
-            delete paranim;
-        }
-    });
-    timer->start();
-    */
-}
-
 void Pager::resizeEvent(QResizeEvent *event)
 {
     // if not in fullscreen, don't bother constructing the pager...
@@ -431,8 +381,23 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
     int dy0 = (QCursor::pos()-drag_0).y();
     if (dx0*dx0+dy0*dy0<RocketStyle::click_tolerance && event->button()==Qt::LeftButton)
     {
-        // If the user clicks outside of the icongrid, and not in a subfolder, close the app
+        // If the user clicks outside of the icongrid or
+        // inside of the grid but not above an element,
+        // and is not in a subfolder, close the app
         if (!pages[current_element]->getIconGrid()->geometry().contains(event->pos()))
+        {
+            event->accept();
+            if (!in_subfolder)
+                qApp->exit();
+        }
+        bool clickedAboveIconGridItem = false;
+        for (IconGridItem * i : pages[current_element]->getIconGrid()->getItems())
+            if (i->geometry().contains(event->pos()))
+            {
+                clickedAboveIconGridItem = true;
+                break;
+            }
+        if (!clickedAboveIconGridItem)
         {
             event->accept();
             if (!in_subfolder)
@@ -759,11 +724,16 @@ void Pager::folderClickEvent(KDEApplication folder)
     dragging=false;
     updated(true);
     setSearchbarVisibility(false);
-    startBlurringEffect();
 
-    PagerFolderView * folderview = new PagerFolderView(this,folder.getChildren());
+    QMainWindow * w = new QMainWindow(this);
+    w->setAttribute(Qt::WA_NoSystemBackground);
+    w->setAttribute(Qt::WA_TranslucentBackground);
+    KWindowEffects::enableBlurBehind(w->winId());
+    QPoint p = mapToGlobal(QPoint(x(),y()));
+    w->setGeometry(QRect(p.x(),p.y(),width(),height()));
+
+    PagerFolderView * folderview = new PagerFolderView(w,folder.getChildren());
     connect(folderview,&PagerFolderView::leavingPagerFolderView,this,[=]{
-        folderview->hide();
         this->updated(false);
         this->enableIconDragging(true);
         this->setSearchbarVisibility(true);
@@ -773,7 +743,51 @@ void Pager::folderClickEvent(KDEApplication folder)
         this->m_kapplication_tree = ConfigManager.getApplicationTree();
         this->updatePager(this->m_kapplication_tree);
     });
-    folderview->show();
+
+    w->setCentralWidget(folderview);
+    w->showFullScreen();
+
+    QRect start;
+    std::vector<IconGridItem*> array;
+    array = getAllIconGridItems();
+
+    for (IconGridItem * i : array)
+        if (i->getApplication().getChildren()==folder.getChildren())
+        {
+            QPoint point = w->mapFromGlobal(i->mapToGlobal(i->getCanvas()->geometry().center()));
+            start=QRect(point.x(),point.y(),0,0);
+            break;
+        }
+
+    QParallelAnimationGroup * paranim = new QParallelAnimationGroup(folderview);
+    QPropertyAnimation * panim = new QPropertyAnimation(folderview);
+    panim->setTargetObject(folderview);
+    panim->setPropertyName("geometry");
+    panim->setStartValue(start);
+    panim->setEndValue(QRect(x(),y(),width(),height()));
+    panim->setDuration(300);
+    panim->setEasingCurve(QEasingCurve::InQuart);
+    paranim->addAnimation(panim);
+
+    QPropertyAnimation * panim2 = new QPropertyAnimation(folderview->getNameField());
+    panim2->setTargetObject(folderview->getNameField());
+    panim2->setPropertyName("geometry");
+    panim2->setStartValue(start);
+    panim2->setEndValue(folderview->getNameField()->geometry());
+    panim2->setDuration(300);
+    panim2->setEasingCurve(QEasingCurve::InQuart);
+    paranim->addAnimation(panim2);
+
+    QPropertyAnimation * panim3 = new QPropertyAnimation(w);
+    panim3->setTargetObject(w);
+    panim3->setPropertyName("windowOpacity");
+    panim3->setStartValue(0);
+    panim3->setEndValue(1);
+    panim3->setDuration(300);
+    panim3->setEasingCurve(QEasingCurve::InQuart);
+    paranim->addAnimation(panim3);
+
+    paranim->start();
 }
 
 void Pager::makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged)
