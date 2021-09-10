@@ -9,6 +9,7 @@
 #include <KService>
 #include <KDesktopFile>
 #include <KWindowEffects>
+#include <KIO/JobUiDelegate>
 #include <KIO/ApplicationLauncherJob>
 
 #include "mainwindow.h"
@@ -284,8 +285,10 @@ void MainWindow::executeSelected()
         KService s(&d,application.entrypath());
         KService::Ptr p(&s);
         KIO::ApplicationLauncherJob * job = new KIO::ApplicationLauncherJob(p);
+        job->setUiDelegate(new KIO::JobUiDelegate(KJobUiDelegate::AutoHandlingEnabled, this));
         job->setAutoDelete(true);
         job->start();
+        qDebug() << s.entryPath() << s.exec();
     }
     else
     {
