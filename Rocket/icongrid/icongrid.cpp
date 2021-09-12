@@ -15,7 +15,6 @@ IconGrid::IconGrid(QWidget * parent) : QWidget (parent)
     m_layout->setSpacing(0);
     setLayout(m_layout);
     setMouseTracking(true);
-
 }
 
 void IconGrid::addItem(IconGridItem * item)
@@ -75,8 +74,6 @@ void IconGrid::setActiveElement(int element)
     {
         m_active_element = element;
     }
-
-
 }
 
 

@@ -64,11 +64,6 @@ void IconGridItem::paintEvent(QPaintEvent *event)
     }
 }
 
-void IconGridItem::resizeEvent(QResizeEvent *event)
-{
-
-}
-
 void IconGridItem::mouseMoveEvent(QMouseEvent *event)
 {
     event->ignore();

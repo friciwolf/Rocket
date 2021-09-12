@@ -33,7 +33,6 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
     void resizeEvent(QResizeEvent *event);
-    void leaveEvent(QEvent *event);
     void setStarupArgs(QStringList * args){m_startupargs = args;}
     QStringList * getStarupArgs(){return m_startupargs;}
 

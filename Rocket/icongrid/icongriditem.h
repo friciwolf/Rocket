@@ -21,7 +21,6 @@ public:
     void mouseMoveEvent(QMouseEvent * event);
     void paintEvent(QPaintEvent *event);
     void initIconSize();
-    void resizeEvent(QResizeEvent *event);
     ~IconGridItem();
 
     void setHighlighted(bool highlighted){m_highlighted = highlighted;}

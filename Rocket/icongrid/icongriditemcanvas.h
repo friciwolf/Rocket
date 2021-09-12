@@ -34,7 +34,7 @@ signals:
     void makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged);
 
 private:
-    void m_starticondragging();
+    void initIconDragging();
 
 
     QIcon m_icon;

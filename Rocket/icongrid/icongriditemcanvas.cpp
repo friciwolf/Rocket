@@ -1,4 +1,4 @@
-#include <QPainter>
+﻿#include <QPainter>
 #include <QDebug>
 #include <QMouseEvent>
 #include <QTimer>
@@ -76,7 +76,7 @@ void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)
         m_clicked = true;
         m_pressPos = QCursor::pos();
         m_longclicktimer = new QTimer();
-        connect(m_longclicktimer,&QTimer::timeout,this,&IconGridItemCanvas::m_starticondragging);
+        connect(m_longclicktimer,&QTimer::timeout,this,&IconGridItemCanvas::initIconDragging);
         m_longclicktimer->setSingleShot(true);
         m_longclicktimer->start(500);
     }
@@ -88,7 +88,7 @@ void IconGridItemCanvas::setDraggable(bool draggable)
     m_draggable = draggable;
 }
 
-void IconGridItemCanvas::m_starticondragging()
+void IconGridItemCanvas::initIconDragging()
 {
     if (!m_draggable)
     {
@@ -135,7 +135,7 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
             job->setUiDelegate(new KIO::JobUiDelegate(KJobUiDelegate::AutoHandlingEnabled, this));
             job->setAutoDelete(true);
             job->start();
-            qDebug() << s.entryPath() << s.exec();
+            qDebug() << "IconGridItemCanvas: Executing " + s.entryPath() + " " + s.exec();
             event->ignore();
             return;
         }
@@ -178,8 +178,24 @@ void IconGridItemCanvas::dropEvent(QDropEvent *event)
     if (!dragged_item.isFolder() && !(dragged_item==m_application) && index2==-1)
     {
         makeFolder(m_application,dragged_item);
+        event->accept();
+        return;
     }
-    event->acceptProposedAction();
+    // An item has been moved outside of a folder and has been dropped
+    // on itself (and not on the pager)
+    if (dragged_item==m_application && index2!=-1)
+    {
+        enterIconDraggingMode(false,((IconGridItemCanvas*)(event->source())));
+        event->accept();
+        return;
+    }
+    // In a folder, an a item has been dropped on another one
+    if (index2!=-1)
+    {
+        enterIconDraggingMode(false,this);
+        return;
+    }
+    enterIconDraggingMode(false);
 }
 
 void IconGridItemCanvas::dragMoveEvent(QDragMoveEvent *event)

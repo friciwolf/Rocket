@@ -3,13 +3,14 @@
 
 #include <pager/pageritem.h>
 
+#include <QTimer>
 #include <QObject>
 #include <QWidget>
+#include <QMainWindow>
 #include <QGridLayout>
 #include <QScrollArea>
-#include <QParallelAnimationGroup>
-#include <QTimer>
 #include <QGraphicsView>
+#include <QParallelAnimationGroup>
 
 #include "../RocketLibrary/tools/kmenuitems.h"
 
@@ -50,7 +51,6 @@ public:
     void constructPager(std::vector<KDEApplication> kapplications);
     void addItem(PagerItem * page);
     void updatePager(std::vector<KDEApplication> kapplications);
-    void startBlurringEffect();
     IconGridItem * findGridItemOfMinimumDistance(QPoint referencePoint);
 
     int getNumberOfElements() {return pages.size();}
@@ -60,6 +60,7 @@ public:
     std::vector<IconGridItem*> getAllIconGridItems();
 
     void resizeEvent(QResizeEvent *event);
+    virtual void leaveEvent(QEvent * event);
     void mousePressEvent(QMouseEvent * e);
     virtual void mouseMoveEvent(QMouseEvent * event);
     virtual void mouseReleaseEvent(QMouseEvent * event);
@@ -73,12 +74,12 @@ public slots:
     void activateSearch(const QString & query);
     void goToPage(int deltaPage);
     void finishScrolling();
-    void enterIconDraggingMode(bool on, IconGridItemCanvas * canvas = nullptr);
+    virtual void enterIconDraggingMode(bool on, IconGridItemCanvas * canvas = nullptr);
     void folderClickEvent(KDEApplication folder);
     void makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged);
 
 signals:
-    void updated(bool indicator_visibility);
+    void hideCircularIndicator(bool indicatorVisibility);
     void enableIconDragging(bool enable);
     void setSearchbarVisibility(bool visibility);
 
@@ -90,6 +91,7 @@ private:
     QPoint m_timer_drag_mouse_pos;
     IconGridItemCanvas * m_item_dragged;
     QParallelAnimationGroup * m_drag_animation = new QParallelAnimationGroup;
+    QMainWindow * m_folder_view_window;
 
     std::vector<KDEApplication> m_kapplications;
     std::vector<KDEApplication> m_kapplication_tree;

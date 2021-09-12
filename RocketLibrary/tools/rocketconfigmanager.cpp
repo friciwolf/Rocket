@@ -311,6 +311,8 @@ void RocketConfigManager::generateAppGridConfigFile(KConfig * config, std::vecto
 {
     for (QString group : config->groupList())
     {
+        for (QString subgroup : config->group(group).groupList())
+                config->group(group).deleteGroup(subgroup);
         config->deleteGroup(group);
     }
 

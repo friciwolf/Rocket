@@ -44,10 +44,10 @@ MainWindow::MainWindow(QWidget *parent) :
         verticalpager = new VerticalPager(this, ConfigManager.getApplicationTree(), false);
 
         indicator = new PagerCircularIndicator(this,verticalpager);
-        connect(verticalpager,&VerticalPager::updated,indicator,&PagerCircularIndicator::setHidden);
+        connect(verticalpager,&VerticalPager::hideCircularIndicator,indicator,&PagerCircularIndicator::setHidden);
 
         active_indicator = new PagerCircularActiveIndicator(this,indicator);
-        connect(verticalpager,&VerticalPager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
+        connect(verticalpager,&VerticalPager::hideCircularIndicator,active_indicator,&PagerCircularActiveIndicator::setHidden);
 
         searchfield = new SearchField(this);
         connect(verticalpager,&VerticalPager::setSearchbarVisibility,searchfield,&QLineEdit::setVisible);
@@ -60,10 +60,10 @@ MainWindow::MainWindow(QWidget *parent) :
         pager = new Pager(this, ConfigManager.getApplicationTree(), false);
 
         indicator = new PagerCircularIndicator(this,pager);
-        connect(pager,&Pager::updated,indicator,&PagerCircularIndicator::setHidden);
+        connect(pager,&Pager::hideCircularIndicator,indicator,&PagerCircularIndicator::setHidden);
 
         active_indicator = new PagerCircularActiveIndicator(this,indicator);
-        connect(pager,&Pager::updated,active_indicator,&PagerCircularActiveIndicator::setHidden);
+        connect(pager,&Pager::hideCircularIndicator,active_indicator,&PagerCircularActiveIndicator::setHidden);
 
         searchfield = new SearchField(this);
         connect(pager,&Pager::setSearchbarVisibility,searchfield,&QLineEdit::setVisible);
@@ -132,26 +132,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     }
 }
 
-void MainWindow::leaveEvent(QEvent *event)
-{
-    if (ConfigManager.getVerticalModeSetting())
-    {
-        if (!verticalpager->isIconDraggingOn() && !verticalpager->in_subfolder)
-        {
-            qDebug() << "exit mainWindow vertical";
-            qApp->exit();
-        }
-    }
-    else {
-        if (!pager->isIconDraggingOn() && !pager->in_subfolder)
-        {
-            qDebug() << "exit mainWindow horizontal";
-            qApp->exit();
-        }
-    }
-    event->accept();
-}
-
 void MainWindow::navigation(int key)
 {
     if (key==Qt::Key::Key_Escape)
@@ -163,7 +143,7 @@ void MainWindow::navigation(int key)
             else
             {
                 verticalpager->updatePager(verticalpager->getApplicationTree());
-                verticalpager->updated(false);
+                verticalpager->hideCircularIndicator(false);
                 verticalpager->enableIconDragging(true);
                 verticalpager->setSearchbarVisibility(true);
                 int index = 0;
@@ -187,7 +167,7 @@ void MainWindow::navigation(int key)
             else
             {
                 pager->updatePager(pager->getApplicationTree());
-                pager->updated(false);
+                pager->hideCircularIndicator(false);
                 pager->enableIconDragging(true);
                 pager->setSearchbarVisibility(true);
                 int index = 0;
@@ -288,7 +268,7 @@ void MainWindow::executeSelected()
         job->setUiDelegate(new KIO::JobUiDelegate(KJobUiDelegate::AutoHandlingEnabled, this));
         job->setAutoDelete(true);
         job->start();
-        qDebug() << s.entryPath() << s.exec();
+        qDebug() << "MainWindow: Executing " + s.entryPath() + " " + s.exec();
     }
     else
     {
