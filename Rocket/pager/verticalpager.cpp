@@ -322,13 +322,13 @@ void VerticalPager::resizeEvent(QResizeEvent *event)
     }
 }
 
-void Pager::leaveEvent(QEvent *event)
+void VerticalPager::leaveEvent(QEvent *event)
 {
     if (QCursor::pos().x()<mapToGlobal(geometry().topLeft()).x() || QCursor::pos().x()>mapToGlobal(geometry().topRight()).x() ||
             QCursor::pos().y()>mapToGlobal(geometry().bottomLeft()).y() || QCursor::pos().y()<mapToGlobal(geometry().topRight()).y())
     {
         qDebug() << geometry() << mapToGlobal(geometry().topLeft()) << pages[0]->getIconGrid()->getItems()[0]->getApplication().name();
-        qDebug() << "PagerLeaveEvent: exiting...";
+        qDebug() << "VerticalPagerLeaveEvent: exiting...";
         qApp->exit();
     }
     event->accept();
@@ -604,7 +604,7 @@ void VerticalPager::dragMoveEvent(QDragMoveEvent *event)
             if (event->mimeData()->text().split(";")[1].toInt()!=-1 && newtree[i]==m_item_dragged->getApplication() && newitems_in_row.size()-1!=i)
             {
                 IconGridItem * item = new IconGridItem(pages[i/maxicons]->getIconGrid(),m_item_dragged->getApplication(),pages[i/maxicons]->getIconGridItemSize());
-                connect(item->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&Pager::enterIconDraggingMode);
+                connect(item->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&VerticalPager::enterIconDraggingMode);
 
                 item->show();
                 newitems_in_row.push_back(item);
