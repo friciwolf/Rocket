@@ -34,7 +34,7 @@ private:
     QLineEdit * m_folderNameField;
     std::vector<KDEApplication> m_appTree;
     QTimer * m_closeFolder;
-    QParallelAnimationGroup * m_windowAnimation;
+    QParallelAnimationGroup * m_windowAnimation = nullptr;
 };
 
 #endif // PAGERFOLDERVIEW_H

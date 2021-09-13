@@ -58,6 +58,7 @@ Pager::Pager(QWidget *parent, std::vector<KDEApplication> appTree, bool withBack
         for (int i=0;i<pages.size(); i++)
         {
             QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
+            animation->setTargetObject(pages[i]);
             animation->setStartValue(pages[i]->pos());
             animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
             animation->setDuration(100);
@@ -435,6 +436,7 @@ void Pager::mouseReleaseEvent(QMouseEvent * event)
     for (int i=0;i<pages.size(); i++)
     {
         QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
+        animation->setTargetObject(pages[i]);
         animation->setStartValue(pages[i]->pos());
         animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
         animation->setDuration(100);
@@ -590,6 +592,7 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
                     item->setParent(pages[i/maxicons]->getIconGrid());
 
                     panim = new QPropertyAnimation(item,"pos");
+                    panim->setTargetObject(item);
                     panim->setStartValue(item->pos());
                     panim->setEndValue(item_positions[i]);
                     panim->setDuration(200);
@@ -610,6 +613,7 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
                 newitems_in_row.push_back(item);
 
                 panim = new QPropertyAnimation(item,"pos");
+                panim->setTargetObject(item);
                 panim->setStartValue(getAllIconGridItems()[event->mimeData()->text().split(";")[0].toInt()]->pos());
                 panim->setEndValue(getAllIconGridItems()[i]->pos());
                 panim->setDuration(200);
@@ -875,6 +879,15 @@ void Pager::folderClickEvent(KDEApplication folder)
     panim3->setEasingCurve(QEasingCurve::InQuart);
     paranim->addAnimation(panim3);
 
+    connect(paranim,&QPropertyAnimation::finished,folderview,[=] {
+        if (QCursor::pos().x()<mapToGlobal(geometry().topLeft()).x() || QCursor::pos().x()>mapToGlobal(geometry().topRight()).x() ||
+                QCursor::pos().y()>mapToGlobal(geometry().bottomLeft()).y() || QCursor::pos().y()<mapToGlobal(geometry().topRight()).y())
+        {
+            qDebug() << "folderviewanimationfinished: exiting...";
+            qApp->exit();
+        }
+    });
+
     folderview->setWindowAnimation(paranim);
     folderview->getWindowAnimation()->start();
 }
@@ -935,6 +948,7 @@ void Pager::makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged
                 item->setParent(pages[i/maxicons]->getIconGrid());
 
                 panim = new QPropertyAnimation(item,"pos");
+                panim->setTargetObject(item);
                 panim->setStartValue(item->pos());
                 panim->setEndValue(item_positions[i]);
                 panim->setDuration(200);
@@ -962,9 +976,10 @@ void Pager::makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged
             QParallelAnimationGroup * animationgroup = new QParallelAnimationGroup;
             for (int i=0;i<this->pages.size(); i++)
             {
-                QPropertyAnimation * animation = new QPropertyAnimation(this->pages[i],"pos");
-                animation->setStartValue(this->pages[i]->pos());
-                animation->setEndValue(QPoint((i-this->new_element)*width(),this->pages[i]->pos().y()));
+                QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
+                animation->setTargetObject(pages[i]);
+                animation->setStartValue(pages[i]->pos());
+                animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
                 animation->setDuration(100);
                 animationgroup->addAnimation(animation);
             }

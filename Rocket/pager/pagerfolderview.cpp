@@ -148,8 +148,17 @@ void PagerFolderView::mouseReleaseEvent(QMouseEvent *event)
 
             m_windowAnimation->start();
             connect(m_windowAnimation,&QParallelAnimationGroup::finished,this,[=] {
-                leavingPagerFolderView();
-                delete parent();
+                if (QCursor::pos().x()<parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().topLeft()).x() || QCursor::pos().x()>parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().topRight()).x() ||
+                            QCursor::pos().y()>parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().bottomLeft()).y() || QCursor::pos().y()<parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().topRight()).y())
+                {
+                    qDebug() << "PagerFolderViewParallelAnimationFinished: exiting...";
+                    qApp->exit();
+                }
+                else
+                {
+                    leavingPagerFolderView();
+                    delete parent();
+                }
             });
             return;
         }
@@ -199,10 +208,12 @@ void PagerFolderView::enterIconDraggingMode(bool on, IconGridItemCanvas * canvas
 
 void PagerFolderView::leaveEvent(QEvent *event)
 {
-    // in case the event occurs while opening the new window, filter it
-    // until the animation stops
-    if (m_windowAnimation->currentTime()!=m_windowAnimation->duration())
-        return;
-    qDebug() << window()->geometry() << parentWidget()->parentWidget()->geometry();
-    Pager::leaveEvent(event);
+    if (QCursor::pos().x()<parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().topLeft()).x() || QCursor::pos().x()>parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().topRight()).x() ||
+                QCursor::pos().y()>parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().bottomLeft()).y() || QCursor::pos().y()<parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().topRight()).y())
+    {
+        qDebug() << parentWidget()->parentWidget()->geometry() << parentWidget()->parentWidget()->mapToGlobal(parentWidget()->parentWidget()->geometry().topLeft()) << pages[0]->getIconGrid()->getItems()[0]->getApplication().name();
+        qDebug() << "PagerFolderViewLeaveEvent: exiting...";
+        qApp->exit();
+    }
+    event->accept();
 }
