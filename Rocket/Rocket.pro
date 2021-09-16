@@ -27,7 +27,8 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-        pager/pager.cpp \
+    pager/horizontalpager.cpp \
+    pager/pager.cpp \
         pager/pageritem.cpp \
         pager/pagercircularindicator.cpp \
         pager/pagercircularactiveindicator.cpp \
@@ -45,7 +46,8 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-        pager/pager.h \
+    pager/horizontalpager.h \
+    pager/pager.h \
         pager/pageritem.h \
         pager/pagercircularindicator.h \
         pager/pagercircularactiveindicator.h \

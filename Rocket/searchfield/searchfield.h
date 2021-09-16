@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QLineEdit>
-#include <pager/pager.h>
+#include <pager/horizontalpager.h>
 
 class SearchField : public QLineEdit
 {

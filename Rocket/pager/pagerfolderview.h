@@ -6,10 +6,10 @@
 #include <QMouseEvent>
 #include <QPropertyAnimation>
 
-#include "pager/pager.h"
+#include "pager/horizontalpager.h"
 #include "pager/verticalpager.h"
 
-class PagerFolderView : public Pager
+class PagerFolderView : public HorizontalPager
 {
     Q_OBJECT
 public:

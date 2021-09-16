@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     QObject::connect(qApp, &QGuiApplication::applicationStateChanged, &w, [=](Qt::ApplicationState state){
         if (state==Qt::ApplicationState::ApplicationInactive)
         {
-            qDebug() << "exit application lost focus";
+            qDebug() << "exit application lost focus " << QGuiApplication::applicationState() << qApp->activeWindow()->isModal();
             qApp->exit();
         }
     });

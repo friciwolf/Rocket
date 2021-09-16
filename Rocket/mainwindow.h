@@ -5,7 +5,7 @@
 #include <QLineEdit>
 #include <QLockFile>
 #include <QThread>
-#include "pager/pager.h"
+#include "pager/horizontalpager.h"
 #include "pager/verticalpager.h"
 #include "pager/pagercircularindicator.h"
 #include "pager/pagercircularactiveindicator.h"
@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    Pager * pager;
+    HorizontalPager * pager;
     VerticalPager * verticalpager;
 
     PagerCircularIndicator * indicator;

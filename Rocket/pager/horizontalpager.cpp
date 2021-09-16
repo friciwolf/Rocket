@@ -16,14 +16,14 @@
 
 #include "icongrid/icongrid.h"
 #include "tools/searchingapps.h"
-#include "pager/verticalpager.h"
+#include "pager/horizontalpager.h"
 #include "pager/pagerfolderview.h"
 
 #include "../RocketLibrary/tools/kmenuitems.h"
 #include "../RocketLibrary/tools/rocketconfigmanager.h"
 
-VerticalPager::VerticalPager(QWidget *parent, std::vector<KDEApplication> appTree, bool withBackgound) : Pager(parent, appTree, withBackgound)
-{
+HorizontalPager::HorizontalPager(QWidget *parent, std::vector<KDEApplication> appTree, bool withBackgound) : Pager(parent, appTree, withBackgound)
+{    
     connect(m_timer_drag_switch,&QTimer::timeout,this,[=]{
         m_timer_drag_mouse_pos = QCursor::pos();
 
@@ -38,7 +38,7 @@ VerticalPager::VerticalPager(QWidget *parent, std::vector<KDEApplication> appTre
             QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
             animation->setTargetObject(pages[i]);
             animation->setStartValue(pages[i]->pos());
-            animation->setEndValue(QPoint(pages[i]->pos().x(),(i-new_element)*height()));
+            animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
             animation->setDuration(100);
             animationgroup->addAnimation(animation);
         }
@@ -59,30 +59,30 @@ VerticalPager::VerticalPager(QWidget *parent, std::vector<KDEApplication> appTre
     });
 }
 
-void VerticalPager::constructPager(std::vector<KDEApplication> kapplications)
+void HorizontalPager::constructPager(std::vector<KDEApplication> kapplications)
 {
     Pager::constructPager(kapplications);
     for (PagerItem * page : pages)
     {
-        connect(page->getIconGrid(),&IconGrid::goToPage,this,&VerticalPager::goToPage);
+        connect(page->getIconGrid(),&IconGrid::goToPage,this,&HorizontalPager::goToPage);
     }
 
     for (IconGridItem * i : getAllIconGridItems())
     {
-        connect(i->getCanvas(),&IconGridItemCanvas::makeFolder,this,&VerticalPager::makeFolder);
-        connect(i->getCanvas(),&IconGridItemCanvas::folderClickEvent,this,&VerticalPager::folderClickEvent);
-        connect(i->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&VerticalPager::enterIconDraggingMode);
-        connect(this,&VerticalPager::enableIconDragging,i->getCanvas(),&IconGridItemCanvas::setDraggable);
+        connect(i->getCanvas(),&IconGridItemCanvas::makeFolder,this,&HorizontalPager::makeFolder);
+        connect(i->getCanvas(),&IconGridItemCanvas::folderClickEvent,this,&HorizontalPager::folderClickEvent);
+        connect(i->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&HorizontalPager::enterIconDraggingMode);
+        connect(this,&HorizontalPager::enableIconDragging,i->getCanvas(),&IconGridItemCanvas::setDraggable);
     }
 }
 
-void VerticalPager::updatePager(std::vector<KDEApplication> kapplications)
+void HorizontalPager::updatePager(std::vector<KDEApplication> kapplications)
 {
     Pager::updatePager(kapplications);
-    VerticalPager::constructPager(kapplications);
+    HorizontalPager::constructPager(kapplications);
     for (int i=0;i<pages.size();i++)
     {
-        pages[i]->setGeometry(QRect(0,(i-current_element)*height(),width(),height()));
+        pages[i]->setGeometry(QRect((i-current_element)*width(),0,width(),height()));
         pages[i]->setEnabled(true);
         pages[i]->setVisible(true);
     }
@@ -92,7 +92,7 @@ void VerticalPager::updatePager(std::vector<KDEApplication> kapplications)
 //                    EVENTS
 // ***********************************************
 
-void VerticalPager::mouseMoveEvent(QMouseEvent * event)
+void HorizontalPager::mouseMoveEvent(QMouseEvent * event)
 {
     if (scrolled) // pages have been scrolled
     {
@@ -103,10 +103,10 @@ void VerticalPager::mouseMoveEvent(QMouseEvent * event)
     }
     else // pages have been dragged manually
     {
-        int dy0 = (QCursor::pos()-drag_0).y();
+        int dx0 = (QCursor::pos()-drag_0).x();
         if (dragging && !searching)
         {
-            if ((current_element==0 && dy0>RocketStyle::pager_deadzone_threshold) || (current_element==pages.size()-1 && dy0<-RocketStyle::pager_deadzone_threshold))
+            if ((current_element==0 && dx0>RocketStyle::pager_deadzone_threshold) || (current_element==pages.size()-1 && dx0<-RocketStyle::pager_deadzone_threshold))
             {
                 event->accept();
             }
@@ -115,7 +115,7 @@ void VerticalPager::mouseMoveEvent(QMouseEvent * event)
                 QPoint delta = QCursor::pos()-drag_start_position;
                 for (PagerItem *page_i : pages)
                 {
-                    page_i->move(page_i->pos().x(),(page_i->pos()+delta).y());
+                    page_i->move((page_i->pos()+delta).x(),page_i->pos().y());
                 }
                 drag_start_position = QCursor::pos();
             }
@@ -125,16 +125,16 @@ void VerticalPager::mouseMoveEvent(QMouseEvent * event)
     //qDebug() << "pager: mouse move!";
 }
 
-void VerticalPager::mouseReleaseEvent(QMouseEvent * event)
+void HorizontalPager::mouseReleaseEvent(QMouseEvent * event)
 {
     Pager::mouseReleaseEvent(event);
 
     // Scroll if neccessary and update
     new_element = current_element;
-    if ((QCursor::pos()-drag_0).y()>swipe_decision_threshold && current_element!=0) {
+    if ((QCursor::pos()-drag_0).x()>swipe_decision_threshold && current_element!=0) {
         new_element = current_element-1;
     }
-    if ((QCursor::pos()-drag_0).y()<-swipe_decision_threshold && current_element!=pages.size()-1){
+    if ((QCursor::pos()-drag_0).x()<-swipe_decision_threshold && current_element!=pages.size()-1){
         new_element = current_element+1;
     }
 
@@ -144,7 +144,7 @@ void VerticalPager::mouseReleaseEvent(QMouseEvent * event)
         QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
         animation->setTargetObject(pages[i]);
         animation->setStartValue(pages[i]->pos());
-        animation->setEndValue(QPoint(pages[i]->pos().x(),(i-new_element)*height()));
+        animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
         animation->setDuration(100);
         animationgroup->addAnimation(animation);
     }
@@ -158,7 +158,7 @@ void VerticalPager::mouseReleaseEvent(QMouseEvent * event)
     //qDebug() << "pager: mouse up!";
 }
 
-void VerticalPager::wheelEvent(QWheelEvent *event)
+void HorizontalPager::wheelEvent(QWheelEvent *event)
 {
     pages[current_element]->getIconGrid()->resetHighlightAndActiveElement();
     if (!searching)
@@ -175,31 +175,31 @@ void VerticalPager::wheelEvent(QWheelEvent *event)
             bool horizontal_now = (std::abs(event->angleDelta().x())>std::abs(event->angleDelta().y()));
             if (m_horizontal_scrolling==0)
                     m_horizontal_scrolling = (horizontal_now ? 1 : -1);
-            int delta = (event->angleDelta().y()==0 ? -(event->angleDelta().x())*ConfigManager.getInvertedScrollFactorXfromSettings() : event->angleDelta().y()*ConfigManager.getInvertedScrollFactorYfromSettings() );
+            int delta = (horizontal_now ? -(event->angleDelta().x())*ConfigManager.getInvertedScrollFactorXfromSettings() : event->angleDelta().y()*ConfigManager.getInvertedScrollFactorYfromSettings() );
             bool orig_horizontal = (m_horizontal_scrolling==1 ? true : false);
             if (orig_horizontal!=horizontal_now) return;
-            if (pages[0]->pos().y()-delta<=0 && pages[0]->pos().y()-delta>=-height()*(getNumberOfElements()-1))
+            if (pages[0]->pos().x()-delta<=0 && pages[0]->pos().x()-delta>=-width()*(getNumberOfElements()-1))
             {
                 m_scrolltimeouttimer->stop();
                 scrolled = true;
                 mouse_pos_scroll_0 = QCursor::pos();
                 for (PagerItem *page_i : pages)
                 {
-                    page_i->move(page_i->pos().x(),page_i->pos().y()-delta);
+                    page_i->move(page_i->pos().x()-delta,page_i->pos().y());
                 }
                 m_scrolltimeouttimer = new QTimer();
-                connect(m_scrolltimeouttimer,&QTimer::timeout,this,&VerticalPager::finishScrolling);
+                connect(m_scrolltimeouttimer,&QTimer::timeout,this,&HorizontalPager::finishScrolling);
                 m_scrolltimeouttimer->setSingleShot(true);
                 m_scrolltimeouttimer->start(250);
             }
             else {
                 // we've reached the last/first page, don't do anything anymore
-                current_element = (-pages[0]->pos().y()+height()/2)/height();
+                current_element = (-pages[0]->pos().x()+width()/2)/width();
                 element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
                 new_element = current_element;
                 for (int i=0;i<pages.size(); i++)
                 {
-                    pages[i]->move(QPoint(pages[i]->pos().x(),(i-new_element)*height()));
+                    pages[i]->move(QPoint((i-new_element)*width(),pages[i]->pos().y()));
                 }
             }
         }
@@ -211,14 +211,14 @@ void VerticalPager::wheelEvent(QWheelEvent *event)
 //                    SLOTS
 // ***********************************************
 
-void VerticalPager::activateSearch(const QString &query)
+void HorizontalPager::activateSearch(const QString &query)
 {
     if (scrolled) // pages have been scrolled
     {
         m_scrolltimeouttimer->stop();
         if (mouse_pos_scroll_0!=QCursor::pos())
         {
-            current_element = (-pages[0]->pos().y()+height()/2)/height();
+            current_element = (-pages[0]->pos().x()+width()/2)/width();
             element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
             new_element = current_element;
             scrolled = false;
@@ -227,44 +227,44 @@ void VerticalPager::activateSearch(const QString &query)
     Pager::activateSearch(query);
 }
 
-void VerticalPager::goToPage(int deltaPage)
+void HorizontalPager::goToPage(int deltaPage)
 {
     if (current_element+deltaPage==getNumberOfElements() || current_element+deltaPage==-1) return;
     if (searching) return;
     int newpage = current_element+deltaPage;
     for (int i=0;i<pages.size(); i++)
     {
-        pages[i]->move(QPoint(pages[i]->pos().x(),(i-newpage)*height()));
+        pages[i]->move(QPoint((i-newpage)*width(),pages[i]->pos().y()));
     }
     if (deltaPage==1)
     {
         IconGrid * oldGrid = pages[current_element]->getIconGrid();
         int oldElement = oldGrid->getActiveElement(); // 0 ... N_elements
-        int oldElementColumn = (oldElement) % oldGrid->getMaxNumberOfColumns()+1; // 1...N_cols
+        int oldElementRow = (int) ((oldElement)/(oldGrid->getCurrentNumberOfColumns()))+1; // 1...N_rows
         IconGrid * newGrid = pages[current_element+1]->getIconGrid();
-        if (oldElementColumn > newGrid->getCurrentNumberOfColumns())
+        if (oldElementRow > newGrid->getCurrentNumberOfRows())
         {
-            newGrid->highlight(newGrid->getCurrentNumberOfColumns()-1);
+            if (newGrid->getCurrentNumberOfRows()==1)
+            {
+                newGrid->highlight(0);
+            }
+            else
+            {
+                newGrid->highlight(newGrid->getCurrentNumberOfColumns()*(newGrid->getCurrentNumberOfRows()-1));
+            }
         }
         else
         {
-            newGrid->highlight((oldElementColumn-1==-1 ? 0 : oldElementColumn-1));
+            newGrid->highlight((oldElementRow-1)*newGrid->getCurrentNumberOfColumns());
         }
     }
     if (deltaPage==-1)
     {
         IconGrid * oldGrid = pages[current_element]->getIconGrid();
         int oldElement = oldGrid->getActiveElement(); // 0 ... N_elements
-        int oldElementColumn = (oldElement) % oldGrid->getMaxNumberOfColumns()+1; // 1...N_cols
+        int oldElementRow = (int) ((oldElement)/(oldGrid->getCurrentNumberOfColumns())); // 0...N_rows
         IconGrid * newGrid = pages[current_element-1]->getIconGrid();
-        newGrid->highlight(newGrid->getNumberOfItems()-(newGrid->getMaxNumberOfColumns()-oldElementColumn)-1);
-
-
-
-
-
-
-
+        newGrid->highlight((oldElementRow+1)*newGrid->getCurrentNumberOfColumns()-1);
     }
 
 
@@ -274,14 +274,14 @@ void VerticalPager::goToPage(int deltaPage)
     page_turned = true;
 }
 
-void VerticalPager::finishScrolling()
+void HorizontalPager::finishScrolling()
 {
-    current_element = (-pages[0]->pos().y()+height()/2)/height();
+    current_element = (-pages[0]->pos().x()+width()/2)/width();
     element_before_entering_submenu = (!in_subfolder ? current_element : element_before_entering_submenu);
     new_element = current_element;
     scrolled = false;
     touchpad = false;
-    if (pages[0]->pos().y()!=0 || pages[0]->pos().y()!=-height()*(getNumberOfElements()-1))
+    if (pages[0]->pos().x()!=0 || pages[0]->pos().x()!=-width()*(getNumberOfElements()-1))
     {
         QParallelAnimationGroup * animationgroup = new QParallelAnimationGroup;
         for (int i=0;i<pages.size(); i++)
@@ -289,7 +289,7 @@ void VerticalPager::finishScrolling()
             QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
             animation->setTargetObject(pages[i]);
             animation->setStartValue(pages[i]->pos());
-            animation->setEndValue(QPoint(pages[i]->pos().x(),(i-new_element)*height()));
+            animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
             animation->setDuration(100);
             animationgroup->addAnimation(animation);
         }
@@ -298,9 +298,9 @@ void VerticalPager::finishScrolling()
     m_horizontal_scrolling = 0;
 }
 
-void VerticalPager::updatePagerAndPlayAnimationIfOnePageLess()
+void HorizontalPager::updatePagerAndPlayAnimationIfOnePageLess()
 {
-    unsigned int numberofelementsbefore = getNumberOfElements();
+    unsigned int numberofelementsbefore = this->getNumberOfElements();
     updatePager(m_kapplication_tree);
     // move pager to the right position if there is one page less, and we are on the last page
     if (getNumberOfElements() != numberofelementsbefore && element_before_entering_submenu==numberofelementsbefore-1)
@@ -314,7 +314,7 @@ void VerticalPager::updatePagerAndPlayAnimationIfOnePageLess()
             QPropertyAnimation * animation = new QPropertyAnimation(pages[i],"pos");
             animation->setTargetObject(pages[i]);
             animation->setStartValue(pages[i]->pos());
-            animation->setEndValue(QPoint(pages[i]->pos().x(),(i-new_element)*height()));
+            animation->setEndValue(QPoint((i-new_element)*width(),pages[i]->pos().y()));
             animation->setDuration(100);
             animationgroup->addAnimation(animation);
         }
@@ -322,16 +322,16 @@ void VerticalPager::updatePagerAndPlayAnimationIfOnePageLess()
     }
 }
 
-void VerticalPager::setTimerDragDelta(QDragMoveEvent *event)
+void HorizontalPager::setTimerDragDelta(QDragMoveEvent *event)
 {
     if (!m_timer_drag_switch->isActive())
     {
-        if (event->pos().y()>pages[current_element]->getIconGrid()->geometry().bottom()
+        if (event->pos().x()>pages[current_element]->getIconGrid()->geometry().right()
                 && current_element+1<getNumberOfElements())
         {
             m_timer_drag_delta = 1;
         }
-        else if (event->pos().y()<pages[current_element]->getIconGrid()->geometry().top()
+        else if (event->pos().x()<pages[current_element]->getIconGrid()->geometry().left()
                              && current_element-1>=0)
         {
              m_timer_drag_delta = -1;

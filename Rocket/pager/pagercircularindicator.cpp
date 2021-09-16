@@ -1,13 +1,13 @@
 #include <QPainter>
 #include <QDebug>
 
-#include "pager.h"
+#include "horizontalpager.h"
 #include "mainwindow.h"
 #include "pager/pagercircularindicator.h"
 
 #include "../RocketLibrary/tools/rocketconfigmanager.h"
 
-PagerCircularIndicator::PagerCircularIndicator(QWidget *parent, Pager *pager) : QWidget(parent)
+PagerCircularIndicator::PagerCircularIndicator(QWidget *parent, HorizontalPager *pager) : QWidget(parent)
 {
     m_pager = pager;
     m_elements = pager->getNumberOfElements();

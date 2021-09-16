@@ -14,7 +14,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "pager/pager.h"
+#include "pager/horizontalpager.h"
 #include "pager/verticalpager.h"
 #include "pager/pageritem.h"
 #include "pager/pagercircularindicator.h"
@@ -57,17 +57,17 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     else
     {
-        pager = new Pager(this, ConfigManager.getApplicationTree(), false);
+        pager = new HorizontalPager(this, ConfigManager.getApplicationTree(), false);
 
         indicator = new PagerCircularIndicator(this,pager);
-        connect(pager,&Pager::hideCircularIndicator,indicator,&PagerCircularIndicator::setHidden);
+        connect(pager,&HorizontalPager::hideCircularIndicator,indicator,&PagerCircularIndicator::setHidden);
 
         active_indicator = new PagerCircularActiveIndicator(this,indicator);
-        connect(pager,&Pager::hideCircularIndicator,active_indicator,&PagerCircularActiveIndicator::setHidden);
+        connect(pager,&HorizontalPager::hideCircularIndicator,active_indicator,&PagerCircularActiveIndicator::setHidden);
 
         searchfield = new SearchField(this);
-        connect(pager,&Pager::setSearchbarVisibility,searchfield,&QLineEdit::setVisible);
-        connect(searchfield,&QLineEdit::textEdited,pager,&Pager::activateSearch);
+        connect(pager,&HorizontalPager::setSearchbarVisibility,searchfield,&QLineEdit::setVisible);
+        connect(searchfield,&QLineEdit::textEdited,pager,&HorizontalPager::activateSearch);
         connect(searchfield,&SearchField::navigate,this,&MainWindow::navigation);
         connect(searchfield,&QLineEdit::returnPressed,this,&MainWindow::executeSelected);
     }

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include "pagercircularindicator.h"
-#include "pager.h"
+#include "horizontalpager.h"
 
 class PagerCircularActiveIndicator : public QWidget
 {
@@ -14,14 +14,14 @@ public:
     void positioning();
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
-    void setPager(Pager* newPager) {pager=newPager;}
+    void setPager(HorizontalPager* newPager) {pager=newPager;}
     void setVerticalPager(VerticalPager* newPager) {verticalpager=newPager;}
 
 private:
     QPixmap pixmap;
     int radius;
     int spacing;
-    Pager * pager = nullptr;
+    HorizontalPager * pager = nullptr;
     VerticalPager * verticalpager = nullptr;
     PagerCircularIndicator * indicator;
 };

@@ -1,5 +1,5 @@
-#ifndef VERTICALPAGER_H
-#define VERTICALPAGER_H
+#ifndef HORIZONTALPAGER_H
+#define HORIZONTALPAGER_H
 
 #include <QTimer>
 #include <QObject>
@@ -14,18 +14,18 @@
 #include "pager/pageritem.h"
 #include "../RocketLibrary/tools/kmenuitems.h"
 
-class VerticalPager : public Pager
+class HorizontalPager : public Pager
 {
     Q_OBJECT
 public:
-    ~VerticalPager() {}
+    ~HorizontalPager() {}
 
-    explicit VerticalPager(QWidget * parent, std::vector<KDEApplication> appTree, bool withBackgound);
+    explicit HorizontalPager(QWidget * parent, std::vector<KDEApplication> appTree, bool withBackgound);
     void constructPager(std::vector<KDEApplication> kapplications) override;
     void updatePager(std::vector<KDEApplication> kapplications) override;
 
-    void mouseReleaseEvent(QMouseEvent * event) override;
     void mouseMoveEvent(QMouseEvent * event) override;
+    void mouseReleaseEvent(QMouseEvent * event) override;
     void wheelEvent(QWheelEvent *event) override;
 
 public slots:
@@ -42,4 +42,4 @@ private:
     void setTimerDragDelta(QDragMoveEvent *event) override;
 };
 
-#endif // VERTICALPAGER_H
+#endif // HORIZONTALPAGER_H

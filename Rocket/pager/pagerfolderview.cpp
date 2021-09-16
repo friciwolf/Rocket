@@ -9,7 +9,7 @@
 #include "pagercircularindicator.h"
 #include "pagercircularactiveindicator.h"
 
-PagerFolderView::PagerFolderView(QWidget *parent, std::vector<KDEApplication> appTree, bool withBackgound) : Pager(parent, appTree, withBackgound)
+PagerFolderView::PagerFolderView(QWidget *parent, std::vector<KDEApplication> appTree, bool withBackgound) : HorizontalPager(parent, appTree, withBackgound)
 {
     /*
      *  Pager Settings
@@ -24,7 +24,7 @@ PagerFolderView::PagerFolderView(QWidget *parent, std::vector<KDEApplication> ap
     }
     else
     {
-        Pager * pager = ((Pager*)parent->parent());
+        HorizontalPager * pager = ((HorizontalPager*)parent->parent());
         in_subfolder_app = pager->in_subfolder_app;
     }
 
@@ -110,7 +110,7 @@ void PagerFolderView::mouseReleaseEvent(QMouseEvent *event)
             event->accept();
 
             QRect end;
-            for (IconGridItem * i : ((Pager*)parentWidget()->parentWidget())->getAllIconGridItems())
+            for (IconGridItem * i : ((HorizontalPager*)parentWidget()->parentWidget())->getAllIconGridItems())
                 if (i->getApplication().getChildren()==m_appTree)
                 {
                     QPoint point = mapFromGlobal(i->mapToGlobal(i->getCanvas()->geometry().topLeft()));
@@ -163,7 +163,7 @@ void PagerFolderView::mouseReleaseEvent(QMouseEvent *event)
             return;
         }
     }
-    Pager::mouseReleaseEvent(event);
+    HorizontalPager::mouseReleaseEvent(event);
 }
 
 /*
@@ -174,7 +174,7 @@ void PagerFolderView::mouseMoveEvent(QMouseEvent * event)
     if (pages.size()==1)
         return;
     else
-        Pager::mouseMoveEvent(event);
+        HorizontalPager::mouseMoveEvent(event);
 }
 
 void PagerFolderView::dragMoveEvent(QDragMoveEvent *event)
@@ -183,7 +183,7 @@ void PagerFolderView::dragMoveEvent(QDragMoveEvent *event)
         m_closeFolder->start();
     if (pages[current_element]->getIconGrid()->geometry().contains(event->pos()) && m_closeFolder->isActive())
         m_closeFolder->stop();
-    Pager::dragMoveEvent(event);
+    HorizontalPager::dragMoveEvent(event);
 }
 
 void PagerFolderView::enterIconDraggingMode(bool on, IconGridItemCanvas * canvas)
@@ -202,8 +202,8 @@ void PagerFolderView::enterIconDraggingMode(bool on, IconGridItemCanvas * canvas
     if (ConfigManager.getVerticalModeSetting())
         ((VerticalPager*)parentWidget()->parent())->enterIconDraggingMode(on,canvas);
     else
-        ((Pager*)parentWidget()->parent())->enterIconDraggingMode(on,canvas);
-    Pager::enterIconDraggingMode(on,canvas);
+        ((HorizontalPager*)parentWidget()->parent())->enterIconDraggingMode(on,canvas);
+    HorizontalPager::enterIconDraggingMode(on,canvas);
 }
 
 void PagerFolderView::leaveEvent(QEvent *event)

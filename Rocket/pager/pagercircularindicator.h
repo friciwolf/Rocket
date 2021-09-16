@@ -1,7 +1,7 @@
 #ifndef PAGERCIRCULARINDICATOR_H
 #define PAGERCIRCULARINDICATOR_H
 
-#include "pager.h"
+#include "horizontalpager.h"
 #include "verticalpager.h"
 
 #include <QObject>
@@ -11,7 +11,7 @@ class PagerCircularIndicator : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PagerCircularIndicator(QWidget *parent, Pager * pager);
+    explicit PagerCircularIndicator(QWidget *parent, HorizontalPager * pager);
     explicit PagerCircularIndicator(QWidget *parent, VerticalPager * pager);
     void positioning();
     void paintEvent(QPaintEvent *event);
@@ -19,14 +19,14 @@ public:
 
     int getSpacing() {return m_spacing;}
     int getRadius() {return m_radius;}
-    Pager * getPager() {return m_pager;}
+    HorizontalPager * getPager() {return m_pager;}
     VerticalPager * getVerticalPager() {return m_verticalpager;}
-    void setPager(Pager* newPager) {m_pager=newPager;}
+    void setPager(HorizontalPager* newPager) {m_pager=newPager;}
     void setVerticalPager(VerticalPager* newPager) {m_verticalpager=newPager;}
 
 private:
     QPixmap pixmap;
-    Pager * m_pager = nullptr;
+    HorizontalPager * m_pager = nullptr;
     VerticalPager * m_verticalpager = nullptr;
     QRect m_parent_geometry;
 
