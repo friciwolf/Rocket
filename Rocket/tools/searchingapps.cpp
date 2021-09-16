@@ -62,11 +62,11 @@ std::vector<int> searchApplicationTree(std::vector<KDEApplication> apptree, KDEA
     int index1 = 0;
     int index2 = -1;
     bool found = false;
-    for (int i=0;i<apptree.size();i++)
+    for (int i=0;i<(int)apptree.size();i++)
     {
         if (apptree[i].isFolder())
             if (!(item==apptree[i]))
-                for (int j=0;j<apptree[i].getChildren().size();j++)
+                for (int j=0;j<(int)apptree[i].getChildren().size();j++)
                 {
                     if (item==apptree[i].getChildren()[j])
                     {

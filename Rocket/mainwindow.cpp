@@ -225,7 +225,7 @@ void MainWindow::navigation(int key)
         }
         case Qt::Key::Key_Tab:
         {
-            if (active==grid->getItems().size()-1 && (ConfigManager.getVerticalModeSetting() ? verticalpager->searching : pager->searching))
+            if (active==(int)grid->getItems().size()-1 && (ConfigManager.getVerticalModeSetting() ? verticalpager->searching : pager->searching))
             {
                 grid->setActiveElement(0);
             }
@@ -269,6 +269,9 @@ void MainWindow::executeSelected()
         job->setAutoDelete(true);
         job->start();
         qDebug() << "MainWindow: Executing " + s.entryPath() + " " + s.exec();
+        connect(job,&KIO::ApplicationLauncherJob::finished,qApp,[=]{
+            qApp->exit();
+        });
     }
     else
     {

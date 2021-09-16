@@ -22,9 +22,9 @@ public:
     std::vector<PagerItem*> pages;
 
     // indicates the currently selected element, and the new one, if the user swipes
-    unsigned int current_element = 0;
-    unsigned int new_element = 0;
-    unsigned int element_before_entering_submenu = 0; // submenu = searching or subfolder
+    int current_element = 0;
+    int new_element = 0;
+    int element_before_entering_submenu = 0; // submenu = searching or subfolder
 
     // below this threshold, the user cannot swipe to the next page
     int swipe_decision_threshold = RocketStyle::pager_swpipe_threshold;
@@ -51,7 +51,7 @@ public:
     virtual void updatePager(std::vector<KDEApplication> kapplications);
     IconGridItem * findGridItemOfMinimumDistance(QPoint referencePoint);
 
-    unsigned int getNumberOfElements() {return pages.size();}
+    int getNumberOfElements() {return pages.size();}
     void setApplicationList(std::vector<KDEApplication> newlist){m_kapplications = newlist;}
     std::vector<KDEApplication> getApplicationTree() {return m_kapplication_tree;}
     void setApplicationTree(std::vector<KDEApplication> tree){m_kapplication_tree = tree;}

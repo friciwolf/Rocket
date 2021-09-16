@@ -136,6 +136,9 @@ void IconGridItemCanvas::mouseReleaseEvent(QMouseEvent *event)
             job->setAutoDelete(true);
             job->start();
             qDebug() << "IconGridItemCanvas: Executing " + s.entryPath() + " " + s.exec();
+            connect(job,&KIO::ApplicationLauncherJob::finished,qApp,[=]{
+                qApp->exit();
+            });
             event->ignore();
             return;
         }

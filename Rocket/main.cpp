@@ -39,13 +39,5 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.showFullScreen();
 
-    QObject::connect(qApp, &QGuiApplication::applicationStateChanged, &w, [=](Qt::ApplicationState state){
-        if (state==Qt::ApplicationState::ApplicationInactive)
-        {
-            qDebug() << "exit application lost focus " << QGuiApplication::applicationState() << qApp->activeWindow()->isModal();
-            qApp->exit();
-        }
-    });
-
     return a.exec();
 }

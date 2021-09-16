@@ -70,7 +70,7 @@ void IconGrid::setActiveElement(int element)
         }
     }
 
-    if (element>=0 && element<=getItems().size()-1)
+    if (element>=0 && element<=(int)getItems().size()-1)
     {
         m_active_element = element;
     }

@@ -379,15 +379,15 @@ bool RocketConfigManager::updateApplicationList()
     menuitems.scanElements();
 
     bool changes = false;
-    for (int i=0;i<menuitems.getApplications().size(); i++)
+    for (int i=0;i<(int)menuitems.getApplications().size(); i++)
     {
-        for (int j=0;j<m_apps.size();j++)
+        for (int j=0;j<(int)m_apps.size();j++)
         {
             if (menuitems.getApplications()[i]==m_apps[j])
             {
                 break;
             }
-            if (j+1==m_apps.size())
+            if (j+1==(int)m_apps.size())
             {
                 m_apps.push_back(menuitems.getApplications()[i]);
                 m_app_tree.push_back(menuitems.getApplications()[i]);
@@ -396,22 +396,22 @@ bool RocketConfigManager::updateApplicationList()
         }
     }
 
-    for (int i=0;i<m_apps.size(); i++)
+    for (int i=0;i<(int)m_apps.size(); i++)
     {
-        for (int j=0;j<menuitems.getApplications().size();j++)
+        for (int j=0;j<(int)menuitems.getApplications().size();j++)
         {
             if (menuitems.getApplications()[j]==m_apps[i])
             {
                 break;
             }
-            if (j+1==menuitems.getApplications().size())
+            if (j+1==(int)menuitems.getApplications().size())
             {
                 bool done=false;
-                for (int k=0;k<m_app_tree.size();k++)
+                for (int k=0;k<(int)m_app_tree.size();k++)
                 {
                     if (m_app_tree[k].isFolder())
                     {
-                        for (int k2=0;k2<m_app_tree[k].getChildren().size();k2++)
+                        for (int k2=0;k2<(int)m_app_tree[k].getChildren().size();k2++)
                         {
                             if (m_app_tree[k].getChildren()[k2]==m_apps[i])
                             {

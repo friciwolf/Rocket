@@ -77,7 +77,7 @@ void KMenuItems::sortElementsAlphabetically()
     {
         swap = false;
         j++;
-        for (int i=0;i<applications.size()-j;i++)
+        for (int i=0;i<(int)applications.size()-j;i++)
         {
             QString a = applications[i].name().normalized(QString::NormalizationForm_KD);
             a.remove(QRegExp("[^a-zA-Z\\s]"));
