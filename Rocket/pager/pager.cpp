@@ -54,7 +54,7 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
     int maxicons = ConfigManager.getRowNumber()*ConfigManager.getColumnNumber();
 
     // Filling up the grid...
-    for (unsigned int i=0;i<kapplications.size();i++)
+    for (int i=0;i<(int)kapplications.size();i++)
     {
         if ((i%maxicons)!=0 || i==0)
         {
@@ -79,7 +79,7 @@ void Pager::constructPager(std::vector<KDEApplication> kapplications)
 
     // Adding the rest..
     PagerItem * page = new PagerItem(this,applications);
-    if (!searching && ConfigManager.getTightLayoutSetting()==false)
+    if (!searching && ConfigManager.getTightLayoutSetting()==false && !in_subfolder)
     {
         page->getItemLayout()->setRowStretch(1,page->getIconGrid()->getMaxNumberOfRows());
         page->getIconGrid()->getLayout()->setAlignment(Qt::AlignTop | Qt::AlignLeft);
@@ -218,7 +218,7 @@ void Pager::resizeEvent(QResizeEvent *event)
         return;
     }
     updatePager(m_kapplication_tree);
-    for (unsigned int i=0;i<pages.size();i++)
+    for (int i=0;i<(int)pages.size();i++)
     {
         pages[i]->resizeEvent(event);
     }
@@ -374,7 +374,7 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
 
         QPropertyAnimation * panim;
 
-        for (unsigned int i=0;i<newtree.size();i++)
+        for (int i=0;i<(int)newtree.size();i++)
         {
             // Look for the IconGridItems in the newtree to create an animation
             for (IconGridItem * item : items)
@@ -398,7 +398,7 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
                 }
             }
             // If an element is being pulled out from a folder, add it to the tree, and to the grid
-            if (event->mimeData()->text().split(";")[1].toInt()!=-1 && newtree[i]==m_item_dragged->getApplication() && newitems_in_row.size()-1!=i)
+            if (event->mimeData()->text().split(";")[1].toInt()!=-1 && newtree[i]==m_item_dragged->getApplication() && (int)newitems_in_row.size()-1!=i)
             {
                 IconGridItem * item = new IconGridItem(pages[i/maxicons]->getIconGrid(),m_item_dragged->getApplication(),pages[i/maxicons]->getIconGridItemSize());
                 connect(item->getCanvas(),&IconGridItemCanvas::enterIconDraggingMode,this,&Pager::enterIconDraggingMode);
@@ -409,7 +409,7 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
                 panim = new QPropertyAnimation(item,"pos");
                 panim->setTargetObject(item);
                 panim->setStartValue(getAllIconGridItems()[event->mimeData()->text().split(";")[0].toInt()]->pos());
-                panim->setEndValue((i<getAllIconGridItems().size() ? getAllIconGridItems()[i]->pos() : getAllIconGridItems()[i-1]->pos()));
+                panim->setEndValue((i<(int)getAllIconGridItems().size() ? getAllIconGridItems()[i]->pos() : getAllIconGridItems()[i-1]->pos()));
                 panim->setDuration(200);
                 connect(panim,&QPropertyAnimation::finished,item,[=]{
                     pages[i/maxicons]->getIconGrid()->getLayout()->addWidget(item,i/ConfigManager.getColumnNumber(),i%ConfigManager.getColumnNumber());
@@ -420,11 +420,11 @@ void Pager::dragMoveEvent(QDragMoveEvent *event)
 
         m_kapplication_tree = newtree;
 
-        unsigned int i=0;
+        int i=0;
         for (PagerItem * page : pages)
         {
             std::vector<IconGridItem*> vector;
-            if ((i+1)*maxicons<newitems_in_row.size())
+            if ((i+1)*maxicons<(int)newitems_in_row.size())
             {
                 vector = std::vector<IconGridItem*>(newitems_in_row.begin()+i*maxicons,newitems_in_row.begin()+(i+1)*maxicons);
                 page->getIconGrid()->setItems(vector);
@@ -629,7 +629,7 @@ void Pager::makeFolder(KDEApplication app_dropped_on, KDEApplication app_dragged
     QPropertyAnimation * panim;
 
     // Adding new positions to the animation group
-    for (unsigned int i=0;i<newtree.size();i++)
+    for (int i=0;i<(int)newtree.size();i++)
     {
         for (IconGridItem * item : items)
         {

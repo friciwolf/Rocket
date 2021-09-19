@@ -11,6 +11,7 @@
 
 #include <KRun>
 #include <KService>
+#include <KIconUtils>
 #include <KDesktopFile>
 #include <KIO/JobUiDelegate>
 #include <KIO/ApplicationLauncherJob>
@@ -62,6 +63,19 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
         int pos_y = (height()-size)/2;
         painter.drawRect(0,0,width(),height());
         m_icon = m_application.icon();
+        if (m_application.isFolder())
+        {
+            QPen pen;
+            pen.setWidth(2);
+            pen.setColor(ConfigManager.getSecondaryColour());
+            painter.setPen(pen);
+            painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
+            painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
+            Qt::Corner corners[] = {Qt::TopLeftCorner,Qt::TopRightCorner,Qt::BottomLeftCorner,Qt::BottomRightCorner};
+            m_icon = QIcon::fromTheme("");
+            for (int i=0;i<(int)m_application.getChildren().size() && i<4;i++)
+                m_icon = KIconUtils::addOverlay(m_icon,m_application.getChildren()[i].icon(),corners[i]);
+        }
         m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
         //manual adjustment to the middle
         QSize parentsize = parentWidget()->geometry().size();
