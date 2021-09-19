@@ -58,11 +58,10 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
         setGeometry((parentsize.width()-size)*0.5,geometry().y(),size,size);
     }
     else {
-        painter.setPen(Qt::transparent);
+        //painter.setPen(Qt::transparent);
+        //painter.drawRect(0,0,width(),height());
         int pos_x = (width()-size)/2;
         int pos_y = (height()-size)/2;
-        painter.drawRect(0,0,width(),height());
-        m_icon = m_application.icon();
         if (m_application.isFolder())
         {
             QPen pen;
@@ -76,6 +75,8 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
             for (int i=0;i<(int)m_application.getChildren().size() && i<4;i++)
                 m_icon = KIconUtils::addOverlay(m_icon,m_application.getChildren()[i].icon(),corners[i]);
         }
+        else
+            m_icon = m_application.icon();
         m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
         //manual adjustment to the middle
         QSize parentsize = parentWidget()->geometry().size();
@@ -116,7 +117,31 @@ void IconGridItemCanvas::initIconDragging()
         std::vector<int> i = searchApplicationTree(ConfigManager.getApplicationTree(),m_application);
         mime->setText(QString::number(i[0])+";"+QString::number(i[1]));
         drag->setMimeData(mime);
-        drag->setPixmap(m_application.icon().pixmap(size()));
+        QPixmap dragPixmap(size());
+        QPainter painter(&dragPixmap);
+        if (m_application.isFolder())
+        {
+            int size = std::min({width(),height()});
+            int pos_x = (width()-size)/2;
+            int pos_y = (height()-size)/2;
+            QPen pen;
+            pen.setWidth(2);
+            pen.setColor(ConfigManager.getSecondaryColour());
+            painter.setPen(pen);
+            painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
+            painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
+            Qt::Corner corners[] = {Qt::TopLeftCorner,Qt::TopRightCorner,Qt::BottomLeftCorner,Qt::BottomRightCorner};
+            m_icon = QIcon::fromTheme("");
+            for (int i=0;i<(int)m_application.getChildren().size() && i<4;i++)
+                m_icon = KIconUtils::addOverlay(m_icon,m_application.getChildren()[i].icon(),corners[i]);
+            m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
+            drag->setPixmap(dragPixmap);
+        }
+        else
+        {
+            m_icon = m_application.icon();
+            drag->setPixmap(m_application.icon().pixmap(size()));
+        }
         drag->setHotSpot(QPoint(drag->pixmap().width()/2,drag->pixmap().height()/2));
         Qt::DropAction dropAction = drag->exec();
     }
