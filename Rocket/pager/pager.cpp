@@ -457,7 +457,10 @@ void Pager::dropEvent(QDropEvent *event)
                 if (!(child==m_item_dragged->getApplication()))
                     children.push_back(child);
             std::vector<int> i2 = searchApplicationTree(m_kapplication_tree,ConfigManager.getApplicationTree()[i[0].toInt()]);
-            m_kapplication_tree[i2[0]].setChildren(children);
+            if (children.size()==1)
+                m_kapplication_tree[i2[0]] = children[0];
+            else
+                m_kapplication_tree[i2[0]].setChildren(children);
             m_folder_view_window->close();
         }
         updatePager(m_kapplication_tree);
@@ -679,7 +682,10 @@ void Pager::enterIconDraggingMode(bool on, IconGridItemCanvas * canvas)
             if (!(child==m_item_dragged->getApplication()))
                 children.push_back(child);
         std::vector<int> i2 = searchApplicationTree(m_kapplication_tree,ConfigManager.getApplicationTree()[i[0]]);
-        m_kapplication_tree[i2[0]].setChildren(children);
+        if (children.size()==1)
+            m_kapplication_tree[i2[0]] = children[0];
+        else
+            m_kapplication_tree[i2[0]].setChildren(children);
         m_folder_view_window->close();
         updatePager(m_kapplication_tree);
         ConfigManager.generateAppGridConfigFile(ConfigManager.getAppGridConfig(),m_kapplication_tree);
