@@ -42,23 +42,28 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
     int size = std::min({width(),height()});
     if(m_draw_folder)
     {
-        // Custom folder icon code...
-        /*painter.setBrush(QBrush(ConfigManager.getSecondaryColour(),Qt::BrushStyle::SolidPattern));
-        painter.setPen(Qt::transparent);
-        painter.drawRoundedRect(0.05*size,0.05*size,size*0.95,size*0.95,15,15);
-        m_icon.paint(&painter,size*0.1,size*0.1,size/2.5,size/2.5,Qt::AlignCenter);*/
-        painter.setPen(Qt::transparent);
         int pos_x = (width()-size)/2;
         int pos_y = (height()-size)/2;
-        painter.drawRect(0,0,width(),height());
-        m_icon = QIcon::fromTheme("folder");
+        QPen pen;
+        pen.setWidth(2);
+        pen.setColor(ConfigManager.getSecondaryColour());
+        painter.setPen(pen);
+        painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
+        painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
+        if (!m_application.isFolder())
+        {
+            //Drawing the composite icon
+            m_icon = QIcon::fromTheme("");
+            m_icon = KIconUtils::addOverlay(m_icon,m_application.icon(),Qt::TopLeftCorner);
+        }
         m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
+
         //manual adjustment to the middle
         QSize parentsize = parentWidget()->geometry().size();
         setGeometry((parentsize.width()-size)*0.5,geometry().y(),size,size);
     }
     else {
-        //painter.setPen(Qt::transparent);
+        //painter.setPen(Qt::red);
         //painter.drawRect(0,0,width(),height());
         int pos_x = (width()-size)/2;
         int pos_y = (height()-size)/2;
