@@ -46,7 +46,7 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
         int pos_y = (height()-size)/2;
         QPen pen;
         pen.setWidth(2);
-        pen.setColor(ConfigManager.getSecondaryColour());
+        pen.setColor(ConfigManager.getSelectionColour().rgb());
         painter.setPen(pen);
         painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
         painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
@@ -71,7 +71,7 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
         {
             QPen pen;
             pen.setWidth(2);
-            pen.setColor(ConfigManager.getSecondaryColour());
+            pen.setColor(ConfigManager.getSelectionColour().rgb());
             painter.setPen(pen);
             painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
             painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
@@ -131,7 +131,7 @@ void IconGridItemCanvas::initIconDragging()
             int pos_y = (height()-size)/2;
             QPen pen;
             pen.setWidth(2);
-            pen.setColor(ConfigManager.getSecondaryColour());
+            pen.setColor(ConfigManager.getSelectionColour().rgb());
             painter.setPen(pen);
             painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
             painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
@@ -148,7 +148,7 @@ void IconGridItemCanvas::initIconDragging()
             drag->setPixmap(m_application.icon().pixmap(size()));
         }
         drag->setHotSpot(QPoint(drag->pixmap().width()/2,drag->pixmap().height()/2));
-        Qt::DropAction dropAction = drag->exec();
+        drag->exec();
     }
     m_clicked = false;
 }
