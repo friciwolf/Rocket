@@ -22,7 +22,7 @@ For the most recent release version download the zipped file containing all the 
 
 ## Git Version
 
-Rocket uses C++ and Qt and KDE Plasma libraries to commununicate with the environment. If you would like to download Rocket and to test the most recent dev version, clone this repository and compile the code using
+Rocket uses Qt and KDE Plasma libraries to commununicate with the environment. If you would like to download Rocket and to test the most recent dev version, clone this repository and compile the code using
 
 ```qmake && make```
 
