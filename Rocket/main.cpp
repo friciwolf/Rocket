@@ -18,6 +18,10 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     QString name = a.applicationName().toLower();
+    if (!QDir(QDir::homePath()+"/.config/"+name).exists())
+    {
+        QDir().mkdir(QDir::homePath()+"/.config/"+name);
+    }
     QLockFile mainlockFile(QDir::homePath()+"/.config/"+name+"/."+name+"main.lock");
     if (!mainlockFile.tryLock(100))
     {
