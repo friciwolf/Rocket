@@ -26,8 +26,6 @@ Rocket uses Qt and KDE Plasma libraries to commununicate with the environment. I
 
 ```qmake && make```
 
-Beware that you need to create the folder ```~/.config/rocket``` before launching Rocket first, otherwise the program will not launch.
-
 # Screenshot Gallery
 
 ## Default view
