@@ -16,7 +16,17 @@ For more information check out the **wiki** and the **release notes**.
 
 Rocket has been tested on Kubuntu and on Debian, but it should also work on any platform with KDE installed.
 
-You can either clone the repository and compile the code yourself or download the zipped file containing all the binaries and icons from the [KDE Store](https://store.kde.org/p/1507169/) and install Rocket by making the bash script ```installer.sh``` executable via ```chmod +x installer.sh``` and by running it with ```./installer.sh```.
+## Release Version
+
+For the most recent release version download the zipped file containing all the binaries and icons from the [KDE Store](https://store.kde.org/p/1507169/) and install Rocket by making the bash script ```installer.sh``` executable via ```chmod +x installer.sh``` and by running it with ```./installer.sh```.
+
+## Git Version
+
+Rocket uses Qt and KDE Plasma libraries to commununicate with the environment. If you would like to download Rocket and to test the most recent dev version, clone this repository and compile the code using
+
+```qmake && make```
+
+Beware that you need to create the folder ```~/.config/rocket``` before launching Rocket first, otherwise the program will not launch.
 
 # Screenshot Gallery
 
