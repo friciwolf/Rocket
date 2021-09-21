@@ -30,6 +30,9 @@ IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KDEApplication applicati
     setMouseTracking(true);
     setAcceptDrops(true);
 
+    setLayout(new QGridLayout(this));
+    layout()->setAlignment(Qt::AlignHCenter);
+
 //    QPalette p;
 //    setAutoFillBackground(true);
 //    p.setColor(QPalette::ColorRole::Background,Qt::cyan);
@@ -40,41 +43,33 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
 {
     QPainter painter(this);
     int size = std::min({width(),height()});
+    int pos_x = (width()-size)/2;
+    int pos_y = (height()-size)/2;
+    QPen pen;
     if(m_draw_folder)
     {
-        int pos_x = (width()-size)/2;
-        int pos_y = (height()-size)/2;
-        QPen pen;
         pen.setWidth(2);
         pen.setColor(ConfigManager.getSelectionColour().rgb());
         painter.setPen(pen);
         painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
-        painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
+        painter.drawRoundedRect(size*0.01+pos_x,size*0.01+pos_y,size*0.99,size*0.99,7,7);
         if (!m_application.isFolder())
         {
             //Drawing the composite icon
             m_icon = QIcon::fromTheme("");
             m_icon = KIconUtils::addOverlay(m_icon,m_application.icon(),Qt::TopLeftCorner);
         }
-        m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
-
-        //manual adjustment to the middle
-        QSize parentsize = parentWidget()->geometry().size();
-        setGeometry((parentsize.width()-size)*0.5,geometry().y(),size,size);
     }
     else {
         //painter.setPen(Qt::red);
         //painter.drawRect(0,0,width(),height());
-        int pos_x = (width()-size)/2;
-        int pos_y = (height()-size)/2;
         if (m_application.isFolder())
         {
-            QPen pen;
             pen.setWidth(2);
             pen.setColor(ConfigManager.getSelectionColour().rgb());
             painter.setPen(pen);
             painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
-            painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
+            painter.drawRoundedRect(size*0.01+pos_x,size*0.01+pos_y,size*0.99,size*0.99,7,7);
             Qt::Corner corners[] = {Qt::TopLeftCorner,Qt::TopRightCorner,Qt::BottomLeftCorner,Qt::BottomRightCorner};
             m_icon = QIcon::fromTheme("");
             for (int i=0;i<(int)m_application.getChildren().size() && i<4;i++)
@@ -82,11 +77,10 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
         }
         else
             m_icon = m_application.icon();
-        m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
-        //manual adjustment to the middle
-        QSize parentsize = parentWidget()->geometry().size();
-        setGeometry((parentsize.width()-size)*0.5,geometry().y(),size,size);
     }
+
+    painter.setViewport(pos_x,pos_y,width(),height());
+    m_icon.paint(&painter,0,0,size,size,Qt::AlignCenter);
 }
 
 void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)
