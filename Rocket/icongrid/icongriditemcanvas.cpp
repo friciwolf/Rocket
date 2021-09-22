@@ -116,23 +116,19 @@ void IconGridItemCanvas::initIconDragging()
         std::vector<int> i = searchApplicationTree(ConfigManager.getApplicationTree(),m_application);
         mime->setText(QString::number(i[0])+";"+QString::number(i[1]));
         drag->setMimeData(mime);
-        QPixmap dragPixmap(size());
-        QPainter painter(&dragPixmap);
         if (m_application.isFolder())
         {
             int size = std::min({width(),height()});
             int pos_x = (width()-size)/2;
             int pos_y = (height()-size)/2;
+            QPixmap dragPixmap(m_icon.pixmap(size,size));
+            QPainter painter(&dragPixmap);
             QPen pen;
             pen.setWidth(2);
             pen.setColor(ConfigManager.getSelectionColour().rgb());
             painter.setPen(pen);
             painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
             painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
-            Qt::Corner corners[] = {Qt::TopLeftCorner,Qt::TopRightCorner,Qt::BottomLeftCorner,Qt::BottomRightCorner};
-            m_icon = QIcon::fromTheme("");
-            for (int i=0;i<(int)m_application.getChildren().size() && i<4;i++)
-                m_icon = KIconUtils::addOverlay(m_icon,m_application.getChildren()[i].icon(),corners[i]);
             m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
             drag->setPixmap(dragPixmap);
         }
