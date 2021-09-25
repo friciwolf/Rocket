@@ -30,9 +30,6 @@ IconGridItemCanvas::IconGridItemCanvas(QWidget *parent, KDEApplication applicati
     setMouseTracking(true);
     setAcceptDrops(true);
 
-    setLayout(new QGridLayout(this));
-    layout()->setAlignment(Qt::AlignHCenter);
-
 //    QPalette p;
 //    setAutoFillBackground(true);
 //    p.setColor(QPalette::ColorRole::Background,Qt::cyan);
@@ -45,42 +42,54 @@ void IconGridItemCanvas::paintEvent(QPaintEvent*)
     int size = std::min({width(),height()});
     int pos_x = (width()-size)/2;
     int pos_y = (height()-size)/2;
-    QPen pen;
-    if(m_draw_folder)
-    {
+    m_icon = QIcon::fromTheme(m_application.iconname());
+
+    painter.setViewport(0,0,width(),height());
+
+    QPixmap qpixmap(size,size);
+    qpixmap.fill(Qt::transparent);
+    QPainter qpainter(&qpixmap);
+    auto drawFolderBackgournd = [=](QPainter & painter) {
+        m_icon = QIcon::fromTheme("");
+
+        // pen for folders
+        QPen pen;
         pen.setWidth(2);
         pen.setColor(ConfigManager.getSelectionColour().rgb());
         painter.setPen(pen);
+
         painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
-        painter.drawRoundedRect(size*0.01+pos_x,size*0.01+pos_y,size*0.99,size*0.99,7,7);
+        painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
+    };
+
+    if(m_draw_folder)
+    {
         if (!m_application.isFolder())
         {
-            //Drawing the composite icon
-            m_icon = QIcon::fromTheme("");
-            m_icon = KIconUtils::addOverlay(m_icon,m_application.icon(),Qt::TopLeftCorner);
+            drawFolderBackgournd(qpainter);
+            m_application.icon().paint(&qpainter,size*0.05,size*0.05,size*0.4,size*0.4);
+            m_icon.addPixmap(qpixmap);
+        }
+        else
+        {
+            drawFolderBackgournd(qpainter);
+            for (int i=0;i<(int)m_application.getChildren().size() && i<4;i++)
+                m_application.getChildren()[i].icon().paint(&qpainter,size*0.05+i%2*size/2,size*0.05+i/2*size/2,size*0.4,size*0.4);
+            m_icon.addPixmap(qpixmap);
         }
     }
     else {
-        //painter.setPen(Qt::red);
-        //painter.drawRect(0,0,width(),height());
         if (m_application.isFolder())
         {
-            pen.setWidth(2);
-            pen.setColor(ConfigManager.getSelectionColour().rgb());
-            painter.setPen(pen);
-            painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
-            painter.drawRoundedRect(size*0.01+pos_x,size*0.01+pos_y,size*0.99,size*0.99,7,7);
-            Qt::Corner corners[] = {Qt::TopLeftCorner,Qt::TopRightCorner,Qt::BottomLeftCorner,Qt::BottomRightCorner};
-            m_icon = QIcon::fromTheme("");
+            drawFolderBackgournd(qpainter);
             for (int i=0;i<(int)m_application.getChildren().size() && i<4;i++)
-                m_icon = KIconUtils::addOverlay(m_icon,m_application.getChildren()[i].icon(),corners[i]);
+                m_application.getChildren()[i].icon().paint(&qpainter,size*0.05+i%2*size/2,size*0.05+i/2*size/2,size*0.4,size*0.4);
+            m_icon.addPixmap(qpixmap);
         }
-        else
-            m_icon = m_application.icon();
     }
 
-    painter.setViewport(pos_x,pos_y,width(),height());
-    m_icon.paint(&painter,0,0,size,size,Qt::AlignCenter);
+    m_icon.paint(&painter,pos_x,pos_y,size,size);
+
 }
 
 void IconGridItemCanvas::mousePressEvent(QMouseEvent *event)
@@ -119,18 +128,7 @@ void IconGridItemCanvas::initIconDragging()
         if (m_application.isFolder())
         {
             int size = std::min({width(),height()});
-            int pos_x = (width()-size)/2;
-            int pos_y = (height()-size)/2;
-            QPixmap dragPixmap(m_icon.pixmap(size,size));
-            QPainter painter(&dragPixmap);
-            QPen pen;
-            pen.setWidth(2);
-            pen.setColor(ConfigManager.getSelectionColour().rgb());
-            painter.setPen(pen);
-            painter.setBrush(QBrush(ConfigManager.getSelectionColour()));
-            painter.drawRoundedRect(size*0.01,size*0.01,size*0.99,size*0.99,7,7);
-            m_icon.paint(&painter,pos_x,pos_y,size,size,Qt::AlignCenter);
-            drag->setPixmap(dragPixmap);
+            drag->setPixmap(m_icon.pixmap(QSize(size,size)));
         }
         else
         {
